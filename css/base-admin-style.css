@@ -1,0 +1,10 @@
+
+/*Fix checkbox for use meta-data style*/
+.umm-checkbox-group-item {
+	padding: 2px;
+	text-transform: uppercase;
+}
+input[type="checkbox"] {
+	margin: 2px;
+}
+
