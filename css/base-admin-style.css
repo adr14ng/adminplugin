@@ -3,7 +3,9 @@
 .umm-checkbox-group-item {
 	padding: 2px;
 	text-transform: uppercase;
+	white-space: nowrap;
 }
+
 input[type="checkbox"] {
 	margin: 2px;
 }

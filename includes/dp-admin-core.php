@@ -77,7 +77,8 @@ class DP_Admin {
 	 *  Including the styles and js
 	 */
 	function add_base_style() {
-		wp_enqueue_style('dp-editor-style', $basedir . '/css/bse-admin-style.css');
+		$basedir = dirname(plugin_dir_url(__FILE__));
+		wp_enqueue_style('dp-editor-style', $basedir . '/css/base-admin-style.css');
 	}
 
 		
