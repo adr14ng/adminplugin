@@ -110,9 +110,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title',
+						'editor',
+						'revisions'
 				)
 			)
 		);
@@ -127,9 +127,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title',
+						'editor',
+						'revisions'
 				)
 			)
 		);
@@ -141,9 +141,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title',
+						'editor',
+						'revisions'
 				)
 			)
 		);
@@ -158,9 +158,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title',
+						'editor',
+						'revisions'
 				),
 			)
 		);
@@ -175,9 +175,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title',
+						'editor',
+						'revisions'
 				)
 			)
 		);
