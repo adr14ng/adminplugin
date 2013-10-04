@@ -28,5 +28,8 @@ if ( is_admin() ) {	//does my new admin page count?
 	//Add menu for aggregate view
 	add_action( 'admin_menu', 'register_my_custom_menu_page' );
 	
+	//Add custom post types
+	add_action('init', array( 'DP_Admin', 'add_base_style') );
+	
 }//is_admin()
 
