@@ -1,6 +1,6 @@
 <?php
 
-$basedir = plugin_dir_url( __FILE__ );	//base directory to get to design files
+$basedir = dirname(dirname(__FILE__));	//base directory to get to design files
 
 /*****************************************************
  *

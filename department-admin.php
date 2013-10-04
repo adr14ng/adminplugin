@@ -6,11 +6,10 @@ Version: 0.1
 */
 
 //Is this admin pages?
-if ( is_admin() ) {	//does my new admin page count?
-	$plug_in_dir = plugin_dir_url(__FILE__);
+if ( is_admin() ) {
 
     //Load the plugin
-    require dirname $plug_in_dir . '/includes/dp-admin-core.php';
+    require dirname(__FILE__) . '/includes/dp-admin-core.php';
 	$dp_new_admin = new DP_Admin();
 	
 	//Activate plugin
@@ -25,8 +24,8 @@ if ( is_admin() ) {	//does my new admin page count?
 	//Add a basic style to the pages
 	add_action('admin_enqueue_scripts', array( 'DP_Admin', 'add_base_style'));
 	
-	//Add menu for aggregate view
-	add_action( 'admin_menu', 'register_my_custom_menu_page' );
+	//Add custom post types
+	add_action('init', array( 'DP_Admin', 'add_base_style') );
 	
 }//is_admin()
 

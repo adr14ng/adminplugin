@@ -16,6 +16,9 @@ class DP_Admin {
 			'read' => true,
 			'delete_posts' => false
 			));
+			
+		csun_create_post_type();
+		flush_rewrite_rules();
 	}//activate()
 	
 	/**
@@ -23,6 +26,7 @@ class DP_Admin {
 	 */
 	function uninstall() {
 		remove_role( 'dp_editor' );
+		flush_rewrite_rules();
 	}
 	
 	
@@ -91,6 +95,91 @@ class DP_Admin {
 			include dirname(__FILE__) . '/dp_editor-design.php';
 		}
 	}//change layout
+	
+	/**
+	 * Function to add custom post types
+	 */
+	function csun_create_post_type() {
+		register_post_type( 'course',
+			array(
+			'labels' 		=> array(
+						'name' 			=> __( 'Courses' ),
+						'singular_name' => __( 'Course' )
+				),
+			'public' 		=> true,
+			'has_archive'	=> true,
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title' 	=> true,
+						'editor' 	=> true,
+						'revisions'	=> true
+				)
+			)
+		);
+		
+		register_post_type( 'program',
+			array(
+			'labels' 		=> array(
+						'name' 			=> __( 'Programs' ),
+						'singular_name' => __( 'Program' )
+				),
+			'public' 		=> true,
+			'has_archive'	=> true,
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title' 	=> true,
+						'editor' 	=> true,
+						'revisions'	=> true
+				)
+			)
+		);
+		
+		register_post_type( 'faculty',
+			array(
+			'label' 		=> __( 'Faculty' ),
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title' 	=> true,
+						'editor' 	=> true,
+						'revisions'	=> true
+				)
+			)
+		);
+		
+		register_post_type( 'department',
+			array(
+			'labels' 		=> array(
+						'name' 			=> __( 'Products' ),
+						'singular_name' => __( 'Product' )
+				),
+			'public' 		=> true,
+			'has_archive'	=> true,
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title' 	=> true,
+						'editor' 	=> true,
+						'revisions'	=> true
+				),
+			)
+		);
+		
+		register_post_type( 'policy',
+			array(
+			'labels' 		=> array(
+						'name' 			=> __( 'Products' ),
+						'singular_name' => __( 'Product' )
+					),
+			'public' 		=> true,
+			'has_archive'	=> true,
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title' 	=> true,
+						'editor' 	=> true,
+						'revisions'	=> true
+				)
+			)
+		);
+	} //csun create post type
 	
 } //dp_admin
 ?>
