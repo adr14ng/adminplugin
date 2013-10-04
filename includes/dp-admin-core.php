@@ -62,13 +62,13 @@ class DP_Admin {
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories
 		
 		$post_id = $args[1];
-		$cats = get_the_category($post_id);		//get categories of a post
+		$post_term = wp_get_object_terms($post_id, 'department_shortname');		//get categories of a post
 
 		foreach ($userCat as $use){
-			foreach($cats as $cat){
-				$catName = $cat->cat_name;
+			foreach($post_terms as $post_term){
+				$termName = $post_term->slug;
 				//strict comparison
-				if($use === $catName)		//if user and post have same cat
+				if($use === $termName)		//if user and post have same cat
 					return array();	//no cap required
 			}
 		}
@@ -97,9 +97,11 @@ class DP_Admin {
 	}//change layout
 	
 	/**
-	 * Function to add custom post types
+	 * Function to add custom post types and taxonomies
 	 */
-	function csun_create_post_type() {
+	function csun_create_custom() {
+	
+	//Custom post types
 		register_post_type( 'dp_course',
 			array(
 			'labels' 		=> array(
@@ -110,9 +112,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title' ,
+						'editor' ,
+						'revisions'
 				)
 			)
 		);
@@ -127,9 +129,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title' ,
+						'editor' ,
+						'revisions'
 				)
 			)
 		);
@@ -141,9 +143,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title' ,
+						'editor' ,
+						'revisions'
 				)
 			)
 		);
@@ -158,9 +160,9 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title',
+						'editor',
+						'revisions'
 				),
 			)
 		);
@@ -175,12 +177,74 @@ class DP_Admin {
 			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
-						'title' 	=> true,
-						'editor' 	=> true,
-						'revisions'	=> true
+						'title' ,
+						'editor' ,
+						'revisions'
 				)
 			)
 		);
+	
+	//Custom taxonomies
+		//Department short codes, which will include colleges
+		register_taxonomy( 'department_shortname', null, 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Departments' ),
+							'singular_name'	=> __( 'Department' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+	
+		//General Education categories
+		register_taxonomy( 'general_education', 'dp_course', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'GEs' ),
+							'singular_name'	=> __( 'GE' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+		
+		//Program degree levels (Minor, MA, BS etc)
+		register_taxonomy( 'degree_level', 'dp_program', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Degree Levels' ),
+							'singular_name'	=> __( 'Degree Level' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+		
+		//Program degree levels (Minor, MA, BS etc)
+		register_taxonomy( 'policy_type', 'dp_policy', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Policy Types' ),
+							'singular_name'	=> __( 'Policy Type' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+	
+	//Assign taxonomies for custom post types
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_course' );
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_program' );
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_faculty' );
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_department' );
+		register_taxonomy_for_object_type( 'general_education', 'dp_course' );
+		register_taxonomy_for_object_type( 'degree_level', 'dp_program' );
+		register_taxonomy_for_object_type( 'policy_type', 'dp_policy' );
 	} //csun create post type
 	
 } //dp_admin

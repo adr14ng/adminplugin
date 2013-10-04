@@ -29,7 +29,7 @@ if ( is_admin() ) {	//does my new admin page count?
 	add_action( 'admin_menu', 'register_my_custom_menu_page' );
 	
 	//Add custom post types
-	add_action('init', array( 'DP_Admin', 'csun_create_post_type') );
+	add_action('init', array( 'DP_Admin', 'csun_create_custom') );
 	
 }//is_admin()
 
