@@ -25,7 +25,7 @@ if ( is_admin() ) {
 	add_action('admin_enqueue_scripts', array( 'DP_Admin', 'add_base_style'));
 	
 	//Add custom post types
-	add_action('init', array( 'DP_Admin', 'add_base_style') );
+	add_action('init', array( 'DP_Admin', 'csun_create_post_type') );
 	
 }//is_admin()
 

@@ -17,8 +17,8 @@ class DP_Admin {
 			'delete_posts' => false
 			));
 			
-		csun_create_post_type();
-		flush_rewrite_rules();
+		//csun_create_post_type();
+		//flush_rewrite_rules();
 	}//activate()
 	
 	/**
@@ -100,7 +100,7 @@ class DP_Admin {
 	 * Function to add custom post types
 	 */
 	function csun_create_post_type() {
-		register_post_type( 'course',
+		register_post_type( 'dp_course',
 			array(
 			'labels' 		=> array(
 						'name' 			=> __( 'Courses' ),
@@ -117,7 +117,7 @@ class DP_Admin {
 			)
 		);
 		
-		register_post_type( 'program',
+		register_post_type( 'dp_program',
 			array(
 			'labels' 		=> array(
 						'name' 			=> __( 'Programs' ),
@@ -134,9 +134,11 @@ class DP_Admin {
 			)
 		);
 		
-		register_post_type( 'faculty',
+		register_post_type( 'dp_faculty',
 			array(
-			'label' 		=> __( 'Faculty' ),
+			'label' 		=> 'Faculty',
+			'public' 		=> true,
+			'has_archive'	=> true,
 			'menu_position'	=> 5,
 			'supports' 		=> array(
 						'title' 	=> true,
@@ -146,11 +148,11 @@ class DP_Admin {
 			)
 		);
 		
-		register_post_type( 'department',
+		register_post_type( 'dp_department',
 			array(
 			'labels' 		=> array(
-						'name' 			=> __( 'Products' ),
-						'singular_name' => __( 'Product' )
+						'name' 			=> __( 'Departments' ),
+						'singular_name' => __( 'Department' )
 				),
 			'public' 		=> true,
 			'has_archive'	=> true,
@@ -163,11 +165,11 @@ class DP_Admin {
 			)
 		);
 		
-		register_post_type( 'policy',
+		register_post_type( 'dp_policy',
 			array(
 			'labels' 		=> array(
-						'name' 			=> __( 'Products' ),
-						'singular_name' => __( 'Product' )
+						'name' 			=> __( 'Policies' ),
+						'singular_name' => __( 'Policy' )
 					),
 			'public' 		=> true,
 			'has_archive'	=> true,
