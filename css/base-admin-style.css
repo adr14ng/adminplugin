@@ -10,3 +10,33 @@ input[type="checkbox"] {
 	margin: 2px;
 }
 
+/*******************************************
+ * Changing the icons of our custom posts
+ * Currently a quick fix, either different
+ * icons will be chosen or relative path
+ * names need to be implemented
+ ******************************************/
+
+/* Progams will have the pages icon */
+#menu-posts-dp_program .wp-menu-image {
+	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -150px -33px !important;
+}
+#menu-posts-dp_program:hover .wp-menu-image, #menu-posts-dp_program.wp-has-current-submenu .wp-menu-image {
+	background-position:-150px -1px!important;
+}
+			
+/* Faculty will have the users icon */
+#menu-posts-dp_faculty .wp-menu-image {
+	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -300px -33px !important;
+}
+#menu-posts-dp_faculty:hover .wp-menu-image, #menu-posts-dp_faculty.wp-has-current-submenu .wp-menu-image {
+	background-position:-300px -1px!important;
+}
+
+/* Departments will have the dashboard icon */
+#menu-posts-dp_department .wp-menu-image {
+	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -60px -33px !important;
+}
+#menu-posts-dp_department:hover .wp-menu-image, #menu-posts-dp_department.wp-has-current-submenu .wp-menu-image {
+	background-position:-60px -1px!important;
+}
