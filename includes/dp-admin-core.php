@@ -181,6 +181,82 @@ class DP_Admin {
 				)
 			)
 		);
+		
+	//Custom taxonomies
+		//Department short codes, which will include colleges
+		register_taxonomy( 'department_shortname', null, 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Departments' ),
+							'singular_name'	=> __( 'Department' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+	
+		//General Education categories
+		register_taxonomy( 'general_education', 'dp_course', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'GEs' ),
+							'singular_name'	=> __( 'GE' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+		
+		//Program degree levels (Minor, MA, BS etc)
+		register_taxonomy( 'degree_level', 'dp_program', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Degree Levels' ),
+							'singular_name'	=> __( 'Degree Level' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+		
+		//Policy Types (Fees, Conduct)
+		register_taxonomy( 'policy_type', 'dp_policy', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Policy Types' ),
+							'singular_name'	=> __( 'Policy Type' )
+							),
+				'public'			=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true
+			)
+		);
+		
+		//Policy Types (Fees, Conduct)
+		register_taxonomy( 'policy_keywords', 'dp_policy', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Policy Keywords' ),
+							'singular_name'	=> __( 'Policy Keyword' )
+							),
+				'public'			=> true,
+				'show_tagcloud'		=> true,
+				'hierarchical'		=> false
+			)
+		);
+	
+	//Assign taxonomies for custom post types
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_course' );
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_program' );
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_faculty' );
+		register_taxonomy_for_object_type( 'department_shortname', 'dp_department' );
+		register_taxonomy_for_object_type( 'general_education', 'dp_course' );
+		register_taxonomy_for_object_type( 'degree_level', 'dp_program' );
+		register_taxonomy_for_object_type( 'policy_type', 'dp_policy' );
+		register_taxonomy_for_object_type( 'policy_keywords', 'dp_policy' );
 	} //csun create post type
 	
 } //dp_admin
