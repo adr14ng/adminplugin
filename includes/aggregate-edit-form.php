@@ -87,7 +87,7 @@ function edit_aggregate_post(){
 
 //Returns a link to the aggregate edit page
 //Used for building the table and redirects
-function get_aggregate_edit_link($cat, $context) {
+function get_aggregate_edit_link($cat, $context='') {
 	$sformat = 'dp_page.php?cat=%s';
 	
 	if( 'display' == $context)
@@ -125,16 +125,16 @@ class Aggregate_List_Table extends WP_List_Table {
 	//The collumns across the top and bottom
 	function get_collumns() {
 		return $collumns = array(
-			'col_aggr_name' => __('Name'),
-			'col_aggr_posts' => __('Posts'),
-			'col_aggr_date' => __('Last Updated'),
+			'aggr_name' => __('Name'),
+			'aggr_description' => __('Description'),
+			'aggr_numposts' => __('Number of Posts'),
 		);
 	}
 	
 	//Sortable collumns
 	function get_sortable_columns() {
-		return $sortable = array('col_aggr_name' => 'name',
-								 'col_aggr_posts' => 'count');
+		return $sortable = array('aggr_name' => 'name',
+								 'aggr_numposts' => 'count');
 	}
 
 	
@@ -256,6 +256,62 @@ class Aggregate_List_Table extends WP_List_Table {
 	}
 	
 	//single_row
+	function single_row( $tag, $level = 0 ) {
+		static $row_class = '';
+		$row_class = ( $row_class == '' ? ' class="alternate"' : '' );
+
+		$this->level = $level;
+
+		echo '<tr id="tag-' . $tag->term_id . '"' . $row_class . '>';
+		$this->single_row_columns( $tag );  //referenced in parent
+		echo '</tr>';
+	}
+
+	//If we make check mark items
+	function column_cb( $tag ) {
+		if ( current_user_can( get_taxonomy( 'department_shortname' )->cap->delete_terms ))
+			return '<label class="screen-reader-text" for="cb-select-' . $tag->term_id . '">' . sprintf( __( 'Select %s' ), $tag->name ) . '</label>'
+				. '<input type="checkbox" name="delete_tags[]" value="' . $tag->term_id . '" id="cb-select-' . $tag->term_id . '" />';
+
+		return '&nbsp;';
+	}
+	
+	//Makes headers for collumns (currently broken)
+	function column_default( $tag, $column_name ) {
+		return apply_filters( "manage_aggregate_custom_column", '', $column_name, $tag->term_id );
+	}
+	
+	//Makes Name collumn
+	function column_aggr_name( $tag ) {
+		$taxonomy = 'department_shortname';
+		$tax = get_taxonomy( $taxonomy );
+
+		$pad = str_repeat( '&#8212; ', max( 0, $this->level ) );
+		$name = apply_filters( 'term_name', $pad . ' ' . $tag->name, $tag );
+		$qe_data = get_term( $tag->term_id, $taxonomy, OBJECT, 'edit' );
+		
+		$edit_link = esc_url( get_aggregate_edit_link($tag->term_slug));
+
+		$out = '<strong><a class="row-title" href="' . $edit_link . '" title="' . esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;' ), $name ) ) . '">' . $name . '</a></strong><br />';
+
+		$out .= '<div class="hidden" id="inline_' . $qe_data->term_id . '">';
+		$out .= '<div class="name">' . $qe_data->name . '</div>';
+		$out .= '<div class="slug">' . apply_filters( 'editable_slug', $qe_data->slug ) . '</div>';
+		$out .= '<div class="parent">' . $qe_data->parent . '</div></div>';
+
+		return $out;
+	}
+	
+	//Makes count collumn, make make into a link?
+	function collumn_aggr_numposts( $tag ) {
+		$count = number_format_i18n( $tag->count );
+		
+		return $count;
+	}
+	
+	function column_aggr_description( $tag ) {
+		return $tag->description;
+	}
 	
 }
 

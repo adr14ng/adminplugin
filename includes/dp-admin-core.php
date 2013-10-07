@@ -205,7 +205,7 @@ class DP_Admin {
 							'name' 			=> __( 'GEs' ),
 							'singular_name'	=> __( 'GE' )
 							),
-				'public'	=> true,
+				'public'			=> true,
 				'show_tagcloud'		=> false,
 				'hierarchical'		=> true
 			)
@@ -218,20 +218,20 @@ class DP_Admin {
 							'name' 			=> __( 'Degree Levels' ),
 							'singular_name'	=> __( 'Degree Level' )
 							),
-				'public'	=> true,
+				'public'			=> true,
 				'show_tagcloud'		=> false,
 				'hierarchical'		=> true
 			)
 		);
 		
-		//Program degree levels (Minor, MA, BS etc)
+		//Policy Types (Fees, Conduct)
 		register_taxonomy( 'policy_type', 'dp_policy', 
 			array(
 				'labels'	=> array(
 							'name' 			=> __( 'Policy Types' ),
 							'singular_name'	=> __( 'Policy Type' )
 							),
-				'public'	=> true,
+				'public'			=> true,
 				'show_tagcloud'		=> false,
 				'hierarchical'		=> true
 			)
@@ -245,6 +245,7 @@ class DP_Admin {
 		register_taxonomy_for_object_type( 'general_education', 'dp_course' );
 		register_taxonomy_for_object_type( 'degree_level', 'dp_program' );
 		register_taxonomy_for_object_type( 'policy_type', 'dp_policy' );
+		register_taxonomy_for_object_type( 'policy_keywords', 'dp_policy' );
 	} //csun create post type
 	
 } //dp_admin
