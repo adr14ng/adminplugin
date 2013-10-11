@@ -1,9 +1,7 @@
 <?php
 
 //need to enable url fopen
-//includes->dpadmin->plugins->wp-content->root
-$admin_url = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-admin';
-require_once $admin_url . '/admin.php'; 
+$admin_url = admin_url('/wp-admin');
 
 function add_aggregate_menu()
 {
@@ -21,12 +19,12 @@ function aggregate_post() {
 	{
 		edit_aggregate_post();
 	}
-	/*else if(count($userCat == 1)){ //if there is only one possible category page
+	else if(count($userCat == 1)){ //if there is only one possible category page
 		$userCat = $userCat[0];
 		//redirect to the proper cat page
 		wp_redirect(get_aggregate_edit_link($userCat, ''));
 		exit;
-	}*/
+	}
 	else //if there are multiple pages, list them
 	{
 		list_aggregate_post();
@@ -102,7 +100,6 @@ function get_aggregate_edit_link($cat, $context='') {
 		$action = '&action=edit';
 	
 	return admin_url(sprintf($sformat . $action, $cat));
-	
 }
 
 ?>

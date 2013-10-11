@@ -59,11 +59,11 @@ class DP_Admin {
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories
 		
 		$post_id = $args[1];
-		$cats = get_the_category($post_id);		//get categories of a post
+		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
 
 		foreach ($userCat as $use){
 			foreach($cats as $cat){
-				$catName = $cat->cat_name;
+				$catName = $cat->slug;
 				//strict comparison
 				if($use === $catName)		//if user and post have same cat
 					return array();	//no cap required
@@ -92,8 +92,6 @@ class DP_Admin {
 			include dirname(__FILE__) . '/dp_editor-design.php';
 		}
 	}//change layout
-	
 
-	
 } //dp_admin
 ?>
