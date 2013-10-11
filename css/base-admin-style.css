@@ -22,7 +22,7 @@ input[type="checkbox"] {
 	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -150px -33px !important;
 }
 #menu-posts-dp_program:hover .wp-menu-image, #menu-posts-dp_program.wp-has-current-submenu .wp-menu-image {
-	background-position:-150px -1px!important;
+	background-position:-150px 0px!important;
 }
 			
 /* Faculty will have the users icon */
@@ -38,5 +38,5 @@ input[type="checkbox"] {
 	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -60px -33px !important;
 }
 #menu-posts-dp_department:hover .wp-menu-image, #menu-posts-dp_department.wp-has-current-submenu .wp-menu-image {
-	background-position:-60px -1px!important;
+	background-position:-60px 1px!important;
 }
