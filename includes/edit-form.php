@@ -242,7 +242,6 @@ do_action( 'edit_form_after_editor', $post );
 <div id="postbox-container-1" class="postbox-container">
 <?php
 
-echo $_POST['post_ID'];
 do_action('submitpost_box', $post);
 
 do_meta_boxes($post_type, 'side', $post);
@@ -281,5 +280,3 @@ if ( post_type_supports( $post_type, 'comments' ) )
 try{document.post.title.focus();}catch(e){}
 </script>
 <?php endif; ?>
-
-<?php  var_dump($_REQUEST); ?>
