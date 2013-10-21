@@ -8,7 +8,7 @@
 //$admin_url = admin_url('/wp-admin');
 //includes->dpadmin->plugs->wp-content->base
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-require_once($base_url.'/wp-admin/admin.php');
+//require_once($base_url.'/wp-admin/admin.php');
 
 function add_aggregate_menu()
 {
@@ -51,7 +51,11 @@ function list_aggregate_post() {
 	$aggr_list_table->display();
 }
 
+//Creates the edit page where all posts are edited
 function edit_aggregate_post(){
+    global  $post, $pagenow, $typenow;
+    
+    $pagenow = 'post.php'; //mimicking post page
 	/******************************************
 	 * Get posts for category
 	 *****************************************/
@@ -81,19 +85,45 @@ function edit_aggregate_post(){
 	 * Build Overall Page
 	 ********************************************/
 	$action ='edit';
+	wp_enqueue_script('post');
+	
+	if ( wp_is_mobile() )
+		wp_enqueue_script( 'jquery-touch-punch' );
 
+	$isFirst = true;
+	echo '<ul id="edit-tabs" class="nav nav-tabs">';
+	foreach($posts as $post) {
+		$post_ID = $post->ID;
+		$post_name = $post->post_title;
+		if($isFirst){
+			$isFirst = false;
+			echo '<li class="active">';
+		}
+		else
+			echo '<li>';
+		
+		echo '<a href="#custom-edit-'.$post_ID.'" data-toggle="tab">'.$post_name.'</a></li>';
+	}	
+	echo'</ul><div class="tab-content"> ';
+	
 	/*********************************************
 	 * Build Form for each post
 	 ********************************************/
-		//need to wrap in a div to hide/show
-		//need to edit form name HOOK: do_action('post_edit_form_tag', $post);
+	$isFirst = true;
 	foreach ($posts as $post) {
 		$post_ID = $post->ID;
-		$post_type = $post->post_type;
+		$typenow = $post_type = $post->post_type;
 		
+		?>
+		<div id="custom-edit-<?php echo $post_ID?>" class="csun-edit-form tab-pane fade<?php if($isFirst){ echo ' in active'; $isFirst = false;}?>">
+		<?php
 		include('edit-form.php');
-
+		?>
+		</div>
+		<?php
 	}
+	
+	echo '</div>';
 }
 
 //Returns a link to the aggregate edit page
@@ -109,10 +139,13 @@ function get_aggregate_edit_link($cat, $context='') {
 	return admin_url(sprintf($sformat . $action, $cat));
 }
 
+//Makes the default edit link this one
 function filter_aggregate_edit_link($url, $post, $context)
 {
 	$cat =  wp_get_post_terms( $post, 'department_shortname');
-	if($cat){
+	$post_type = get_post_type( $post );
+
+	if($cat && ($post_type == 'dp_department' || $post_type == 'dp_program')){
 		$cat = $cat[0];
 		$cat_name = $cat->slug;
 		

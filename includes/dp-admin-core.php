@@ -80,6 +80,9 @@ class DP_Admin {
 	function add_base_style() {
 		$basedir = dirname(plugin_dir_url(__FILE__));
 		wp_enqueue_style('dp-editor-style', $basedir . '/css/base-admin-style.css');
+		wp_enqueue_style('dp-bootstrap-style', $basedir . '/css/bootstrap.min.css');
+		wp_enqueue_style('dp-bootstrap-theme-style', $basedir . '/css/bootstrap-theme.min.css');
+		wp_enqueue_script('dp-bootstrap-script', $basedir . '/js/bootstrap.min.js');
 	}
 
 		
@@ -92,6 +95,8 @@ class DP_Admin {
 			include dirname(__FILE__) . '/dp_editor-design.php';
 		}
 	}//change layout
+	
 
+	
 } //dp_admin
 ?>

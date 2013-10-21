@@ -3,14 +3,36 @@
  * Edit form customized for Aggregate Edit Pages
  */
 
+/* NOTE: ACF
+ * In order for advanced custom fields to validate our page the following
+ * code must be added to the validate function in the input file in the 
+ * controlers folder.
+	//validate page (Aggregate Edit)
+		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
+		{
+			$return = true;
+		}
+ * This just adds another validated page to the list.
+ * Change the javascript in meta_box_input to:
+ 
+ 		$post_ID=$post->ID; //get post ID
+		?>
+<script type="text/javascript">
+(function($) { //Modified to make IDs unique
+	document.getElementById('<?php echo $id; ?>').id = '<?php echo $id.'_'.$post_ID; ?>';
+	
+	
+	$('#<?php echo $id.'_'.$post_ID ?>').addClass('<?php echo $class; ?>').removeClass('hide-if-js');
+	$('#adv-settings label[for="<?php echo $id.'_'.$post_ID; ?>-hide"]').addClass('<?php echo $toggle_class; ?>');
+})(jQuery);	
+</script>
+ * Which adds an ID
+ * And in the input.js, add a handler for .poststuff identical to the one for #poststuff
+ */
+ 
 // don't load directly
 if ( !defined('ABSPATH') )
 	die('-1');
-
-wp_enqueue_script('post');
-
-if ( wp_is_mobile() )
-	wp_enqueue_script( 'jquery-touch-punch' );
 
 /**
  * Post ID global
@@ -20,6 +42,17 @@ if ( wp_is_mobile() )
 $post_ID = isset($post_ID) ? (int) $post_ID : 0;
 $user_ID = isset($user_ID) ? (int) $user_ID : 0;
 $action = isset($action) ? $action : '';
+
+//Fix screen variables
+$screen = get_current_screen();
+$screen->base = 'post';
+$screen->post_type = $post_type;
+$screen->parent_base = 'edit';
+$screen->parent_file = 'edit.php?post_type='.$post_type;
+$screen->id = $post_type;
+
+do_action('custom-fields');
+do_action('admin_head');
 
 if ( post_type_supports($post_type, 'editor') || post_type_supports($post_type, 'thumbnail') ) {
 	add_thickbox();
@@ -95,11 +128,10 @@ require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
 $publish_callback_args = null;
 if ( post_type_supports($post_type, 'revisions') && 'auto-draft' != $post->post_status ) {
 	$revisions = wp_get_post_revisions( $post_ID );
-
+	
 	// Check if the revisions have been upgraded
 	if ( ! empty( $revisions ) && _wp_get_post_revision_version( end( $revisions ) ) < 1 )
 		_wp_upgrade_revisions_of_post( $post, $revisions );
-
 	// We should aim to show the revisions metabox only when there are revisions.
 	if ( count( $revisions ) > 1 ) {
 		reset( $revisions ); // Reset pointer for key()
@@ -107,15 +139,26 @@ if ( post_type_supports($post_type, 'revisions') && 'auto-draft' != $post->post_
 		add_meta_box('revisionsdiv', __('Revisions'), 'post_revisions_meta_box', null, 'normal', 'core');
 	}
 }
+		
 
-add_meta_box( 'submitdiv', __( 'Publish' ), 'post_submit_meta_box', null, 'normal', 'core', $publish_callback_args );
+add_meta_box( 'submitdiv', __( 'Publish' ), 'post_submit_meta_box', null, 'side', 'core', $publish_callback_args );
+
+
+if ( post_type_supports($post_type, 'page-attributes') )
+	add_meta_box('pageparentdiv', 'page' == $post_type ? __('Page Attributes') : __('Attributes'), 'page_attributes_meta_box', null, 'side', 'core');
+
+if ( post_type_supports($post_type, 'custom-fields') )
+	add_meta_box('postcustom', __('Custom Fields'), 'post_custom_meta_box', null, 'normal', 'core');
+
+do_action('dbx_post_advanced', $post);
 
 do_action('add_meta_boxes', $post_type, $post);
 do_action('add_meta_boxes_' . $post_type, $post);
 
+do_action('do_meta_boxes', $post_type, 'side', $post);
 do_action('do_meta_boxes', $post_type, 'normal', $post);
 do_action('do_meta_boxes', $post_type, 'advanced', $post);
-do_action('do_meta_boxes', $post_type, 'side', $post);
+
 
 add_screen_option('layout_columns', array('max' => 2, 'default' => 2) );
 
@@ -124,25 +167,19 @@ require_once(ABSPATH.'wp-admin/admin-header.php');
 ?>
 
 <div class="wrap">
-<?php screen_icon(); ?>
-<h2><?php
-echo esc_html( $title );
-if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create_posts ) )
-	echo ' <a href="' . esc_url( $post_new_file ) . '" class="add-new-h2">' . esc_html( $post_type_object->labels->add_new ) . '</a>';
-?></h2>
 <?php if ( $notice ) : ?>
-<div id="notice" class="error"><p id="has-newer-autosave"><?php echo $notice ?></p></div>
+<div id="notice<?php echo '-'.$post_ID; ?>" class="error"><p id="has-newer-autosave<?php echo '-'.$post_ID; ?>"><?php echo $notice ?></p></div>
 <?php endif; ?>
 <?php if ( $message ) : ?>
-<div id="message" class="updated"><p><?php echo $message; ?></p></div>
+<div id="message<?php echo '-'.$post_ID; ?>" class="updated"><p><?php echo $message; ?></p></div>
 <?php endif; ?>
-<div id="lost-connection-notice" class="error hidden">
+<div id="lost-connection-notice<?php echo '-'.$post_ID; ?>" class="error hidden">
 	<p><span class="spinner"></span> <?php _e( '<strong>Connection lost.</strong> Saving has been disabled until you&#8217;re reconnected.' ); ?>
 	<span class="hide-if-no-sessionstorage"><?php _e( 'We&#8217;re backing up this post in your browser, just in case.' ); ?></span>
 	</p>
 </div>
 
-<form name="post" action="../../../../wp-admin/post.php" method="post" id="post" <?php do_action('post_edit_form_tag', $post); ?>>
+<form name="post<?php echo '-'.$post_ID; ?>" action="../../../../wp-admin/post.php" method="post" id="post<?php echo '-'.$post_ID; ?>" <?php do_action('post_edit_form_tag', $post); ?>>
 <?php wp_nonce_field($nonce_action); ?>
 <input type="hidden" id="user-id" name="user_ID" value="<?php echo (int) $user_ID ?>" />
 <input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
@@ -165,7 +202,7 @@ wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
 wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 ?>
 
-<div id="poststuff">
+<div id="poststuff" class="poststuff">
 <div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
 <div id="post-body-content">
 
@@ -236,6 +273,7 @@ if ( post_type_supports($post_type, 'editor') ) {
 <?php }
 
 do_action( 'edit_form_after_editor', $post );
+
 ?>
 </div><!-- /post-body-content -->
 
@@ -244,8 +282,9 @@ do_action( 'edit_form_after_editor', $post );
 
 do_action('submitpost_box', $post);
 
-do_meta_boxes($post_type, 'side', $post);
+//do_meta_boxes(null, 'side', $post);
 
+do_meta_boxes($post_type, 'side', $post);
 ?>
 </div>
 <div id="postbox-container-2" class="postbox-container">
