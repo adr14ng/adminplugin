@@ -41,7 +41,10 @@ Version: 0.1
 						'title',
 						'editor',
 						'revisions'
-				)
+				),
+			'rewrite' => array('slug' => 'courses'),
+			'delete_with_user' => false,
+			'map_meta_cap'  => true,
 			)
 		);
 		
@@ -58,7 +61,10 @@ Version: 0.1
 						'title',
 						'editor',
 						'revisions'
-				)
+				),
+			'rewrite'       => array('slug' => 'programs'),
+			'delete_with_user' => false,
+			'map_meta_cap'  => true,
 			)
 		);
 		
@@ -72,7 +78,10 @@ Version: 0.1
 						'title',
 						'editor',
 						'revisions'
-				)
+				),
+			'rewrite' => array('slug' => 'faculty'),
+			'delete_with_user' => false,
+			'map_meta_cap'  => true,
 			)
 		);
 		
@@ -90,6 +99,9 @@ Version: 0.1
 						'editor',
 						'revisions'
 				),
+			'rewrite' => array('slug' => 'departments'),
+			'delete_with_user' => false,
+			'map_meta_cap'  => true,
 			)
 		);
 		
@@ -106,7 +118,10 @@ Version: 0.1
 						'title',
 						'editor',
 						'revisions'
-				)
+				),
+			'rewrite' => array('slug' => 'policies'),
+			'delete_with_user' => false,
+			'map_meta_cap'  => true,
 			)
 		);
 		

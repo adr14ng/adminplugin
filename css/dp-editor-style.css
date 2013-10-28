@@ -1,0 +1,9 @@
+#adminmenuback,
+#adminmenuwrap,
+#screen-meta-links {
+	display: none;
+}
+
+#wpcontent, #wpfooter {
+	margin-left: 45px;
+}

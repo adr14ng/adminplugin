@@ -1,13 +1,11 @@
 
-/*Fix checkbox for use meta-data style*/
-.umm-checkbox-group-item {
-	padding: 2px;
-	text-transform: uppercase;
-	white-space: nowrap;
+#wpwrap{
+	background-color: rgb(250, 241, 241);
 }
 
-input[type="checkbox"] {
-	margin: 2px;
+#adminmenu li.wp-not-current-submenu .wp-menu-arrow div {
+	background-color: rgb(230, 215, 215);
+	border-color: rgb(215, 200, 200);
 }
 
 /*******************************************

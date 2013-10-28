@@ -64,9 +64,10 @@ function edit_aggregate_post(){
 		
 		if($term_id != 0){
 			$args=array(
-				'post_type' => array('dp_department', 'dp_program'),
+				'post_type' => array('dp_program', 'dp_department'),
 				'post__not_in' => $ids, // avoid duplicate posts
 				'department_shortname' => $post_cat,
+				'numberposts' => 50,
 			);
 			
 			$posts = get_posts( $args ); 
@@ -85,12 +86,15 @@ function edit_aggregate_post(){
 	 * Build Overall Page
 	 ********************************************/
 	$action ='edit';
-	wp_enqueue_script('post');
-	
-	if ( wp_is_mobile() )
-		wp_enqueue_script( 'jquery-touch-punch' );
 
-	$isFirst = true;
+	$posts = array_reverse ($posts); //reverse order to show department first
+
+	echo '<button id="submitall" type="button" class="btn btn-primary">';
+		echo "Submit All";
+	echo '</button>';
+	
+	//Create top tabs
+	$isFirst = true; //to make active tab
 	echo '<ul id="edit-tabs" class="nav nav-tabs">';
 	foreach($posts as $post) {
 		$post_ID = $post->ID;
@@ -109,22 +113,58 @@ function edit_aggregate_post(){
 	/*********************************************
 	 * Build Form for each post
 	 ********************************************/
-	$isFirst = true;
+	$isFirst = true; //to make active tab
 	foreach ($posts as $post) {
 		$post_ID = $post->ID;
 		$typenow = $post_type = $post->post_type;
 		
 		?>
-		<div id="custom-edit-<?php echo $post_ID?>" class="csun-edit-form tab-pane fade<?php if($isFirst){ echo ' in active'; $isFirst = false;}?>">
+		<div id="custom-edit-<?php echo $post_ID?>" class="csun-edit-form tab-pane<?php if($isFirst){ echo ' active'; $isFirst = false;}?>">
 		<?php
 		include('edit-form.php');
 		?>
 		</div>
 		<?php
-	}
+	}?>
+	</div>
 	
-	echo '</div>';
-}
+	<script type="text/javascript">
+		(function($) {
+			//Pop up all divs and hide after editors have their height set
+			$( window ).one( "click scroll", function () {
+				$( ".tab-pane" ).addClass('inactive');
+				$( ".active" ).removeClass('inactive');
+			});
+			
+			$(document).on( "ready", function () {
+					$('.dp-editform').ajaxForm();  //Initialize as ajaxForm
+				});
+			
+			$( "#submitall" ).on( "click", function () {
+				$('.dp-editform').each(function () {
+					var options = {success: showmessage,
+									context: this}                 
+					$(this).ajaxSubmit(options);
+				})
+			});
+			
+			/*$('.dp-editform').submit(function () {
+				var options = {success: showmessage,
+								context: this}                 
+				$(this).ajaxSubmit(options);
+				
+				return false;
+			});*/
+			
+			function showmessage(responseText, statusText, xhr, $form) {
+				$(".updated").addClass('active');
+				$( ".updated" ).removeClass('inactive');
+				$(".updated").append('Posts Updated');
+			}
+		})(window.jQuery);
+	</script>
+
+<?php }
 
 //Returns a link to the aggregate edit page
 //Used for building the table and redirects
@@ -162,8 +202,10 @@ function dp_edit_post($data, $postarr) {
 	$contentName= 'content'.$postarr['post_ID'];
 	
 	if(isset( $postarr[$contentName])) {
-		 $data['post_content']= $postarr[$contentName];
-		unset( $post_data[$contentName]);
+		$data['post_content']= $postarr[$contentName];
+		$postarr['post_content']= $postarr[$contentName];
+		unset( $data[$contentName]);
+		unset( $postarr[$contentName]);
 	}
 	
 	return $data;

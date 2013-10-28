@@ -34,6 +34,10 @@
 if ( !defined('ABSPATH') )
 	die('-1');
 
+wp_enqueue_script('post');
+	
+if ( wp_is_mobile() )
+	wp_enqueue_script( 'jquery-touch-punch' );
 /**
  * Post ID global
  * @name $post_ID
@@ -50,6 +54,7 @@ $screen->post_type = $post_type;
 $screen->parent_base = 'edit';
 $screen->parent_file = 'edit.php?post_type='.$post_type;
 $screen->id = $post_type;
+
 
 do_action('custom-fields');
 do_action('admin_head');
@@ -170,16 +175,16 @@ require_once(ABSPATH.'wp-admin/admin-header.php');
 <?php if ( $notice ) : ?>
 <div id="notice<?php echo '-'.$post_ID; ?>" class="error"><p id="has-newer-autosave<?php echo '-'.$post_ID; ?>"><?php echo $notice ?></p></div>
 <?php endif; ?>
-<?php if ( $message ) : ?>
-<div id="message<?php echo '-'.$post_ID; ?>" class="updated"><p><?php echo $message; ?></p></div>
-<?php endif; ?>
+
+<div id="message<?php echo '-'.$post_ID; ?>" class="updated <?php if($message) echo 'active'; else echo 'inactive';?>"><p><?php echo $message; ?></p></div>
+
 <div id="lost-connection-notice<?php echo '-'.$post_ID; ?>" class="error hidden">
 	<p><span class="spinner"></span> <?php _e( '<strong>Connection lost.</strong> Saving has been disabled until you&#8217;re reconnected.' ); ?>
 	<span class="hide-if-no-sessionstorage"><?php _e( 'We&#8217;re backing up this post in your browser, just in case.' ); ?></span>
 	</p>
 </div>
 
-<form name="post<?php echo '-'.$post_ID; ?>" action="../../../../wp-admin/post.php" method="post" id="post<?php echo '-'.$post_ID; ?>" <?php do_action('post_edit_form_tag', $post); ?>>
+<form name="post<?php echo '-'.$post_ID; ?>" action="<?php echo admin_url(post);?>.php" method="post" id="post<?php echo '-'.$post_ID; ?>" <?php do_action('post_edit_form_tag', $post); ?> class="dp-editform">
 <?php wp_nonce_field($nonce_action); ?>
 <input type="hidden" id="user-id" name="user_ID" value="<?php echo (int) $user_ID ?>" />
 <input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
@@ -247,9 +252,12 @@ if ( post_type_supports($post_type, 'editor') ) {
 
 <?php wp_editor( $post->post_content, 'content'.$post_ID, array(
 	'media_buttons' => false,
-	'dfw' => true,
+	//'dfw' => true,
 	'tabfocus_elements' => 'insert-media-button,save-post',
+	'editor_class' => 'dp_editor',
 	'editor_height' => 360,
+	//'tinymce' => array ('height' => "321px",),
+	//'editor_height' => 360,
 ) ); ?>
 <table id="post-status-info" cellspacing="0"><tbody><tr>
 	<td id="wp-word-count"><?php printf( __( 'Word count: %s' ), '<span class="word-count">0</span>' ); ?></td>
