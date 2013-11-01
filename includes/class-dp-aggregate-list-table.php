@@ -21,16 +21,6 @@ class Aggregate_List_Table extends WP_List_Table {
 		$tax = get_taxonomy( $taxonomy );
 	}
 	
-	//Adding navigation to the top and bottom of the table
-	function extra_tablenav( $which ) {
-		if( $which == 'top' ) {
-			echo '<h3> Table Top </h3>';
-		}
-		elseif ( $which == 'bottom' ) {
-			echo '<h3> Table Bottom </h3>';
-		}
-	}
-	
 	//Add collumns
 	function get_columns() {
 		return $columns= array(
@@ -54,10 +44,14 @@ class Aggregate_List_Table extends WP_List_Table {
 		$screen = get_current_screen();
 		$taxonomy = 'department_shortname';
 		
-		$args = array(); 
+		$tags_per_page = 20; //eventually make customizable?	 	
+		$search = !empty( $_REQUEST['s'] ) ? trim( wp_unslash( $_REQUEST['s'] ) ) : '';
 		
-		if( !empty( $_REQUEST['s'] ) )
-			$args['search'] = trim( wp_unslash( $_REQUEST['s'] ) );
+		$args = array(
+			'search' => $search,
+			'page' => $this->get_pagenum(),
+			'number' => $tags_per_page,
+		);
 		
 		//Get any ordering
 		if ( !empty( $_REQUEST['orderby'] ) )
@@ -66,25 +60,15 @@ class Aggregate_List_Table extends WP_List_Table {
 		if ( !empty( $_REQUEST['order'] ) )
 			$args['order'] = trim( wp_unslash( $_REQUEST['order'] ) );
 			
-		$terms = get_terms( $taxonomy, $args );
+		$this->callback_args = $args;
 		
+		//hide empty terms (excludes parents with items in them)
+		$hide_empty = 1;
 		
 		//Pagination Set up
-		$totalitems = count($terms);
-		$perpage = 20; //eventually make customizable?
-		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
-		if(empty($paged) || !is_numeric($paged) || $paged<=0 )
-			$paged=1;
-		$totalpages = ceil($totalitems/$perpage);
-		if(!empty($paged) && !empty($perpage)){
-		    $args['offset']=($paged-1)*$perpage;
-    		$args['number'] = $perpage;
-	    }
-		
 		$this->set_pagination_args( array(
-			"total_items" => $totalitems,
-			"total_pages" => $totalpages,
-			"per_page" => $perpage,
+			'total_items' => wp_count_terms( $taxonomy, compact( 'search', 'hide_empty' ) ),
+			'per_page' => $tags_per_page,
 		) );
 		
 		// Register the Columns
@@ -92,43 +76,154 @@ class Aggregate_List_Table extends WP_List_Table {
 		$hidden = array();
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array($columns, $hidden, $sortable);
-		
-		//Get the data
-		$this->items = get_terms( $taxonomy, $args );
 	}
 
-	function display_rows() {
-		$records = $this->items;
+	function has_items() {
+		// todo: populate $this->items in prepare_items()
+		return true;
+	}
 	
-		list( $columns, $hidden ) = $this->get_column_info();
+	function display_rows_or_placeholder() {
+		$taxonomy = 'department_shortname';
 
-		//Loop for each record
-		if(!empty($records)){foreach($records as $rec){
+		$args = wp_parse_args( $this->callback_args, array(
+			'page' => 1,
+			'number' => 20,
+			'search' => '',
+			'hide_empty' => 1
+		) );
 
-			//Open the line
-			echo '<tr id="aggr-'.$rec->slug.'">';
-			foreach ( $columns as $column_name => $column_display_name ) {
+		extract( $args, EXTR_SKIP );
 
-				//Style attributes for each col
-				$class = "class='$column_name column-$column_name'";
-				$style = "";
-				if ( in_array( $column_name, $hidden ) ) $style = ' style="display:none;"';
-				$attributes = $class . $style;
+		$args['offset'] = $offset = ( $page - 1 ) * $number;
 
-				//edit link
-				$editlink  = get_aggregate_edit_link($rec->slug);
+		// convert it to table rows
+		$count = 0;
 
-				//Display the cell
-				switch ( $column_name ) {
-					case "col_name":	echo '<td '.$attributes.'><a href="'.$editlink.'">'.$rec->name.'</a></td>';	break;
-					case "col_descrip": echo '<td '.$attributes.'>'.$rec->description.'</td>'; break;
-					case "col_posts": echo '<td '.$attributes.'>'.$rec->count.'</td>'; break;
+		$terms = array();
+
+		if ( !isset( $orderby ) ) {
+			// We'll need the full set of terms then.
+			$args['number'] = $args['offset'] = 0;
+		}
+		$terms = get_terms( $taxonomy, $args );
+
+		if ( empty( $terms ) ) {
+			list( $columns, $hidden ) = $this->get_column_info();
+			echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">';
+			$this->no_items();
+			echo '</td></tr>';
+			return;
+		}
+
+		if ( !isset( $orderby ) ) {
+			if ( !empty( $search ) ) // Ignore children on searches.
+				$children = array();
+			else
+				$children = _get_term_hierarchy( $taxonomy );
+
+			// Some funky recursion to get the job done( Paging & parents mainly ) is contained within, Skip it for non-hierarchical taxonomies for performance sake
+			$this->_rows( $taxonomy, $terms, $children, $offset, $number, $count );
+		} else {
+			$terms = get_terms( $taxonomy, $args );
+			foreach ( $terms as $term )
+				$this->single_row( $term );
+			$count = $number; // Only displaying a single page.
+		}
+	}
+	
+	function _rows( $taxonomy, $terms, &$children, $start, $per_page, &$count, $parent = 0, $level = 0 ) {
+
+		$end = $start + $per_page;
+
+		foreach ( $terms as $key => $term ) {
+
+			if ( $count >= $end )
+				break;
+
+			if ( $term->parent != $parent && empty( $_REQUEST['s'] ) )
+				continue;
+
+			// If the page starts in a subtree, print the parents.
+			if ( $count == $start && $term->parent > 0 && empty( $_REQUEST['s'] ) ) {
+				$my_parents = $parent_ids = array();
+				$p = $term->parent;
+				while ( $p ) {
+					$my_parent = get_term( $p, $taxonomy );
+					$my_parents[] = $my_parent;
+					$p = $my_parent->parent;
+					if ( in_array( $p, $parent_ids ) ) // Prevent parent loops.
+						break;
+					$parent_ids[] = $p;
+				}
+				unset( $parent_ids );
+
+				$num_parents = count( $my_parents );
+				while ( $my_parent = array_pop( $my_parents ) ) {
+					echo "\t";
+					$this->single_row( $my_parent, $level - $num_parents );
+					$num_parents--;
 				}
 			}
 
-			//Close the line
-			echo'</tr>';
-		}}
+			if ( $count >= $start ) {
+				echo "\t";
+				$this->single_row( $term, $level );
+			}
+
+			++$count;
+
+			unset( $terms[$key] );
+
+			if ( isset( $children[$term->term_id] ) && empty( $_REQUEST['s'] ) )
+				$this->_rows( $taxonomy, $terms, $children, $start, $per_page, $count, $term->term_id, $level + 1 );
+		}
+	}
+	
+	function single_row( $tag, $level = 0 ) {
+		static $row_class = '';
+
+		$row_class = ( $row_class == '' ? ' class="alternate"' : '' );
+
+		$this->level = $level;
+
+		echo '<tr id="tag-' . $tag->term_id . '"' . $row_class . '>';
+		$this->single_row_columns( $tag );
+		echo '</tr>';
+	}
+	
+	function column_col_name( $tag ) {
+		$taxonomy = 'department_shortname';
+		$tax = get_taxonomy( $taxonomy );
+
+		$default_term = get_option( 'default_' . $taxonomy );
+
+		$pad = str_repeat( '&#8212; ', max( 0, $this->level ) );
+		$name = $tag->name;
+		$qe_data = get_term( $tag->term_id, $taxonomy, OBJECT, 'edit' );
+		$edit_link = get_aggregate_edit_link($tag->slug);
+		
+		$out = '<strong><a class="row-title" href="' . $edit_link . '" title="' . esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;' ), $name ) ) . '">' .$pad. $name . '</a></strong><br />';
+
+		$out .= $this->row_actions( $actions );
+		$out .= '<div class="hidden" id="inline_' . $qe_data->term_id . '">';
+		$out .= '<div class="name">' . $qe_data->name . '</div>';
+		$out .= '<div class="slug">' . apply_filters( 'editable_slug', $qe_data->slug ) . '</div>';
+		$out .= '<div class="parent">' . $qe_data->parent . '</div></div>';
+
+		return $out;
+	}
+
+	function column_col_descrip( $tag ) {
+		return $tag->description;
+	}
+	
+	function column_col_posts( $tag ) {
+		return $tag->count;
+	}
+	
+	function column_default( $tag, $column_name ) {
+		return apply_filters( "manage_department_shortname_custom_column", '', $column_name, $tag->term_id );
 	}
 }
 

@@ -41,15 +41,27 @@ function aggregate_post() {
 //if user has more than one category, list department pages
 function list_aggregate_post() {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	require( dirname(__FILE__) . '/class-dp-aggregate-list-table.php' );
+	require( dirname(__FILE__) . '/class-dp-aggregate-list-table.php' );?>
 	
-	//Do I need to set up something else?
+	<div class = "wrap">
+	<h2>Departments and Programs
+		<a href="<?php echo admin_url('post-new.php?post_type=dp_department')?>" class="add-new-h2">Add New Department</a>
+		<a href="<?php echo admin_url('post-new.php?post_type=dp_program')?>" class="add-new-h2">Add New Program</a>
+	</h2>
 	
-	//Create and display the aggregate list table
+	<?//Create and display the aggregate list table
 	$aggr_list_table = new Aggregate_List_Table();
 	$aggr_list_table->prepare_items();
-	$aggr_list_table->display();
-}
+	
+	//Search?>
+	<form class="search-form agg-form" action method="get">
+		<input type="hidden" name="page" value="dp_page">
+		<?php $aggr_list_table->search_box( 'Search', 'aggr' ); ?>
+	</form>
+	
+	<?php $aggr_list_table->display(); ?>
+	</div>
+<?}
 
 //Creates the edit page where all posts are edited
 function edit_aggregate_post(){
