@@ -185,7 +185,8 @@ function filter_aggregate_edit_link($url, $post, $context)
 	$cat =  wp_get_post_terms( $post, 'department_shortname');
 	$post_type = get_post_type( $post );
 
-	if($cat && ($post_type == 'dp_department' || $post_type == 'dp_program')){
+	if($cat && ($post_type == 'dp_department' || $post_type == 'dp_program')
+			&& (strpos($_REQUEST[_wp_http_referer], 'page=dp_page')!== false)){
 		$cat = $cat[0];
 		$cat_name = $cat->slug;
 		

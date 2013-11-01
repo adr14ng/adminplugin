@@ -1,6 +1,7 @@
 #adminmenuback,
 #adminmenuwrap,
-#screen-meta-links {
+#screen-meta-links,
+#submitall {
 	display: none;
 }
 

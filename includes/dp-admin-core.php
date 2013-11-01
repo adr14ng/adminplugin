@@ -14,10 +14,6 @@ class DP_Admin {
 		//Restrict access to things not in the category of its name
 		add_role( 'dp_editor', 'Department Editor', array(
 			'read' => true,
-			'edit_posts' => true,
-			'edit_others_posts' => true,
-			'edit_published_posts' => true,
-			'publish_posts' => true,
 			'delete_posts' => false
 			));
 			
@@ -38,33 +34,50 @@ class DP_Admin {
 	 * otherwise change nothing
 	 */	
 	function match_category_user($caps, $cap, $user_id, $args) {
+		global $post;
 		//if we're not trying to edit or publish edits of a post, return
-		if( $cap !== 'edit_post' && $cap !== 'publish_post')
+		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts'){
 			return $caps;
-
+		}
+		
+		//Allows viewing course list page
+		if(isset($_REQUEST['post_type']))
+			if('dp_course' === $_REQUEST['post_type'])
+				return array();
+		
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories
 		$userCat = $userCat[0];
 		
 		$post_id = $args[1];
 		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
+		
+		//if we didn;t get it from the args
+		if(!$cats && isset($_REQUEST['cat']))
+			$cats = $_REQUEST['cat'];
 
-		foreach ($userCat as $user){
+		if(is_array($userCat)){foreach ($userCat as $user){
 			$user = strtolower($user);
-			
-			foreach($cats as $cat){
-				$catName = strtolower($cat->slug);
-				
+
+			//can just be a string
+			if($cats)
+				$cats = (array) $cats;
+
+			if (is_array($cats)) {foreach($cats as $cat){
+				if(is_object($cat))
+					$catName = strtolower($cat->slug);
+				else
+					$catName = strtolower($cat);
 				//strict comparison
-				if(strtolower ($user === $catName) {		//if user and post have same cat
+				if($user === $catName) {		//if user and post have same cat
 					return array();	//no cap required
 				}
-			}
-		}
-			
+			}}
+		}}
+
 		return $caps;	//is not linked to category name
 	} //match_category_user()
-	
-	
+
+
 	/**
 	 *  Including the styles and js
 	 */
