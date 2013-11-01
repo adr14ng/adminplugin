@@ -155,18 +155,11 @@ function edit_aggregate_post(){
 			$( "#submitall" ).on( "click", function () {
 				$('.dp-editform').each(function () {
 					var options = {success: showmessage,
-									context: this}                 
+									context: this}  
+					tinyMCE.triggerSave();
 					$(this).ajaxSubmit(options);
 				})
 			});
-			
-			/*$('.dp-editform').submit(function () {
-				var options = {success: showmessage,
-								context: this}                 
-				$(this).ajaxSubmit(options);
-				
-				return false;
-			});*/
 			
 			function showmessage(responseText, statusText, xhr, $form) {
 				$(".updated").addClass('active');

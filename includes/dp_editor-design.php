@@ -29,6 +29,9 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 	$wp_admin_bar->remove_node( 'comments' );
 	$wp_admin_bar->remove_node( 'new-content' );
 	$wp_admin_bar->remove_node( 'wp-logo' );
+	$wp_admin_bar->remove_node( 'site-name' );
+	$wp_admin_bar->remove_node( 'edit-profile' );
+	$wp_admin_bar->remove_node( 'user-info' );
 }
 add_action( 'admin_bar_menu', 'add_csun_admin_bar_links', 999 );
 

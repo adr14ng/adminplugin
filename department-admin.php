@@ -2,7 +2,7 @@
 /*
 Plugin Name: Department Admin
 Description: Shows a simplified Admin View to department editors
-Version: 0.5
+Version: 0.9
 */
 //Is this admin pages?
 if ( is_admin() ) {
@@ -23,4 +23,4 @@ if ( is_admin() ) {
 	add_action( 'admin_menu', 'add_aggregate_menu' );	
 	add_action('init', array( 'DP_Admin', 'change_layout'));
 }//is_admin()
-
+//Add custom footerfunction remove_footer_admin () {  echo 'Powered by the Office of Undergraduate Studies.';}add_filter('admin_footer_text', 'remove_footer_admin');

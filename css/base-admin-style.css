@@ -1,40 +1,119 @@
 
-/*#wpwrap{
-	background-color: rgb(250, 241, 241);
+.wp-switch-editor{
+	height: 26px;
 }
 
-#adminmenu li.wp-not-current-submenu .wp-menu-arrow div {
-	background-color: rgb(230, 215, 215);
-	border-color: rgb(215, 200, 200);
+/*#screen-options-link-wrap ,
+#contextual-help-link-wrap,
+#wp-admin-bar-wp-logo,
+#wp-admin-bar-comments,
+#wp-admin-bar-new-content,
+#wp-admin-bar-site-name,
+#wp-admin-bar-edit-profile 
+{
+	display:none
 }*/
 
+#screen-meta-links{
+	display:none;
+}
+	
 /*******************************************
- * Changing the icons of our custom posts
- * Currently a quick fix, either different
- * icons will be chosen or relative path
- * names need to be implemented
+ * Changing the post icons
  ******************************************/
 
-/* Progams will have the pages icon */
+/* Progams */
 #menu-posts-dp_program .wp-menu-image {
-	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -150px -33px !important;
+	background: url('../images/menu.png') no-repeat -543px -33px !important;
 }
 #menu-posts-dp_program:hover .wp-menu-image, #menu-posts-dp_program.wp-has-current-submenu .wp-menu-image {
-	background-position:-150px 0px!important;
+	background-position:-543px 0px!important;
 }
 			
-/* Faculty will have the users icon */
+/* Faculty */
 #menu-posts-dp_faculty .wp-menu-image {
-	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -300px -33px !important;
+	background: url('../images/menu.png') no-repeat -423px -33px !important;
 }
 #menu-posts-dp_faculty:hover .wp-menu-image, #menu-posts-dp_faculty.wp-has-current-submenu .wp-menu-image {
-	background-position:-300px -1px!important;
+	background-position:-423px -1px!important;
 }
 
-/* Departments will have the dashboard icon */
+/* Departments */
 #menu-posts-dp_department .wp-menu-image {
-	background: url('http://www.csuncatalog.com/wp-admin/images/menu.png') no-repeat -60px -33px !important;
+	background: url('../images/menu.png') no-repeat -393px -33px !important;
 }
 #menu-posts-dp_department:hover .wp-menu-image, #menu-posts-dp_department.wp-has-current-submenu .wp-menu-image {
+	background-position:-393px 1px!important;
+}
+
+/* Dashboard */
+#menu-dashboard .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -60px -33px !important;
+}
+#menu-dashboard:hover .wp-menu-image, #menu-dashboard.wp-has-current-submenu .wp-menu-image {
 	background-position:-60px 1px!important;
+}
+
+/* Posts */
+#menu-posts .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -270px -33px !important;
+}
+#menu-posts:hover .wp-menu-image, #menu-posts.wp-has-current-submenu .wp-menu-image {
+	background-position:-270px 1px!important;
+}
+
+/* Courses */
+#menu-posts-dp_course .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -452px -33px !important;
+}
+#menu-posts-dp_course:hover .wp-menu-image, #menu-posts-dp_course.wp-has-current-submenu .wp-menu-image {
+	background-position:-452px 1px!important;
+}
+
+/* Media */
+#menu-media .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -120px -33px !important;
+}
+#menu-media:hover .wp-menu-image, #menu-media.wp-has-current-submenu .wp-menu-image {
+	background-position:-120 1px!important;
+}
+
+/* Policies */
+#menu-posts-dp_policy .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -517px -33px !important;
+}
+#menu-posts-dp_policy:hover .wp-menu-image, #menu-posts-dp_policy.wp-has-current-submenu .wp-menu-image {
+	background-position:-517px 1px!important;
+}
+
+/* Custom Post Types */
+#menu-posts-custom_type .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -150px -33px !important;
+}
+#menu-posts-custom_type:hover .wp-menu-image, #menu-posts-custom_type.wp-has-current-submenu .wp-menu-image {
+	background-position:-150px 1px!important;
+}
+
+/* View All */
+#toplevel_page_dp_page .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -483px -33px !important;
+}
+#toplevel_page_dp_page:hover .wp-menu-image, #toplevel_page_dp_page.wp-has-current-submenu .wp-menu-image {
+	background-position:-483px 1px!important;
+}
+
+/* Pages */
+#menu-pages .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -150px -33px !important;
+}
+#menu-pages:hover .wp-menu-image, #menu-pages.wp-has-current-submenu .wp-menu-image {
+	background-position:-150px 1px!important;
+}
+
+/* Comments */
+#menu-comments .wp-menu-image {
+	background: url('../images/menu.png') no-repeat -30px -33px !important;
+}
+#menu-comments:hover .wp-menu-image, #comments.wp-has-current-submenu .wp-menu-image {
+	background-position:-30px 1px!important;
 }
