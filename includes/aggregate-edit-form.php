@@ -100,11 +100,14 @@ function edit_aggregate_post(){
 	$action ='edit';
 
 	$posts = array_reverse ($posts); //reverse order to show department first
-
-	echo '<button id="submitall" type="button" class="btn btn-primary">';
-		echo "Submit All";
-	echo '</button>';
+?>
+	<button id="submitall" type="button" class="btn btn-primary">Update All</button>
 	
+	<a href="<?php echo admin_url('edit.php?post_type=dp_course&s='.$post_cat); ?>" title="courses">
+		<button id="course" type="button" class="btn btn-success">Courses</button>
+	</a>
+
+<?php
 	//Create top tabs
 	$isFirst = true; //to make active tab
 	echo '<ul id="edit-tabs" class="nav nav-tabs">';
