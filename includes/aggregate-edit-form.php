@@ -45,8 +45,8 @@ function list_aggregate_post() {
 	
 	<div class = "wrap">
 	<h2>Departments and Programs
-		<a href="<?php echo admin_url('post-new.php?post_type=dp_department')?>" class="add-new-h2">Add New Department</a>
-		<a href="<?php echo admin_url('post-new.php?post_type=dp_program')?>" class="add-new-h2">Add New Program</a>
+		<a href="<?php echo admin_url('post-new.php?post_type=departments')?>" class="add-new-h2">Add New Department</a>
+		<a href="<?php echo admin_url('post-new.php?post_type=programs')?>" class="add-new-h2">Add New Program</a>
 	</h2>
 	
 	<?//Create and display the aggregate list table
@@ -76,7 +76,7 @@ function edit_aggregate_post(){
 		
 		if($term_id != 0){
 			$args=array(
-				'post_type' => array('dp_program', 'dp_department'),
+				'post_type' => array('programs', 'departments'),
 				'post__not_in' => $ids, // avoid duplicate posts
 				'department_shortname' => $post_cat,
 				'numberposts' => 50,
@@ -103,7 +103,7 @@ function edit_aggregate_post(){
 ?>
 	<button id="submitall" type="button" class="btn btn-primary">Update All</button>
 	
-	<a href="<?php echo admin_url('edit.php?post_type=dp_course&s='.$post_cat); ?>" title="courses">
+	<a href="<?php echo admin_url('edit.php?post_type=courses&s='.$post_cat); ?>" title="courses">
 		<button id="course" type="button" class="btn btn-success">Courses</button>
 	</a>
 
@@ -193,7 +193,7 @@ function filter_aggregate_edit_link($url, $post, $context)
 	$cat =  wp_get_post_terms( $post, 'department_shortname');
 	$post_type = get_post_type( $post );
 
-	if($cat && ($post_type == 'dp_department' || $post_type == 'dp_program')
+	if($cat && ($post_type == 'departments' || $post_type == 'programs')
 			&& (strpos($_REQUEST[_wp_http_referer], 'page=dp_page')!== false)){
 		$cat = $cat[0];
 		$cat_name = $cat->slug;

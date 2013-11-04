@@ -1,8 +1,3 @@
-
-.wp-switch-editor{
-	height: 26px;
-}
-
 /*#screen-options-link-wrap ,
 #contextual-help-link-wrap,
 #wp-admin-bar-wp-logo,
@@ -23,26 +18,26 @@
  ******************************************/
 
 /* Progams */
-#menu-posts-dp_program .wp-menu-image {
+#menu-posts-programs .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -543px -33px !important;
 }
-#menu-posts-dp_program:hover .wp-menu-image, #menu-posts-dp_program.wp-has-current-submenu .wp-menu-image {
+#menu-posts-programs:hover .wp-menu-image, #menu-posts-programs.wp-has-current-submenu .wp-menu-image {
 	background-position:-543px 0px!important;
 }
 			
 /* Faculty */
-#menu-posts-dp_faculty .wp-menu-image {
+#menu-posts-faculty .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -423px -33px !important;
 }
-#menu-posts-dp_faculty:hover .wp-menu-image, #menu-posts-dp_faculty.wp-has-current-submenu .wp-menu-image {
+#menu-posts-faculty:hover .wp-menu-image, #menu-posts-faculty.wp-has-current-submenu .wp-menu-image {
 	background-position:-423px -1px!important;
 }
 
 /* Departments */
-#menu-posts-dp_department .wp-menu-image {
+#menu-posts-departments .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -393px -33px !important;
 }
-#menu-posts-dp_department:hover .wp-menu-image, #menu-posts-dp_department.wp-has-current-submenu .wp-menu-image {
+#menu-posts-departments:hover .wp-menu-image, #menu-posts-departments.wp-has-current-submenu .wp-menu-image {
 	background-position:-393px 1px!important;
 }
 
@@ -63,10 +58,10 @@
 }
 
 /* Courses */
-#menu-posts-dp_course .wp-menu-image {
+#menu-posts-courses .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -452px -33px !important;
 }
-#menu-posts-dp_course:hover .wp-menu-image, #menu-posts-dp_course.wp-has-current-submenu .wp-menu-image {
+#menu-posts-courses:hover .wp-menu-image, #menu-posts-courses.wp-has-current-submenu .wp-menu-image {
 	background-position:-452px 1px!important;
 }
 
@@ -79,10 +74,10 @@
 }
 
 /* Policies */
-#menu-posts-dp_policy .wp-menu-image {
+#menu-posts-policies .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -517px -33px !important;
 }
-#menu-posts-dp_policy:hover .wp-menu-image, #menu-posts-dp_policy.wp-has-current-submenu .wp-menu-image {
+#menu-posts-policies:hover .wp-menu-image, #menu-posts-policies.wp-has-current-submenu .wp-menu-image {
 	background-position:-517px 1px!important;
 }
 

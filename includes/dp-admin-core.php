@@ -42,7 +42,7 @@ class DP_Admin {
 		
 		//Allows viewing course list page
 		if(isset($_REQUEST['post_type']))
-			if('dp_course' === $_REQUEST['post_type'])
+			if('courses' === $_REQUEST['post_type'])
 				return array();
 		
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories

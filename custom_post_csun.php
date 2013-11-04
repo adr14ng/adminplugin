@@ -6,29 +6,29 @@ Version: 0.1
 */
 
 
-	function activate() {
+	function csun_custom_activate() {
 		if( !current_user_can('activate_plugins') )
 			return;
 			
 		csun_create_post_type();
 		flush_rewrite_rules();
 	}//activate()
-	register_activation_hook( __FILE__, 'activate');
+	register_activation_hook( __FILE__, 'csun_custom_activate');
 	
 	/**
 	 * Unistalling plugin clean up
 	 */
-	function uninstall() {
+	function csun_custom_uninstall() {
 		flush_rewrite_rules();
 	}
-	register_uninstall_hook( __FILE__, 'uninstall');
+	register_uninstall_hook( __FILE__, 'csun_custom_uninstall');
 	
 	
 	/**
 	 * Function to add custom post types
 	 */
 	function csun_create_post_type() {
-		register_post_type( 'dp_course',
+		register_post_type( 'courses',
 			array(
 			'labels' 		=> array(
 						'name' 			=> __( 'Courses' ),
@@ -48,7 +48,7 @@ Version: 0.1
 			)
 		);
 		
-		register_post_type( 'dp_program',
+		register_post_type( 'programs',
 			array(
 			'labels' 		=> array(
 						'name' 			=> __( 'Programs' ),
@@ -68,7 +68,7 @@ Version: 0.1
 			)
 		);
 		
-		register_post_type( 'dp_faculty',
+		register_post_type( 'faculty',
 			array(
 			'label' 		=> 'Faculty',
 			'public' 		=> true,
@@ -85,7 +85,7 @@ Version: 0.1
 			)
 		);
 		
-		register_post_type( 'dp_department',
+		register_post_type( 'departments',
 			array(
 			'labels' 		=> array(
 						'name' 			=> __( 'Departments' ),
@@ -105,7 +105,7 @@ Version: 0.1
 			)
 		);
 		
-		register_post_type( 'dp_policy',
+		register_post_type( 'policies',
 			array(
 			'labels' 		=> array(
 						'name' 			=> __( 'Policies' ),
@@ -140,7 +140,7 @@ Version: 0.1
 		);
 	
 		//General Education categories
-		register_taxonomy( 'general_education', 'dp_course', 
+		register_taxonomy( 'general_education', 'courses', 
 			array(
 				'labels'	=> array(
 							'name' 			=> __( 'GEs' ),
@@ -153,7 +153,7 @@ Version: 0.1
 		);
 		
 		//Program degree levels (Minor, MA, BS etc)
-		register_taxonomy( 'degree_level', 'dp_program', 
+		register_taxonomy( 'degree_level', 'programs', 
 			array(
 				'labels'	=> array(
 							'name' 			=> __( 'Degree Levels' ),
@@ -166,7 +166,7 @@ Version: 0.1
 		);
 		
 		//Policy Types (Fees, Conduct)
-		register_taxonomy( 'policy_type', 'dp_policy', 
+		register_taxonomy( 'policy_categories', 'policies', 
 			array(
 				'labels'	=> array(
 							'name' 			=> __( 'Policy Types' ),
@@ -179,7 +179,7 @@ Version: 0.1
 		);
 		
 		//Policy Types (Fees, Conduct)
-		register_taxonomy( 'policy_keywords', 'dp_policy', 
+		register_taxonomy( 'policy_keywords', 'policies', 
 			array(
 				'labels'	=> array(
 							'name' 			=> __( 'Policy Keywords' ),
@@ -192,14 +192,14 @@ Version: 0.1
 		);
 	
 	//Assign taxonomies for custom post types
-		register_taxonomy_for_object_type( 'department_shortname', 'dp_course' );
-		register_taxonomy_for_object_type( 'department_shortname', 'dp_program' );
-		register_taxonomy_for_object_type( 'department_shortname', 'dp_faculty' );
-		register_taxonomy_for_object_type( 'department_shortname', 'dp_department' );
-		register_taxonomy_for_object_type( 'general_education', 'dp_course' );
-		register_taxonomy_for_object_type( 'degree_level', 'dp_program' );
-		register_taxonomy_for_object_type( 'policy_type', 'dp_policy' );
-		register_taxonomy_for_object_type( 'policy_keywords', 'dp_policy' );
+		register_taxonomy_for_object_type( 'department_shortname', 'courses' );
+		register_taxonomy_for_object_type( 'department_shortname', 'programs' );
+		register_taxonomy_for_object_type( 'department_shortname', 'faculty' );
+		register_taxonomy_for_object_type( 'department_shortname', 'departments' );
+		register_taxonomy_for_object_type( 'general_education', 'courses' );
+		register_taxonomy_for_object_type( 'degree_level', 'programs' );
+		register_taxonomy_for_object_type( 'policy_categories', 'policies' );
+		register_taxonomy_for_object_type( 'policy_keywords', 'policies' );
 	} //csun create post type
 	
 	//Add custom post types

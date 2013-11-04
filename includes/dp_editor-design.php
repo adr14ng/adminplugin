@@ -85,7 +85,7 @@ function csun_links_widget() {
 	$userCat = get_user_meta($user_id, 'user_cat');
 	$userCat = $userCat[0];
 	
-	echo '<a href="'.admin_url('edit.php?post_type=dp_course').'">';//get link
+	echo '<a href="'.admin_url('edit.php?post_type=courses').'">';//get link
 	echo '<button type="button" class="btn btn-success">Courses</button>';
 	echo '</a><br />';
 	
