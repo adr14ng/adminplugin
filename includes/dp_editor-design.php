@@ -44,22 +44,6 @@ add_action( 'admin_bar_menu', 'add_csun_admin_bar_links', 999 );
 //remove update notice
 add_filter( 'pre_site_transient_update_core', function(){return null;} ); 
  
-/*/Remove menu options
-function remove_menu_items() {
-	global $menu;
-	$restricted = array(__('Links'), __('Comments'), __('Media'),
-	__('Plugins'), __('Tools'), __('Users'), __('Settings'), __('Appearance'), __('Posts'));
-	end ($menu);
-	
-	while (prev($menu)){
-		$value = explode(' ',$menu[key($menu)][0]);
-		if(in_array($value[0] != NULL?$value[0]:"" , $restricted)){
-			unset($menu[key($menu)]);
-		}
-	}
-}
-add_action('admin_menu', 'remove_menu_items');*/
-
 
 /*****************************************************
  *
@@ -84,10 +68,6 @@ function csun_links_widget() {
 	$user_id = get_current_user_id();
 	$userCat = get_user_meta($user_id, 'user_cat');
 	$userCat = $userCat[0];
-	
-	echo '<a href="'.admin_url('edit.php?post_type=courses').'">';//get link
-	echo '<button type="button" class="btn btn-success">Courses</button>';
-	echo '</a><br />';
 	
 	foreach($userCat as $link) {
 		echo '<a href="'.admin_url().'/admin.php?page=dp_page&cat='.$link.'&action=edit">';//get link
@@ -138,5 +118,12 @@ function simplify_post_columns($defaults) {
   return $defaults;
 }
 add_filter('manage_${post_type}_posts_columns', 'simplify_post_columns');
+
+//remove quick edit
+function remove_quick_edit( $actions ) {
+	unset($actions['inline hide-if-no-js']);
+	return $actions;
+}
+add_filter('post_row_actions','remove_quick_edit',10,1);
 
 ?>

@@ -9,8 +9,17 @@
 	display:none
 }*/
 
+.tab-content #side-sortables,
 #screen-meta-links{
 	display:none;
+}
+	
+.visible {
+	opacity: 1;
+}
+
+.invisible {
+	opacity: 0;
 }
 	
 /*******************************************

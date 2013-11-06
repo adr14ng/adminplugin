@@ -101,11 +101,7 @@ function edit_aggregate_post(){
 
 	$posts = array_reverse ($posts); //reverse order to show department first
 ?>
-	<button id="submitall" type="button" class="btn btn-primary">Update All</button>
-	
-	<a href="<?php echo admin_url('edit.php?post_type=courses&s='.$post_cat); ?>" title="courses">
-		<button id="course" type="button" class="btn btn-success">Courses</button>
-	</a>
+	<br />
 
 <?php
 	//Create top tabs
@@ -155,19 +151,20 @@ function edit_aggregate_post(){
 					$('.dp-editform').ajaxForm();  //Initialize as ajaxForm
 				});
 			
-			$( "#submitall" ).on( "click", function () {
+			$( ".submitall" ).on( "click", function () {
 				$('.dp-editform').each(function () {
-					var options = {success: showmessage,
-									context: this}  
+					var options = {context: this}  
 					tinyMCE.triggerSave();
 					$(this).ajaxSubmit(options);
 				})
+				
+				showmessage();
 			});
 			
-			function showmessage(responseText, statusText, xhr, $form) {
-				$(".updated").addClass('active');
-				$( ".updated" ).removeClass('inactive');
-				$(".updated").append('Posts Updated');
+			function showmessage() {
+				$(".updated").fadeOut( 300 ).fadeIn( 300 );
+
+				$( ".updated" ).removeClass('invisible');
 			}
 		})(window.jQuery);
 	</script>

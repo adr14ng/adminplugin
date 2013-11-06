@@ -176,7 +176,9 @@ require_once(ABSPATH.'wp-admin/admin-header.php');
 <div id="notice<?php echo '-'.$post_ID; ?>" class="error"><p id="has-newer-autosave<?php echo '-'.$post_ID; ?>"><?php echo $notice ?></p></div>
 <?php endif; ?>
 
-<div id="message<?php echo '-'.$post_ID; ?>" class="updated <?php if($message) echo 'active'; else echo 'inactive';?>"><p><?php echo $message; ?></p></div>
+<div id="message<?php echo '-'.$post_ID; ?>" class="updated <?php if($message) echo 'visible'; else echo 'invisible';?>"><p>
+<?php if($message) echo $message; else echo "Posts Updated";?>
+</p></div>
 
 <div id="lost-connection-notice<?php echo '-'.$post_ID; ?>" class="error hidden">
 	<p><span class="spinner"></span> <?php _e( '<strong>Connection lost.</strong> Saving has been disabled until you&#8217;re reconnected.' ); ?>
@@ -294,7 +296,31 @@ do_action('submitpost_box', $post);
 
 do_meta_boxes($post_type, 'side', $post);
 ?>
+
+<div id="submitalldiv" class="postbox ">
+<h3><span>Update Content</span></h3>
+<div class="inside">
+<div class="submitbox" id="submitall">
+<button type="button" class="btn btn-primary submitall">Update</button>
 </div>
+</div>
+</div>
+
+<div id="coursesdiv" class="postbox ">
+	<h3><span>Courses</span></h3>
+	<div class="inside">
+		<div class="coursebox" id="courses">
+			<p>Click below to edit this department's courses.</p>
+			<p>This will navigate away from this page.
+			<em>Remember to save before proceding</em></p>
+			<a href="<?php echo admin_url('edit.php?post_type=courses&s='.$post_cat); ?>" title="courses">
+				<button id="course" type="button" class="btn btn-success">Courses</button>
+			</a>
+		</div>
+	</div>
+</div>
+</div>
+
 <div id="postbox-container-2" class="postbox-container">
 <?php
 
