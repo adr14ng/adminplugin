@@ -3,8 +3,8 @@
 Plugin Name: Department Admin
 Description: Shows a simplified Admin View to department editors
 Version: 0.9
-*/
-//Is this admin pages?
+*///Login redirect to dashpage  !!DOESN'T WORK HERE!!//This function works in the theme functions file, but not herefunction csun_login($redirect_to){	return admin_url('index.php');}add_filter( 'login_redirect', 'csun_login');
+//Is this admin pages?
 if ( is_admin() ) {
 	$plug_in_dir = dirname(__FILE__);
     //Load the plugin
@@ -20,7 +20,6 @@ if ( is_admin() ) {
 	add_action('admin_enqueue_scripts', array( 'DP_Admin', 'add_base_style'));	
 	//Add menu for aggregate view
 	require $plug_in_dir . '/includes/aggregate-edit-form.php';
-	add_action( 'admin_menu', 'add_aggregate_menu' );	
-	add_action('init', array( 'DP_Admin', 'change_layout'));
+	add_action( 'admin_menu', 'add_aggregate_menu' );		//Chage layout for department editors
+	add_action('init', array( 'DP_Admin', 'change_layout'));		//Add custom footer !!DOESN'T WORK HERE!!	//This function works in the theme functions file, but not here	function csun_footer_admin () {	  echo 'Powered by the Office of Undergraduate Studies.';	}	add_filter('admin_footer_text', 'csun_footer_admin');
 }//is_admin()
-//Add custom footerfunction remove_footer_admin () {  echo 'Powered by the Office of Undergraduate Studies.';}add_filter('admin_footer_text', 'remove_footer_admin');

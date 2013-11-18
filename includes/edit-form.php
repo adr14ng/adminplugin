@@ -313,7 +313,7 @@ do_meta_boxes($post_type, 'side', $post);
 			<p>Click below to edit this department's courses.</p>
 			<p>This will navigate away from this page.
 			<em>Remember to save before proceding</em></p>
-			<a href="<?php echo admin_url('edit.php?post_type=courses&s='.$post_cat); ?>" title="courses">
+			<a href="<?php echo admin_url('edit.php?post_type=courses&department_shortname='.$post_cat); ?>" title="courses">
 				<button id="course" type="button" class="btn btn-success">Courses</button>
 			</a>
 		</div>
