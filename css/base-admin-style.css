@@ -9,24 +9,23 @@
 	display:none
 }*/
 
+/*remove screen options and 
+default submit on view all*/
 .tab-content #side-sortables,
 #screen-meta-links{
 	display:none;
 }
-	
-.visible {
-	opacity: 1;
-}
 
-.invisible {
-	opacity: 0;
+/*fix inactive plugins*/
+#the-list .inactive{
+	display: table-row;
 }
 	
 /*******************************************
  * Changing the post icons
  ******************************************/
 
-/* Progams */
+/* Progams - Sign Posts*/
 #menu-posts-programs .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -543px -33px !important;
 }
@@ -34,7 +33,7 @@
 	background-position:-543px 0px!important;
 }
 			
-/* Faculty */
+/* Faculty - Persons*/
 #menu-posts-faculty .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -423px -33px !important;
 }
@@ -42,7 +41,7 @@
 	background-position:-423px -1px!important;
 }
 
-/* Departments */
+/* Departments - Clipboard*/
 #menu-posts-departments .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -393px -33px !important;
 }
@@ -50,7 +49,7 @@
 	background-position:-393px 1px!important;
 }
 
-/* Dashboard */
+/* Dashboard - House*/
 #menu-dashboard .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -60px -33px !important;
 }
@@ -58,7 +57,7 @@
 	background-position:-60px 1px!important;
 }
 
-/* Posts */
+/* Posts - Pin*/
 #menu-posts .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -270px -33px !important;
 }
@@ -66,7 +65,7 @@
 	background-position:-270px 1px!important;
 }
 
-/* Courses */
+/* Courses - Pencil*/
 #menu-posts-courses .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -452px -33px !important;
 }
@@ -74,7 +73,7 @@
 	background-position:-452px 1px!important;
 }
 
-/* Media */
+/* Media - Camera/Music Note*/
 #menu-media .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -120px -33px !important;
 }
@@ -82,7 +81,7 @@
 	background-position:-120 1px!important;
 }
 
-/* Policies */
+/* Policies - Key*/
 #menu-posts-policies .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -517px -33px !important;
 }
@@ -90,7 +89,7 @@
 	background-position:-517px 1px!important;
 }
 
-/* Custom Post Types */
+/* Custom Post Types - Pages*/
 #menu-posts-custom_type .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -150px -33px !important;
 }
@@ -98,7 +97,7 @@
 	background-position:-150px 1px!important;
 }
 
-/* View All */
+/* View All - Brief Case*/
 #toplevel_page_dp_page .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -483px -33px !important;
 }
@@ -106,7 +105,7 @@
 	background-position:-483px 1px!important;
 }
 
-/* Pages */
+/* Pages - Pages*/
 #menu-pages .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -150px -33px !important;
 }
@@ -114,7 +113,7 @@
 	background-position:-150px 1px!important;
 }
 
-/* Comments */
+/* Comments - Bubble*/
 #menu-comments .wp-menu-image {
 	background: url('../images/menu.png') no-repeat -30px -33px !important;
 }

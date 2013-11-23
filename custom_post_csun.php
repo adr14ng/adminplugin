@@ -64,7 +64,19 @@ Version: 0.1
 				),
 			'rewrite'       => array('slug' => 'programs'),
 			'delete_with_user' => false,
-			'map_meta_cap'  => true,
+			//'map_meta_cap'  => true,
+			'capability_type' => 'program',
+			'capabilities' => array(
+				'read_post' => 'read_progam',
+				'publish_posts' => 'publish_progams',
+				'edit_posts' => 'edit_progams',
+				'edit_others_posts' => 'edit_others_progams',
+				'delete_posts' => 'delete_progams',
+				'delete_others_posts' => 'delete_others_progams',
+				'read_private_posts' => 'read_private_progams',
+				'edit_post' => 'edit_progam',
+				'delete_post' => 'delete_progam',
+			),
 			)
 		);
 		
@@ -81,7 +93,19 @@ Version: 0.1
 				),
 			'rewrite' => array('slug' => 'faculty'),
 			'delete_with_user' => false,
-			'map_meta_cap'  => true,
+			//'map_meta_cap'  => true,
+			'capability_type' => 'faculty',
+			'capabilities' => array(
+				'read_post' => 'read_faculty',
+				'publish_posts' => 'publish_facultys',
+				'edit_posts' => 'edit_facultys',
+				'edit_others_posts' => 'edit_others_facultys',
+				'delete_posts' => 'delete_facultys',
+				'delete_others_posts' => 'delete_others_facultys',
+				'read_private_posts' => 'read_private_facultys',
+				'edit_post' => 'edit_faculty',
+				'delete_post' => 'delete_faculty',
+			),
 			)
 		);
 		
@@ -125,6 +149,81 @@ Version: 0.1
 			)
 		);
 		
+		register_post_type('staract', 
+			array(  
+			//'label' => 'Star-act',
+			'labels' => array (
+			    'name' => 'Star-act',
+			    'singular_name' => '',
+			    'menu_name' => 'Star-act',
+			    'add_new' => 'Add Star-act',
+			    'add_new_item' => 'Add New Star-act',
+			    'edit' => 'Edit',
+			    'edit_item' => 'Edit Star-act',
+			    'new_item' => 'New Star-act',
+			    'view' => 'View Star-act',
+			    'view_item' => 'View Star-act',
+			    'search_items' => 'Search Star-act',
+			    'not_found' => 'No Star-act Found',
+			    'not_found_in_trash' => 'No Star-act Found in Trash',
+			    'parent' => 'Parent Star-act',),
+			'public' => true,
+			'has_archive'	=> true,
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title',
+						'editor',
+						'revisions'
+				),
+			'rewrite' => array('slug' => 'star-act'),
+			'delete_with_user' => false,
+			//'map_meta_cap'  => true,
+			'capability_type' => 'plan',
+			)	
+		);
+		
+		register_post_type('plans', 
+			array(	
+				//'label' => 'Plans',
+				'labels' => array (
+					'name' => 'Plans',
+					'singular_name' => 'plan',
+					'menu_name' => 'Plans',
+					'add_new' => 'Add plan',
+					'add_new_item' => 'Add New plan',
+					'edit' => 'Edit',
+					'edit_item' => 'Edit plan',
+					'new_item' => 'New plan',
+					'view' => 'View plan',
+					'view_item' => 'View plan',
+					'search_items' => 'Search Plans',
+					'not_found' => 'No Plans Found',
+					'not_found_in_trash' => 'No Plans Found in Trash',
+					'parent' => 'Parent plan',),
+				'public' => true,
+				'has_archive'	=> true,
+				'menu_position'	=> 5,
+				'supports' => array('title','editor','revisions',),
+				'hierarchical' => false,
+				'rewrite' => array('slug' => 'guides'),
+				'delete_with_user' => false,
+				//'map_meta_cap'  => true,
+				'capability_type' => 'plan',
+				'capabilities' => array(
+					'read_post' => 'read_plan',
+					'publish_posts' => 'publish_plans',
+					'edit_posts' => 'edit_plans',
+					'edit_others_posts' => 'edit_others_plans',
+					'delete_posts' => 'delete_plans',
+					'delete_others_posts' => 'delete_others_plans',
+					'read_private_posts' => 'read_private_plans',
+					'edit_post' => 'edit_plan',
+					'delete_post' => 'delete_plan',
+				),
+			)
+		);
+
+		
 	//Custom taxonomies
 		//Department short codes, which will include colleges
 		register_taxonomy( 'department_shortname', null, 
@@ -135,7 +234,10 @@ Version: 0.1
 							),
 				'public'	=> true,
 				'show_tagcloud'		=> false,
-				'hierarchical'		=> true
+				'hierarchical'		=> true,
+				'capabilities' => array(
+					'assign_terms' => 'edit_faculty'
+				),
 			)
 		);
 	
@@ -152,7 +254,7 @@ Version: 0.1
 			)
 		);
 		
-		//Program degree levels (Minor, MA, BS etc)
+		//Program degree levels (Minor, Major, Masters etc)
 		register_taxonomy( 'degree_level', 'programs', 
 			array(
 				'labels'	=> array(
@@ -178,7 +280,7 @@ Version: 0.1
 			)
 		);
 		
-		//Policy Types (Fees, Conduct)
+		//Policy Keywords (money, cheating)
 		register_taxonomy( 'policy_keywords', 'policies', 
 			array(
 				'labels'	=> array(
@@ -196,6 +298,8 @@ Version: 0.1
 		register_taxonomy_for_object_type( 'department_shortname', 'programs' );
 		register_taxonomy_for_object_type( 'department_shortname', 'faculty' );
 		register_taxonomy_for_object_type( 'department_shortname', 'departments' );
+		register_taxonomy_for_object_type( 'department_shortname', 'plans' );
+		register_taxonomy_for_object_type( 'department_shortname', 'staract' );
 		register_taxonomy_for_object_type( 'general_education', 'courses' );
 		register_taxonomy_for_object_type( 'degree_level', 'programs' );
 		register_taxonomy_for_object_type( 'policy_categories', 'policies' );
@@ -204,3 +308,4 @@ Version: 0.1
 	
 	//Add custom post types
 	add_action('init', 'csun_create_post_type' );
+	

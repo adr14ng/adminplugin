@@ -24,7 +24,7 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 			'title' => __( 'Dashboard'),
 			'href' => admin_url(),
 			);
-	$wp_admin_bar->add_node( $args );
+	$wp_admin_bar->add_node( $args );	//add dashboard link
 	
 	$wp_admin_bar->remove_node( 'comments' );
 	$wp_admin_bar->remove_node( 'new-content' );
@@ -64,6 +64,7 @@ function csun_dashboard_widgets() {
 }
 add_action('wp_dashboard_setup', 'csun_dashboard_widgets');
 
+//Widget that lists departments a user has access to edit
 function csun_links_widget() {
 	$user_id = get_current_user_id();
 	$userCat = get_user_meta($user_id, 'user_cat');
@@ -78,6 +79,7 @@ function csun_links_widget() {
 	}
 }
 
+//Widget that displays helpful text to a department editor
 function csun_welcome_widget() { ?>
 <h2> Welcome to the CSUN Catalog </h2>
 <p>You can edit your department information by clicking the links on the right.</p>

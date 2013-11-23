@@ -26,30 +26,26 @@ function aggregate_post() {
 	{
 		edit_aggregate_post();
 	}
-	/*else if(count($userCat == 1)){ //if there is only one possible category page
-		$userCat = $userCat[0];
-		//redirect to the proper cat page
-		wp_redirect(get_aggregate_edit_link($userCat, ''));
-		exit;
-	}*/
-	else //if there are multiple pages, list them
+	else //list all pages
 	{
 		list_aggregate_post();
 	}
 }
 
-//if user has more than one category, list department pages
+//list department pages
 function list_aggregate_post() {
+	//need to use word presses list table and our custom one
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	require( dirname(__FILE__) . '/class-dp-aggregate-list-table.php' );?>
+	require( dirname(__FILE__) . '/class-dp-aggregate-list-table.php' );
 	
+	//header title, plus links to make new programs/departments?>
 	<div class = "wrap">
 	<h2>Departments and Programs
 		<a href="<?php echo admin_url('post-new.php?post_type=departments')?>" class="add-new-h2">Add New Department</a>
 		<a href="<?php echo admin_url('post-new.php?post_type=programs')?>" class="add-new-h2">Add New Program</a>
 	</h2>
 	
-	<?//Create and display the aggregate list table
+	<?//Createthe aggregate list table
 	$aggr_list_table = new Aggregate_List_Table();
 	$aggr_list_table->prepare_items();
 	
@@ -59,9 +55,10 @@ function list_aggregate_post() {
 		<?php $aggr_list_table->search_box( 'Search', 'aggr' ); ?>
 	</form>
 	
-	<?php $aggr_list_table->display(); ?>
+	<?php //display the aggregate list table
+	$aggr_list_table->display(); ?>
 	</div>
-<?}
+<?}	//end list aggregrate post
 
 //Creates the edit page where all posts are edited
 function edit_aggregate_post(){
@@ -74,7 +71,8 @@ function edit_aggregate_post(){
 	 if($post_cat = $_REQUEST['cat'] ){
 		$term_id = term_exists( $post_cat );
 		
-		if($term_id != 0){
+		if($term_id != 0){	//if the term exists
+			//get all the posts with that department code
 			$args=array(
 				'post_type' => array('programs', 'departments'),
 				'post__not_in' => $ids, // avoid duplicate posts
@@ -84,14 +82,14 @@ function edit_aggregate_post(){
 			
 			$posts = get_posts( $args ); 
 		}
-		else{
+		else{	//the term doesn't exist
 			wp_die(__( 'Department does not exist' ));
 		}
 	}
-	else
+	else	//we were given no category
 		wp_die(__( 'Not enough information' ));
 		
-	if( !$posts )
+	if( !$posts )	//if no posts were retrieved
 		wp_die(__( 'No posts in this category' ));
 		
 	/********************************************
@@ -100,11 +98,12 @@ function edit_aggregate_post(){
 	$action ='edit';
 
 	$posts = array_reverse ($posts); //reverse order to show department first
+	//this depends on the order in which they were created (so make departments first for now
 ?>
 	<br />
 
 <?php
-	//Create top tabs
+	//Create top tabs to switch between posts
 	$isFirst = true; //to make active tab
 	echo '<ul id="edit-tabs" class="nav nav-tabs">';
 	foreach($posts as $post) {
@@ -142,25 +141,29 @@ function edit_aggregate_post(){
 	<script type="text/javascript">
 		(function($) {
 			//Pop up all divs and hide after editors have their height set
+			//prevents compressed WYSIWYG boxes
 			$( window ).one( "click scroll", function () {
 				$( ".tab-pane" ).addClass('inactive');
 				$( ".active" ).removeClass('inactive');
 			});
 			
+			//Initialize forms as ajaxForm
 			$(document).on( "ready", function () {
-					$('.dp-editform').ajaxForm();  //Initialize as ajaxForm
+					$('.dp-editform').ajaxForm();  
 				});
 			
+			//Submit the forms
 			$( ".submitall" ).on( "click", function () {
 				$('.dp-editform').each(function () {
 					var options = {context: this}  
-					tinyMCE.triggerSave();
+					tinyMCE.triggerSave();		//make sure to update the text boxes from the WYSIWYG boxes
 					$(this).ajaxSubmit(options);
 				})
 				
 				showmessage();
 			});
 			
+			//Show update message (fade in and out if pressed multiple times)
 			function showmessage() {
 				$(".updated").fadeOut( 300 ).fadeIn( 300 );
 
@@ -174,41 +177,42 @@ function edit_aggregate_post(){
 //Returns a link to the aggregate edit page
 //Used for building the table and redirects
 function get_aggregate_edit_link($cat, $context='') {
-	$sformat = 'admin.php?page=dp_page&cat=%s';
+	$sformat = 'admin.php?page=dp_page';		//format of the url
 	
+	//wordpresses context display
 	if( 'display' == $context)
-		$action = '&amp;action=edit';
+		$action = '&amp;cat=%s&amp;action=edit';
 	else
-		$action = '&action=edit';
+		$action = '&cat=%s&action=edit';
 	
 	return admin_url(sprintf($sformat . $action, $cat));
 }
 
-//Makes the default edit link this one
+//Makes the edit link this one if on our custom page
 function filter_aggregate_edit_link($url, $post, $context)
 {
 	$cat =  wp_get_post_terms( $post, 'department_shortname');
 	$post_type = get_post_type( $post );
 
+	//if the post shows up on an aggregate edit page and it comes from an aggregate edit page
 	if($cat && ($post_type == 'departments' || $post_type == 'programs')
 			&& (strpos($_REQUEST[_wp_http_referer], 'page=dp_page')!== false)){
 		$cat = $cat[0];
 		$cat_name = $cat->slug;
 		
-		$url = get_aggregate_edit_link($cat_name, $context);
+		$url = get_aggregate_edit_link($cat_name, $context);	//get the edit link
 	}
 	return $url;
 }
 add_filter( 'get_edit_post_link', 'filter_aggregate_edit_link', '99', 3 );
 
 
-//Fixes the name change of content field
-//Does not apply filters
+//Fixes the name change of content field, allows saving on aggregate edit form
 function dp_edit_post($data, $postarr) {
-	$contentName= 'content'.$postarr['post_ID'];
+	$contentName= 'content'.$postarr['post_ID'];	//our custom field name
 	
 	if(isset( $postarr[$contentName])) {
-		$data['post_content']= $postarr[$contentName];
+		$data['post_content']= $postarr[$contentName];	//what the field name should be
 		$postarr['post_content']= $postarr[$contentName];
 		unset( $data[$contentName]);
 		unset( $postarr[$contentName]);

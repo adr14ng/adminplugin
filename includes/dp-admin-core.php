@@ -17,6 +17,44 @@ class DP_Admin {
 			'delete_posts' => false
 			));
 			
+		//Create a faculty editor role
+		//Restrict access to faculty
+		add_role( 'dp_faculty', 'Faculty Editor', array(
+			'read' => true,
+			'edit_faculty' => true,
+			'edit_facultys' => true,
+			'edit_others_facultys' => true,
+			'publish_facultys' => true, 
+			'read_faculty' => true, 
+			'read_private_facultys' => true,
+			'delete_faculty' => true,
+			'delete_facultys' => true,
+			'delete_others_facultys' => true,
+			'assign_terms' => true,
+			));
+			
+		//Create a faculty editor role
+		//Restrict access to programs, 4 year plans and star acts
+		add_role( 'dp_ar', 'Admissions and Records', array(
+			'read' => true,
+			'edit_plan' => true,
+			'edit_plans' => true,
+			'edit_others_plans' => true,
+			'publish_plans' => true, 
+			'read_plan' => true, 
+			'read_private_plans' => true,
+			'delete_plan' => true,
+			'delete_plans' => true,
+			'delete_others_plans' => true,
+			'edit_progam' => true,
+			'edit_progams' => true,
+			'edit_others_progams' => true, 
+			'publish_progams' => true, 
+			'read_progam' => true, 
+			'read_private_progams' => true,
+			'assign_terms' => true,
+			));
+			
 	}//activate()
 	
 	/**
@@ -24,6 +62,8 @@ class DP_Admin {
 	 */
 	function uninstall() {
 		remove_role( 'dp_editor' );
+		remove_role( 'dp_faculty' );
+		remove_role( 'dp_ar' );
 	}
  
  
@@ -36,7 +76,8 @@ class DP_Admin {
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
 		//if we're not trying to edit or publish edits of a post, return
-		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts'){
+		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' &&
+			$cap !== 'edit_programs' && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'){
 			return $caps;
 		}
 		
