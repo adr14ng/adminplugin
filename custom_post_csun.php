@@ -292,6 +292,22 @@ Version: 0.1
 				'hierarchical'		=> false
 			)
 		);
+		
+		//Year for star act and plans
+		register_taxonomy( 'year', null, 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Years' ),
+							'singular_name'	=> __( 'Year' )
+							),
+				'public'	=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true,
+				'capabilities' => array(
+					'assign_terms' => 'edit_plan'
+				),
+			)
+		);
 	
 	//Assign taxonomies for custom post types
 		register_taxonomy_for_object_type( 'department_shortname', 'courses' );
@@ -304,8 +320,103 @@ Version: 0.1
 		register_taxonomy_for_object_type( 'degree_level', 'programs' );
 		register_taxonomy_for_object_type( 'policy_categories', 'policies' );
 		register_taxonomy_for_object_type( 'policy_keywords', 'policies' );
+		register_taxonomy_for_object_type( 'year', 'plans' );
+		register_taxonomy_for_object_type( 'year', 'staract' );
 	} //csun create post type
 	
 	//Add custom post types
 	add_action('init', 'csun_create_post_type' );
 	
+	
+	//Register collumns for the custom taxonomy and types
+	
+	add_action( 'manage_posts_custom_column' , 'custom_columns', 10, 2 );
+
+	function custom_columns( $column, $post_id ) {
+		switch ( $column ) {
+		case 'department' :
+			$terms = get_the_term_list( $post_id , 'department_shortname' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+
+		case 'year' :
+			$terms = get_the_term_list( $post_id , 'year' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+		
+		case 'ge' :
+			$terms = get_the_term_list( $post_id , 'general_education' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+			
+		case 'pol_cat' :
+			$terms = get_the_term_list( $post_id , 'policy_categories' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+		
+		case 'pol_key' :
+			$terms = get_the_term_list( $post_id , 'policy_keywords' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+			
+		case 'level' :
+			$terms = get_the_term_list( $post_id , 'degree_level' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+		}
+	}
+	
+	add_filter('manage_edit-plans_columns', 'plan_columns');
+	add_filter('manage_edit-staract_columns', 'plan_columns');
+	function plan_columns($columns) {
+		$columns['year'] = 'Year';
+		$columns['department'] = 'Department';
+		return $columns;
+	}
+	
+	add_filter('manage_edit-faculty_columns', 'dept_columns');
+	add_filter('manage_edit-departments_columns', 'dept_columns');
+	function dept_columns($columns) {
+		$columns['department'] = 'Department';
+		return $columns;
+	}
+	
+	add_filter('manage_edit-programs_columns', 'prog_columns');
+	function prog_columns($columns) {
+		$columns['department'] = 'Department';
+		$columns['level'] = 'Degree';
+		return $columns;
+	}
+	
+	add_filter('manage_edit-courses_columns', 'course_columns');
+	function course_columns($columns) {
+		$columns['department'] = 'Department';
+		$columns['ge'] = 'Gen Ed';
+		return $columns;
+	}
+	
+	add_filter('manage_edit-policies_columns', 'policy_columns');
+	function policy_columns($columns) {
+		$columns['pol_cat'] = 'Category';
+		$columns['pol_key'] = 'Keywords';
+		return $columns;
+	}
+		
