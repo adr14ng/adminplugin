@@ -5,29 +5,51 @@
 
 /* NOTE: ACF
  * In order for advanced custom fields to validate our page the following
- * code must be added to the validate function in the input file in the 
- * controlers folder.
-	//validate page (Aggregate Edit)
+ * acf.php
+	input.min.js -> input.js
+
+ * field_group.php
+	in function validate_page()
+		//validate page (Aggregate Edit)
 		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
 		{
 			$return = true;
 		}
- * This just adds another validated page to the list.
- * Change the javascript in meta_box_input to:
- 
- 		$post_ID=$post->ID; //get post ID
-		?>
-<script type="text/javascript">
-(function($) { //Modified to make IDs unique
-	document.getElementById('<?php echo $id; ?>').id = '<?php echo $id.'_'.$post_ID; ?>';
+
+
+ * post.php 
+ * 	in function validate_page()
+		//validate page (Aggregate Edit)
+		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
+		{
+			$return = true;
+		}
+
+ * 	under add_action('admin_head', 
+		add_action('custom-fields', array($this,'admin_head'));
+
+
+ * 	in meta_box_input
+	$post_ID=$post->ID; //get post ID
+
+ * 		replace js
+		//Modified to make IDs unique
+		<?php if(isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) ):?>
+			document.getElementById('<?php echo $id; ?>').id = '<?php echo $id.'_'.$post_ID; ?>';
+			
+			$('#<?php echo $id.'_'.$post_ID ?>').addClass('<?php echo $class; ?>').removeClass('hide-if-js');
+			$('#adv-settings label[for="<?php echo $id.'_'.$post_ID; ?>-hide"]').addClass('<?php echo $toggle_class; ?>');
+		<?php else : ?>
+			$('#<?php echo $id; ?>').addClass('<?php echo $class; ?>').removeClass('hide-if-js');
+			$('#adv-settings label[for="<?php echo $id; ?>-hide"]').addClass('<?php echo $toggle_class; ?>');
+		<?php endif; ?>
+
+ * input.js
+	$(document).trigger('acf/setup_fields', [ $('.poststuff') ]);
+ 	$(document).trigger('acf/setup_fields', [ $('#poststuff') ]);
 	
-	
-	$('#<?php echo $id.'_'.$post_ID ?>').addClass('<?php echo $class; ?>').removeClass('hide-if-js');
-	$('#adv-settings label[for="<?php echo $id.'_'.$post_ID; ?>-hide"]').addClass('<?php echo $toggle_class; ?>');
-})(jQuery);	
-</script>
- * Which adds an ID
- * And in the input.js, add a handler for .poststuff identical to the one for #poststuff
+ * Alternatively you can modify the js, minify it and replace the original minified version with your own. 
+ * If you do this, do not modify acf.php
  */
  
 // don't load directly
