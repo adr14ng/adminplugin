@@ -2,7 +2,8 @@
 /*
 Plugin Name: CSUN Custom Post Types
 Description: Adds custom post types and taxonomy for catalog
-Version: 0.1
+Version: 1.0
+Author: CSUN Undergraduate Studies
 */
 
 
