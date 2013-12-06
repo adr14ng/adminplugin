@@ -32,6 +32,9 @@ if ( is_admin() ) {
 	//Add a basic style to the pages
 	add_action('admin_enqueue_scripts', array( 'DP_Admin', 'add_base_style'));	
 	
+	//Add new toolbar 
+	add_filter( 'acf/fields/wysiwyg/toolbars' , array( 'DP_Admin', 'my_toolbars'));
+	
 	//Add menu for aggregate view
 	require $plug_in_dir . '/includes/aggregate-edit-form.php';
 	add_action( 'admin_menu', 'add_aggregate_menu' );		//Chage layout for department editors

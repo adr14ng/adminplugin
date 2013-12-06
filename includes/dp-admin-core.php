@@ -145,7 +145,16 @@ class DP_Admin {
 			include dirname(__FILE__) . '/dp_editor-design.php';
 	}//change layout
 	
-
+	//Add custom toolbar for CSUN
+	function my_toolbars( $toolbars )
+	{
+		// CSUN Custom
+		$toolbars['CSUN' ] = array();
+		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'undo', 'redo');
+	 
+		// return $toolbars - IMPORTANT!
+		return $toolbars;
+	}
 	
 } //dp_admin
 ?>
