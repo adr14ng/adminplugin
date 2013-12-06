@@ -101,6 +101,7 @@ function edit_aggregate_post(){
 	//this depends on the order in which they were created (so make departments first for now
 ?>
 	<br />
+
 <?php
 	//Create top tabs to switch between posts
 	$isFirst = true; //to make active tab
@@ -220,62 +221,5 @@ function dp_edit_post($data, $postarr) {
 	return $data;
 }
 add_filter( 'wp_insert_post_data', 'dp_edit_post', '99' , 2);
-
-function aggr_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
-	$post = get_post( $id );
-	if ( ! $post )
-		return '';
-
-	list($permalink, $post_name) = get_sample_permalink($post->ID, $new_title, $new_slug);
-
-	if ( 'publish' == get_post_status( $post ) ) {
-		$ptype = get_post_type_object($post->post_type);
-		$view_post = $ptype->labels->view_item;
-		$title = __('Click to edit this part of the permalink');
-	} else {
-		$title = __('Temporary permalink. Click to edit this part.');
-	}
-
-	if ( false === strpos($permalink, '%postname%') && false === strpos($permalink, '%pagename%') ) {
-		$return = '<strong>' . __('Permalink:') . "</strong>\n" . '<span id="sample-permalink-'.$id.'" tabindex="-1">' . $permalink . "</span>\n";
-		if ( '' == get_option( 'permalink_structure' ) && current_user_can( 'manage_options' ) && !( 'page' == get_option('show_on_front') && $id == get_option('page_on_front') ) )
-			$return .= '<span id="change-permalinks-'.$id.'"><a href="options-permalink.php" class="button button-small" target="_blank">' . __('Change Permalinks') . "</a></span>\n";
-		if ( isset( $view_post ) )
-			$return .= "<span id='view-post-btn'><a href='$permalink' class='button button-small'>$view_post</a></span>\n";
-
-		$return = apply_filters('get_sample_permalink_html', $return, $id, $new_title, $new_slug);
-
-		return $return;
-	}
-
-	if ( function_exists('mb_strlen') ) {
-		if ( mb_strlen($post_name) > 30 ) {
-			$post_name_abridged = mb_substr($post_name, 0, 14). '&hellip;' . mb_substr($post_name, -14);
-		} else {
-			$post_name_abridged = $post_name;
-		}
-	} else {
-		if ( strlen($post_name) > 30 ) {
-			$post_name_abridged = substr($post_name, 0, 14). '&hellip;' . substr($post_name, -14);
-		} else {
-			$post_name_abridged = $post_name;
-		}
-	}
-
-	$post_name_html = '<span id="editable-post-name-'.$id.'" title="' . $title . '">' . $post_name_abridged . '</span>';
-	$display_link = str_replace(array('%pagename%','%postname%'), $post_name_html, $permalink);
-	$view_link = str_replace(array('%pagename%','%postname%'), $post_name, $permalink);
-	$return =  '<strong>' . __('Permalink:') . "</strong>\n";
-	$return .= '<span id="sample-permalink-'.$id.'" tabindex="-1">' . $display_link . "</span>\n";
-	$return .= '&lrm;'; // Fix bi-directional text display defect in RTL languages.
-	$return .= '<span id="edit-slug-buttons-'.$id.'"><a href="#post_name-'.$id.'" class="edit-slug button button-small hide-if-no-js" onclick="editPermalink(' . $id . '); return false;">' . __('Edit') . "</a></span>\n";
-	$return .= '<span id="editable-post-name-full-'.$id.'">' . $post_name . "</span>\n";
-	if ( isset($view_post) )
-		$return .= "<span id='view-post-btn-".$id."'><a href='$view_link' class='button button-small'>$view_post</a></span>\n";
-
-	$return = apply_filters('get_sample_permalink_html', $return, $id, $new_title, $new_slug);
-
-	return $return;
-}
 
 ?>
