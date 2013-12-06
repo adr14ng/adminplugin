@@ -129,6 +129,7 @@ class DP_Admin {
 		wp_enqueue_style('dp-bootstrap-style', $basedir . '/css/bootstrap.min.css');
 		wp_enqueue_script('dp-bootstrap-script', $basedir . '/js/bootstrap.js');
 		wp_enqueue_script('dp-script', $basedir . '/js/jquery.form.min.js');
+		wp_enqueue_script('dp-post', $basedir . '/js/post.js');
 	}
 
 		
@@ -146,6 +147,16 @@ class DP_Admin {
 	}//change layout
 	
 
+	//Add custom toolbar for CSUN
+	function my_toolbars( $toolbars )
+	{
+		// CSUN Custom
+		$toolbars['CSUN' ] = array();
+		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'undo', 'redo');
+	 
+		// return $toolbars - IMPORTANT!
+		return $toolbars;
+	}
 	
 } //dp_admin
 ?>

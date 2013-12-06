@@ -99,6 +99,8 @@ function remove_meta_boxes() {
 	remove_meta_box('formatdiv', 'post', 'normal');
 	remove_meta_box('tagsdiv-post_tag', 'post', 'normal');
 	remove_meta_box('postimagediv', 'post', 'normal');
+	remove_meta_box('department_shortnamediv', 'courses', 'side');
+	remove_meta_box('general_educationdiv', 'courses', 'side');
 	
 }
 add_action('admin_init', 'remove_meta_boxes');
@@ -117,9 +119,21 @@ function simplify_post_columns($defaults) {
   unset($defaults['author']);
   unset($defaults['date']);
   unset($defaults['tags']);
+  unset($defaults['department']);
+  unset($defaults['ge']);
   return $defaults;
 }
 add_filter('manage_${post_type}_posts_columns', 'simplify_post_columns');
+
+function simplify_course_columns($defaults) {
+  unset($defaults['cb']);
+  unset($defaults['author']);
+  unset($defaults['date']);
+  unset($defaults['department']);
+  unset($defaults['ge']);
+  return $defaults;
+}
+add_filter('manage_edit-courses_columns', 'simplify_course_columns');
 
 //remove quick edit
 function remove_quick_edit( $actions ) {
