@@ -125,7 +125,7 @@ class DP_Admin {
 	function add_base_style() {
 		$basedir = dirname(plugin_dir_url(__FILE__));
 		wp_enqueue_style('base-style', $basedir . '/css/base-admin-style.css');
-		wp_enqueue_style('csun-colors', $basedir . '/css/colors-csun.css');
+		//wp_enqueue_style('csun-colors', $basedir . '/css/colors-csun.css');
 		wp_enqueue_style('dp-bootstrap-style', $basedir . '/css/bootstrap.min.css');
 		wp_enqueue_script('dp-bootstrap-script', $basedir . '/js/bootstrap.js');
 		wp_enqueue_script('dp-script', $basedir . '/js/jquery.form.min.js');

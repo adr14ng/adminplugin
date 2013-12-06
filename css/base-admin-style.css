@@ -9,114 +9,19 @@
 	display:none
 }*/
 
-/*remove screen options and 
-default submit on view all*/
 .tab-content #side-sortables,
 #screen-meta-links{
 	display:none;
 }
+	
+.visible {
+	opacity: 1;
+}
 
-/*fix inactive plugins*/
+.invisible {
+	opacity: 0;
+}
+
 #the-list .inactive{
 	display: table-row;
-}
-	
-/*******************************************
- * Changing the post icons
- ******************************************/
-
-/* Progams - Sign Posts*/
-#menu-posts-programs .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -543px -33px !important;
-}
-#menu-posts-programs:hover .wp-menu-image, #menu-posts-programs.wp-has-current-submenu .wp-menu-image {
-	background-position:-543px 0px!important;
-}
-			
-/* Faculty - Persons*/
-#menu-posts-faculty .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -423px -33px !important;
-}
-#menu-posts-faculty:hover .wp-menu-image, #menu-posts-faculty.wp-has-current-submenu .wp-menu-image {
-	background-position:-423px -1px!important;
-}
-
-/* Departments - Clipboard*/
-#menu-posts-departments .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -393px -33px !important;
-}
-#menu-posts-departments:hover .wp-menu-image, #menu-posts-departments.wp-has-current-submenu .wp-menu-image {
-	background-position:-393px 1px!important;
-}
-
-/* Dashboard - House*/
-#menu-dashboard .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -60px -33px !important;
-}
-#menu-dashboard:hover .wp-menu-image, #menu-dashboard.wp-has-current-submenu .wp-menu-image {
-	background-position:-60px 1px!important;
-}
-
-/* Posts - Pin*/
-#menu-posts .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -270px -33px !important;
-}
-#menu-posts:hover .wp-menu-image, #menu-posts.wp-has-current-submenu .wp-menu-image {
-	background-position:-270px 1px!important;
-}
-
-/* Courses - Pencil*/
-#menu-posts-courses .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -452px -33px !important;
-}
-#menu-posts-courses:hover .wp-menu-image, #menu-posts-courses.wp-has-current-submenu .wp-menu-image {
-	background-position:-452px 1px!important;
-}
-
-/* Media - Camera/Music Note*/
-#menu-media .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -120px -33px !important;
-}
-#menu-media:hover .wp-menu-image, #menu-media.wp-has-current-submenu .wp-menu-image {
-	background-position:-120 1px!important;
-}
-
-/* Policies - Key*/
-#menu-posts-policies .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -517px -33px !important;
-}
-#menu-posts-policies:hover .wp-menu-image, #menu-posts-policies.wp-has-current-submenu .wp-menu-image {
-	background-position:-517px 1px!important;
-}
-
-/* Custom Post Types - Pages*/
-#menu-posts-custom_type .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -150px -33px !important;
-}
-#menu-posts-custom_type:hover .wp-menu-image, #menu-posts-custom_type.wp-has-current-submenu .wp-menu-image {
-	background-position:-150px 1px!important;
-}
-
-/* View All - Brief Case*/
-#toplevel_page_dp_page .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -483px -33px !important;
-}
-#toplevel_page_dp_page:hover .wp-menu-image, #toplevel_page_dp_page.wp-has-current-submenu .wp-menu-image {
-	background-position:-483px 1px!important;
-}
-
-/* Pages - Pages*/
-#menu-pages .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -150px -33px !important;
-}
-#menu-pages:hover .wp-menu-image, #menu-pages.wp-has-current-submenu .wp-menu-image {
-	background-position:-150px 1px!important;
-}
-
-/* Comments - Bubble*/
-#menu-comments .wp-menu-image {
-	background: url('../images/menu.png') no-repeat -30px -33px !important;
-}
-#menu-comments:hover .wp-menu-image, #comments.wp-has-current-submenu .wp-menu-image {
-	background-position:-30px 1px!important;
 }

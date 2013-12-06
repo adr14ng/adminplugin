@@ -37,16 +37,6 @@ add_action( 'admin_bar_menu', 'add_csun_admin_bar_links', 999 );
 
 /*****************************************************
  *
- *  Editing the menu
- *
- *****************************************************/
-
-//remove update notice
-add_filter( 'pre_site_transient_update_core', function(){return null;} ); 
- 
-
-/*****************************************************
- *
  *  Editing the dashboard
  *
  *****************************************************/
@@ -55,6 +45,7 @@ add_filter( 'pre_site_transient_update_core', function(){return null;} );
 function csun_dashboard_widgets() {
 	remove_meta_box( 'dashboard_quick_press', 'dashboard', 'side' );
  	remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
+	remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
 	remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
 	remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
 	remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
