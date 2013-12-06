@@ -55,8 +55,6 @@
 // don't load directly
 if ( !defined('ABSPATH') )
 	die('-1');
-
-wp_enqueue_script('post');
 	
 if ( wp_is_mobile() )
 	wp_enqueue_script( 'jquery-touch-punch' );
@@ -239,19 +237,19 @@ wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 <div id="titlediv">
 <div id="titlewrap">
 	<label class="screen-reader-text" id="title-prompt-text" for="title"><?php echo apply_filters( 'enter_title_here', __( 'Enter title here' ), $post ); ?></label>
-	<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" />
+	<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title-<?php echo $post_ID; ?>" autocomplete="off" />
 </div>
 <div class="inside">
 <?php
-$sample_permalink_html = $post_type_object->public ? get_sample_permalink_html($post->ID) : '';
+$sample_permalink_html = $post_type_object->public ? aggr_sample_permalink_html($post->ID) : '';
 $shortlink = wp_get_shortlink($post->ID, 'post');
 if ( !empty($shortlink) )
-    $sample_permalink_html .= '<input id="shortlink" type="hidden" value="' . esc_attr($shortlink) . '" /><a href="#" class="button button-small" onclick="prompt(&#39;URL:&#39;, jQuery(\'#shortlink\').val()); return false;">' . __('Get Shortlink') . '</a>';
+    $sample_permalink_html .= '<input id="shortlink-'.$post_ID.'" type="hidden" value="' . esc_attr($shortlink) . '" /><a href="#" class="button button-small" onclick="prompt(&#39;URL:&#39;, jQuery(\'#shortlink-'.$post_ID.'\').val()); return false;">' . __('Get Shortlink') . '</a>';
 
 if ( $post_type_object->public && ! ( 'pending' == get_post_status( $post ) && !current_user_can( $post_type_object->cap->publish_posts ) ) ) {
 	$has_sample_permalink = $sample_permalink_html && 'auto-draft' != $post->post_status;
 ?>
-	<div id="edit-slug-box" class="hide-if-no-js">
+	<div id="edit-slug-box-<?php echo $post_ID; ?>" class="hide-if-no-js">
 	<?php
 		if ( $has_sample_permalink )
 			echo $sample_permalink_html;
@@ -262,7 +260,7 @@ if ( $post_type_object->public && ! ( 'pending' == get_post_status( $post ) && !
 ?>
 </div>
 <?php
-wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );
+wp_nonce_field( 'samplepermalink', 'samplepermalinknonce-'.$post_ID, false );
 ?>
 </div><!-- /titlediv -->
 <?php
