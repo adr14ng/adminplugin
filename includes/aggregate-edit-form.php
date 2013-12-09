@@ -99,15 +99,20 @@ function edit_aggregate_post(){
 
 	$posts = array_reverse ($posts); //reverse order to show department first
 	//this depends on the order in which they were created (so make departments first for now
+	
+	$term = get_term($term_id, 'department_shortname');
 ?>
 	<br />
-
+	<h1><?php echo $term->description; ?> </h1>
+	<p>You can update the academic organization overview and any program from this page. Don't forget to save any updates.</p>
+	<p>There is a link in the side bar to update the courses associated with this academic organization</p>
 <?php
 	//Create top tabs to switch between posts
 	$isFirst = true; //to make active tab
 	echo '<ul id="edit-tabs" class="nav nav-tabs">';
 	foreach($posts as $post) {
 		$post_ID = $post->ID;
+		$post_type = get_post_type( $post );
 		$post_name = $post->post_title;
 		if($isFirst){
 			$isFirst = false;
@@ -116,7 +121,12 @@ function edit_aggregate_post(){
 		else
 			echo '<li>';
 		
-		echo '<a href="#custom-edit-'.$post_ID.'" data-toggle="tab">'.$post_name.'</a></li>';
+		echo '<a href="#custom-edit-'.$post_ID.'" data-toggle="tab">'.$post_name;
+		if($post_type==='programs'){
+			echo ', ';
+			echo the_field('degree_type');
+		}
+		echo '</a></li>';
 	}	
 	echo'</ul><div class="tab-content"> ';
 	
