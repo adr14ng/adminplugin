@@ -199,7 +199,7 @@ require_once(ABSPATH.'wp-admin/admin-header.php');
 <?php endif; ?>
 
 <div id="message<?php echo '-'.$post_ID; ?>" class="updated <?php if($message) echo 'visible'; else echo 'invisible';?>"><p>
-<?php if($message) echo $message; else echo "Posts Updated";?>
+<?php if($message) echo $message; else echo "Documents Updated";?>
 </p></div>
 
 <div id="lost-connection-notice<?php echo '-'.$post_ID; ?>" class="error hidden">

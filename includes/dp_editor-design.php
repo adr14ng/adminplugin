@@ -21,7 +21,8 @@ add_action('admin_enqueue_scripts', 'add_dp_style');
 function add_csun_admin_bar_links( $wp_admin_bar ) {
 	$args = array(
 			'id' => 'csun_dashboard_link',
-			'title' => __( 'Dashboard'),
+			'title' => '<span class="ab-icon"></span>
+		<span id="ab-csun-dashboard" class="ab-label">Dashboard</span>',
 			'href' => admin_url(),
 			);
 	$wp_admin_bar->add_node( $args );	//add dashboard link

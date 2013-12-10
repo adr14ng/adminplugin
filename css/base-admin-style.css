@@ -25,3 +25,45 @@
 #the-list .inactive{
 	display: table-row;
 }
+
+/* Update Icons */
+
+/* Courses: Pencil */
+#menu-posts-courses .wp-menu-image:before{
+	content: "\f327" !important;
+}
+
+/* Programs: Grad Cap */
+#menu-posts-programs .wp-menu-image:before{
+	content: "\f118" !important;
+}
+
+/* Faculty: People */
+#menu-posts-faculty .wp-menu-image:before{
+	content: "\f307" !important;
+}
+
+/* Department: Clipboard */
+#menu-posts-departments .wp-menu-image:before{
+	content: "\f119" !important;
+}
+
+/* Polciies: key */
+#menu-posts-policies .wp-menu-image:before{
+	content: "\f112" !important;
+}
+
+/* Staract: star */
+#menu-posts-staract .wp-menu-image:before{
+	content: "\f155" !important;
+}
+
+/* Plans: map */
+#menu-posts-plans .wp-menu-image:before{
+	content: "\f231" !important;
+}
+
+/* View All: Briefcase */
+#toplevel_page_dp_page .wp-menu-image:before{
+	content: "\f322" !important;
+}
