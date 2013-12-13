@@ -10,7 +10,7 @@
 }*/
 
 .tab-content #side-sortables,
-#screen-meta-links{
+.toplevel_page_dp_page #screen-meta-links{
 	display:none;
 }
 	
@@ -20,6 +20,11 @@
 
 .invisible {
 	opacity: 0;
+}
+
+/*Make update notice larger*/
+div.updated p{
+	font-size: 16px;
 }
 
 #the-list .inactive{

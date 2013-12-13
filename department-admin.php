@@ -37,7 +37,13 @@ if ( is_admin() ) {
 	
 	//Add menu for aggregate view
 	require $plug_in_dir . '/includes/aggregate-edit-form.php';
-	add_action( 'admin_menu', 'add_aggregate_menu' );		//Chage layout for department editors
+	add_action( 'admin_menu', 'add_aggregate_menu' );		
+	
+	//Add menu for proposal files
+	require $plug_in_dir . '/includes/proposal-files.php';
+	add_action( 'admin_menu', 'add_proposal_menu' );
+
+	//Chage layout for department editors
 	add_action('init', array( 'DP_Admin', 'change_layout'));	
 	
 	//Add custom footer 
@@ -46,4 +52,7 @@ if ( is_admin() ) {
 		echo 'Powered by the Office of Undergraduate Studies.';	
 	}	
 	add_filter('admin_footer_text', 'csun_footer_admin');
+	
+	//Add custom colors
+	add_action( 'admin_init' , array( 'DP_Admin', 'add_csun_colors') );
 }//is_admin()

@@ -1,0 +1,6 @@
+$base-color: #000;
+$highlight-color: darken( desaturate( #eabe3f, 10% ), 5% );
+$notification-color: #d99f5f;
+$action-color: #900;
+
+@import "_admin.scss";

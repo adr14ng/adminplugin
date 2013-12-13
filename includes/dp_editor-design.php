@@ -22,10 +22,35 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 	$args = array(
 			'id' => 'csun_dashboard_link',
 			'title' => '<span class="ab-icon"></span>
-		<span id="ab-csun-dashboard" class="ab-label">Dashboard</span>',
+		<span id="ab-csun-dashboard" class="ab-label">Home</span>',
 			'href' => admin_url(),
 			);
 	$wp_admin_bar->add_node( $args );	//add dashboard link
+	
+	if(isset($_REQUEST['department_shortname'])){
+		$cat = $_REQUEST['department_shortname'];
+		
+		$wp_admin_bar->add_node(array(
+			'id' => 'csun_progam_link',
+			'title' => '<span class="ab-icon"></span>
+		<span id="ab-csun-programs" class="ab-label">Programs</span>',
+			'href' => admin_url().'admin.php?page=dp_page&department_shortname='.$cat.'&action=edit',
+			));
+		
+		$wp_admin_bar->add_node(array(
+			'id' => 'csun_course_link',
+			'title' => '<span class="ab-icon"></span>
+		<span id="ab-csun-courses" class="ab-label">Courses</span>',
+			'href' => admin_url().'edit.php?post_type=courses&department_shortname='.$cat.'&orderby=title&order=asc',
+			));
+			
+		$wp_admin_bar->add_node(array(
+			'id' => 'csun_file_link',
+			'title' => '<span class="ab-icon"></span>
+		<span id="ab-csun-files" class="ab-label">Files</span>',
+			'href' => admin_url().'admin.php?page=proposals&department_shortname='.$cat,
+			));
+	}
 	
 	$wp_admin_bar->remove_node( 'comments' );
 	$wp_admin_bar->remove_node( 'new-content' );
@@ -63,7 +88,7 @@ function csun_links_widget() {
 	$userCat = $userCat[0];
 	
 	foreach($userCat as $link) {
-		echo '<a href="'.admin_url().'/admin.php?page=dp_page&cat='.$link.'&action=edit">';//get link
+		echo '<a href="'.admin_url().'admin.php?page=dp_page&department_shortname='.$link.'&action=edit">';//get link
 		echo '<button type="button" class="btn btn-primary">';
 		echo strtoupper($link);//cat name
 		echo '</button>';
@@ -133,5 +158,35 @@ function remove_quick_edit( $actions ) {
 	return $actions;
 }
 add_filter('post_row_actions','remove_quick_edit',10,1);
+
+/*****************************************************
+ *
+ *	Custom Messages
+ *
+ ****************************************************/
+ 
+ add_action('admin_footer', 'editor_admin_footer');
+function editor_admin_footer()
+{
+    $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL ;
+
+    $message = NULL;
+
+    if ($uri AND strpos($uri,'edit.php'))
+    {
+		//$message = 'Course Message';
+        $message = 'Select a course to update. Click on the links above to navigate to home, edit the programs, or view the approved circulum proposals of this department.';
+    }
+
+    if ($message)
+    {
+        ?><script>
+            jQuery(function($)
+            {
+                $('<div id="course_message"><p></p></div>').text('<?php echo $message; ?>').insertAfter('#wpbody-content .wrap h2:eq(0)');
+            });
+        </script><?php
+    }
+}
 
 ?>

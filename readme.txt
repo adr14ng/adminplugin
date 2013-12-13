@@ -9,7 +9,7 @@ acf.php
 field_group.php
 	in function validate_page()
 		//validate page (Aggregate Edit)
-		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
+		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) )
 		{
 			$return = true;
 		}
@@ -18,7 +18,7 @@ field_group.php
 post.php 
 	in function validate_page()
 		//validate page (Aggregate Edit)
-		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
+		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) )
 		{
 			$return = true;
 		}
@@ -32,7 +32,7 @@ post.php
 
 		replace js
 		//Modified to make IDs unique
-		<?php if(isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) ):?>
+		<?php if(isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) ):?>
 			document.getElementById('<?php echo $id; ?>').id = '<?php echo $id.'_'.$post_ID; ?>';
 			
 			$('#<?php echo $id.'_'.$post_ID ?>').addClass('<?php echo $class; ?>').removeClass('hide-if-js');

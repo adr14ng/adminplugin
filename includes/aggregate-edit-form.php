@@ -22,7 +22,7 @@ function aggregate_post() {
 	$user_id = $user->ID;
 	$userCat = get_user_meta($user_id, 'user_cat');
 	
-	if(isset($_REQUEST['cat'])) //if we already have the category page request
+	if(isset($_REQUEST['department_shortname'])) //if we already have the category page request
 	{
 		edit_aggregate_post();
 	}
@@ -68,7 +68,7 @@ function edit_aggregate_post(){
 	/******************************************
 	 * Get posts for category
 	 *****************************************/
-	 if($post_cat = $_REQUEST['cat'] ){
+	 if($post_cat = $_REQUEST['department_shortname'] ){
 		$term_id = term_exists( $post_cat );
 		
 		if($term_id != 0){	//if the term exists
@@ -104,8 +104,8 @@ function edit_aggregate_post(){
 ?>
 	<br />
 	<h1><?php echo $term->description; ?> </h1>
-	<p>You can update the academic organization overview and any program from this page. Don't forget to save any updates.</p>
-	<p>There is a link in the side bar to update the courses associated with this academic organization</p>
+	<p>You can update the academic organization overview and programs associated with it on this page. Don't forget to save any updates.</p>
+	<p>Click on the links above to navigate to home, edit the courses, or view the approved circulum proposals of this department.</p>
 <?php
 	//Create top tabs to switch between posts
 	$isFirst = true; //to make active tab
@@ -191,9 +191,9 @@ function get_aggregate_edit_link($cat, $context='') {
 	
 	//wordpresses context display
 	if( 'display' == $context)
-		$action = '&amp;cat=%s&amp;action=edit';
+		$action = '&amp;department_shortname=%s&amp;action=edit';
 	else
-		$action = '&cat=%s&action=edit';
+		$action = '&department_shortname=%s&action=edit';
 	
 	return admin_url(sprintf($sformat . $action, $cat));
 }

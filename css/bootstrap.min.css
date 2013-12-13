@@ -47,7 +47,7 @@
 .inactive{display:none;}
 /*Responsive*/
 .clearfix:after{clear:both;}
-@-ms-viewport{width:device-width;}@media screen and (max-width:400px){@-ms-viewport{width:320px;}}.hidden{display:none !important;visibility:hidden !important;}
+@-ms-viewport{width:device-width;}@media screen and (max-width:400px){@-ms-viewport{width:320px;}}
 .visible-xs{display:none !important;}tr.visible-xs{display:none !important;}
 th.visible-xs,td.visible-xs{display:none !important;}
 @media (max-width:767px){.visible-xs{display:block !important;}tr.visible-xs{display:table-row !important;} th.visible-xs,td.visible-xs{display:table-cell !important;}}@media (min-width:768px) and (max-width:991px){.visible-xs.visible-sm{display:block !important;}tr.visible-xs.visible-sm{display:table-row !important;} th.visible-xs.visible-sm,td.visible-xs.visible-sm{display:table-cell !important;}}

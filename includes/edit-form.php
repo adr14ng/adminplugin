@@ -11,7 +11,7 @@
  * field_group.php
 	in function validate_page()
 		//validate page (Aggregate Edit)
-		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
+		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) )
 		{
 			$return = true;
 		}
@@ -20,7 +20,7 @@
  * post.php 
  * 	in function validate_page()
 		//validate page (Aggregate Edit)
-		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) )
+		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) )
 		{
 			$return = true;
 		}
@@ -34,7 +34,7 @@
 
  * 		replace js
 		//Modified to make IDs unique
-		<?php if(isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['cat'] ) ):?>
+		<?php if(isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) ):?>
 			document.getElementById('<?php echo $id; ?>').id = '<?php echo $id.'_'.$post_ID; ?>';
 			
 			$('#<?php echo $id.'_'.$post_ID ?>').addClass('<?php echo $class; ?>').removeClass('hide-if-js');
@@ -199,7 +199,7 @@ require_once(ABSPATH.'wp-admin/admin-header.php');
 <?php endif; ?>
 
 <div id="message<?php echo '-'.$post_ID; ?>" class="updated <?php if($message) echo 'visible'; else echo 'invisible';?>"><p>
-<?php if($message) echo $message; else echo "Documents Updated";?>
+<?php if($message) echo $message; else echo "All files saved";?>
 </p></div>
 
 <div id="lost-connection-notice<?php echo '-'.$post_ID; ?>" class="error hidden">
@@ -320,27 +320,14 @@ do_meta_boxes($post_type, 'side', $post);
 ?>
 
 <div id="submitalldiv" class="postbox ">
-<h3><span>Update Content</span></h3>
+<h3><span>Save Content</span></h3>
 <div class="inside">
 <div class="submitbox" id="submitall">
-<button type="button" class="btn btn-primary submitall">Update</button>
+<button type="button" class="btn btn-primary submitall">Save</button>
 </div>
 </div>
 </div>
 
-<div id="coursesdiv" class="postbox ">
-	<h3><span>Courses</span></h3>
-	<div class="inside">
-		<div class="coursebox" id="courses">
-			<p>Click below to edit this department's courses.</p>
-			<p>This will navigate away from this page.
-			<em>Remember to save before proceding</em></p>
-			<a href="<?php echo admin_url('edit.php?post_type=courses&department_shortname='.$post_cat); ?>" title="courses">
-				<button id="course" type="button" class="btn btn-success">Courses</button>
-			</a>
-		</div>
-	</div>
-</div>
 </div>
 
 <div id="postbox-container-2" class="postbox-container">

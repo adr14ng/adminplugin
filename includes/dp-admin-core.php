@@ -93,8 +93,8 @@ class DP_Admin {
 		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
 		
 		//if we didn;t get it from the args
-		if(!$cats && isset($_REQUEST['cat']))
-			$cats = $_REQUEST['cat'];
+		if(!$cats && isset($_REQUEST['department_shortname']))
+			$cats = $_REQUEST['department_shortname'];
 
 		if(is_array($userCat)){foreach ($userCat as $user){
 			$user = strtolower($user);
@@ -154,6 +154,21 @@ class DP_Admin {
 	 
 		// return $toolbars - IMPORTANT!
 		return $toolbars;
+	}
+	
+	/**
+	 * Register color schemes.
+	 */
+	function add_csun_colors() {
+		$suffix = is_rtl() ? '-rtl' : '';
+		$basedir = dirname(plugin_dir_url(__FILE__));
+
+		wp_admin_css_color( 
+			'csun', __( 'CSUN' ), 
+			$basedir . '/css/colors'.$suffix.'.css',
+			array( '#000000', '#666666', '#d99f5f', '#990000' ), 
+			array( 'base' => '#000', 'focus' => '#fff', 'current' => '#fff' )
+		);
 	}
 	
 } //dp_admin

@@ -1,6 +1,10 @@
+#wp-toolbar > ul > li {
+    display: block;
+}
+
 #adminmenuback,
-#adminmenuwrap,
-#screen-meta-links {
+#adminmenuwrap/*,
+#screen-meta-links */{
 	display: none;
 }
 
@@ -10,4 +14,16 @@
 
 #wp-admin-bar-csun_dashboard_link .ab-icon:before{
 	content: "\f102";
+}
+
+#wp-admin-bar-csun_progam_link .ab-icon:before{
+	content: "\f118";
+}
+
+#wp-admin-bar-csun_course_link .ab-icon:before{
+	content: "\f327";
+}
+
+#wp-admin-bar-csun_file_link .ab-icon:before{
+	content: "\f233";
 }
