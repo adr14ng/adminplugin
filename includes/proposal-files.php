@@ -22,38 +22,35 @@ function proposal_page() {
 	}
 	else //list all pages
 	{
-		//list_proposals();
-		echo 'Please choose a category.';
+		list_proposal();
 	}
 }
 
-/*/list department pages
-function list_aggregate_post() {
+//list department pages
+function list_proposal() {
 	//need to use word presses list table and our custom one
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	require( dirname(__FILE__) . '/class-dp-aggregate-list-table.php' );
+	require( dirname(__FILE__) . '/class-proposal-list-table.php' );
 	
 	//header title, plus links to make new programs/departments?>
 	<div class = "wrap">
-	<h2>Departments and Programs
-		<a href="<?php echo admin_url('post-new.php?post_type=departments')?>" class="add-new-h2">Add New Department</a>
-		<a href="<?php echo admin_url('post-new.php?post_type=programs')?>" class="add-new-h2">Add New Program</a>
-	</h2>
+	<h2>Proposals and Memos</h2>
 	
 	<?//Createthe aggregate list table
-	$aggr_list_table = new Aggregate_List_Table();
-	$aggr_list_table->prepare_items();
+	$prop_list_table = new Proposal_List_Table();
+	$prop_list_table->prepare_items();
 	
 	//Search?>
-	<form class="search-form agg-form" action method="get">
-		<input type="hidden" name="page" value="dp_page">
-		<?php $aggr_list_table->search_box( 'Search', 'aggr' ); ?>
+	<form class="search-form prop-form" action method="get">
+		<input type="hidden" name="page" value="proposals">
+		<?php $prop_list_table->search_box( 'Search', 'aggr' ); ?>
 	</form>
 	
 	<?php //display the aggregate list table
-	$aggr_list_table->display(); ?>
+	$prop_list_table->display(); ?>
 	</div>
-<?}	//end list aggregrate post*/
+<?}	//end list aggregrate post
+
 
 //Creates the edit page where all posts are edited
 function edit_proposals(){
@@ -69,7 +66,9 @@ function edit_proposals(){
 			$args=array(
 				'post_type' => 'attachment',
 				//'post__not_in' => $ids, // avoid duplicate posts
-				'numberposts' => 150,
+				'numberposts' => -1,
+				'orderby' => 'title',
+				'order' => 'ASC',
 				'meta_key' => 'user_cat',
 				'meta_query' => array(
 					array(
@@ -96,16 +95,17 @@ function edit_proposals(){
 	 * Build Overall Page
 	 ********************************************/
 	
+	$term = get_term($term_id, 'department_shortname');
 	$alternate = true;
 	?>
 	<div class="wrap">
-	<h2> Curriculum Proposals </h2> <br />
+	<h2>Proposals and Memos : <?php echo $term->description; ?></h2> <br />
 	
 	<table class="wp-list-table widefat" cellspacing="0">
 	
 		<thead>
 			<tr>
-				<th scope="col" id="col_name" class="manage-column column-col_name" style=""><span>Proposal</span></th>
+				<th scope="col" id="col_name" class="manage-column column-col_name" style=""><span>Files</span></th>
 			</tr>
 		</thead>
 		
@@ -113,7 +113,7 @@ function edit_proposals(){
 	<?php foreach($posts as $post) {
 		$alternate = !$alternate;?>
 		<tr class="<?php if($alternate) echo 'alternate'; ?>"><td class="col_name column-col_name">
-			<a href=<?php echo $post->guid; ?> >
+			<a class="row-title" href=<?php echo $post->guid; ?> >
 			<?php echo $post->post_title; ?> </a>
 			<br />
 			<?php echo $post->post_content; ?> <br />

@@ -76,33 +76,32 @@ function csun_dashboard_widgets() {
 	remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
 	remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
 	remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
-	add_meta_box('csun_dashboard_links', 'What to Edit', 'csun_links_widget', 'dashboard', 'side', 'high');
-	add_meta_box('csun_dashboard_welcome', 'Welcome', 'csun_welcome_widget', 'dashboard', 'normal', 'high');
+	wp_add_dashboard_widget( 'csun_dashboard', 'Welcome', 'csun_custom_widget' );
 }
 add_action('wp_dashboard_setup', 'csun_dashboard_widgets');
 
 //Widget that lists departments a user has access to edit
-function csun_links_widget() {
+function csun_custom_widget() {?>
+	<h2> Welcome to the CSUN Catalog </h2>
+	<p>You can edit your department information by clicking the links on the right.</p>
+	<p>Click on "Update" to save.</p>
+	<p>Thank you. </p>
+	
+<?php
 	$user_id = get_current_user_id();
 	$userCat = get_user_meta($user_id, 'user_cat');
 	$userCat = $userCat[0];
 	
 	foreach($userCat as $link) {
+		$term_id = term_exists( $link );
+		echo get_field( 'reviewed', 'department_shortname_'.$term_id );
 		echo '<a href="'.admin_url().'admin.php?page=dp_page&department_shortname='.$link.'&action=edit">';//get link
 		echo '<button type="button" class="btn btn-primary">';
 		echo strtoupper($link);//cat name
 		echo '</button>';
-		echo '</a>';
+		echo '</a><br />';
 	}
 }
-
-//Widget that displays helpful text to a department editor
-function csun_welcome_widget() { ?>
-<h2> Welcome to the CSUN Catalog </h2>
-<p>You can edit your department information by clicking the links on the right.</p>
-<p>Click on "Update" to save.</p>
-<p>Thank you. </p>
-<?php }
 
 
 /*****************************************************

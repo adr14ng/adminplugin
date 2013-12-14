@@ -1,6 +1,13 @@
-$base-color: #000;
-$highlight-color: darken( desaturate( #eabe3f, 10% ), 5% );
-$notification-color: #d99f5f;
-$action-color: #900;
+$base-color: #222222;
+$icon-color: #fff;
+$highlight-color: #990000;
+$notification-color: #bc8181;
+$button-color: #4868e1;
 
-@import "_admin.scss";
+$menu-submenu-text: #e2e2e2;
+$menu-submenu-focus-text: #900;
+$menu-submenu-background: #333333;
+$menu-submenu-background-alt: #900;
+
+@import "template/colors.css";
+@import "template/_admin.scss";

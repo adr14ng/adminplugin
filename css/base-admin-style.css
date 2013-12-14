@@ -68,6 +68,11 @@ div.updated p{
 	content: "\f231" !important;
 }
 
+/* Proposals and Memos: Briefcase */
+#toplevel_page_proposals .wp-menu-image:before{
+	content: "\f233" !important;
+}
+
 /* View All: Briefcase */
 #toplevel_page_dp_page .wp-menu-image:before{
 	content: "\f322" !important;

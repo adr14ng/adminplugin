@@ -3,8 +3,8 @@
 }
 
 #adminmenuback,
-#adminmenuwrap/*,
-#screen-meta-links */{
+#adminmenuwrap,
+.add-new-h2{
 	display: none;
 }
 

@@ -1,22 +1,4 @@
 /*
- * Dashicons mixin
- * use: @include dashicons( '\f140' );
- */
-@mixin dashicons( $icon ) {
-	content: $icon;
-	font: normal 20px/1 'dashicons';
-	speak: none;
-	display: block;
-	padding: 0;
-	text-indent: 0;
-	text-align: center;
-	position: relative;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-decoration: none !important;
-}
-
-/*
  * Button mixin- creates 3d-ish button effect with correct 
  * highlights/shadows, based on a base color.
  */
