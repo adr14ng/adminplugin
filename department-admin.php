@@ -46,6 +46,9 @@ if ( is_admin() ) {
 	//Chage layout for department editors
 	add_action('init', array( 'DP_Admin', 'change_layout'));	
 	
+	//Make editor posts save as pending
+	add_filter( 'wp_insert_post_data', array( 'DP_Admin', 'make_pending_post'));
+	
 	//Add custom footer 
 	function csun_footer_admin () 
 	{	  

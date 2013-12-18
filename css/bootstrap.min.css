@@ -18,6 +18,15 @@
 .btn-success{color:#ffffff;background-color:#94d094;border-color:#7fb97f;}.btn-success:hover,.btn-success:focus,.btn-success:active,.btn-success.active,.open .dropdown-toggle.btn-success{color:#ffffff;background-color:#69a369;border-color:#398439;}
 .btn-success:active,.btn-success.active,.open .dropdown-toggle.btn-success{background-image:none;}
 .btn-success.disabled,.btn-success[disabled],fieldset[disabled] .btn-success,.btn-success.disabled:hover,.btn-success[disabled]:hover,fieldset[disabled] .btn-success:hover,.btn-success.disabled:focus,.btn-success[disabled]:focus,fieldset[disabled] .btn-success:focus,.btn-success.disabled:active,.btn-success[disabled]:active,fieldset[disabled] .btn-success:active,.btn-success.disabled.active,.btn-success[disabled].active,fieldset[disabled] .btn-success.active{background-color:#5cb85c;border-color:#4cae4c;}
+
+.btn-pending{color:#ffffff;background-color:#d9534f;border-color:#d43f3a;}.btn-pending:hover,.btn-pending:focus,.btn-pending:active,.btn-pending.active,.open .dropdown-toggle.btn-pending{color:#ffffff;background-color:#d2322d;border-color:#ac2925;}
+.btn-pending:active,.btn-pending.active,.open .dropdown-toggle.btn-pending{background-image:none;}
+.btn-pending.disabled,.btn-pending[disabled],fieldset[disabled] .btn-pending,.btn-pending.disabled:hover,.btn-pending[disabled]:hover,fieldset[disabled] .btn-pending:hover,.btn-pending.disabled:focus,.btn-pending[disabled]:focus,fieldset[disabled] .btn-pending:focus,.btn-pending.disabled:active,.btn-pending[disabled]:active,fieldset[disabled] .btn-pending:active,.btn-pending.disabled.active,.btn-pending[disabled].active,fieldset[disabled] .btn-pending.active{background-color:#d9534f;border-color:#d43f3a;}
+
+.btn-reviewed{color:#ffffff;background-color:#5cb85c;border-color:#4cae4c;}.btn-reviewed:hover,.btn-reviewed:focus,.btn-reviewed:active,.btn-reviewed.active,.open .dropdown-toggle.btn-reviewed{color:#ffffff;background-color:#47a447;border-color:#398439;}
+.btn-reviewed:active,.btn-reviewed.active,.open .dropdown-toggle.btn-reviewed{background-image:none;}
+.btn-reviewed.disabled,.btn-reviewed[disabled],fieldset[disabled] .btn-reviewed,.btn-reviewed.disabled:hover,.btn-reviewed[disabled]:hover,fieldset[disabled] .btn-reviewed:hover,.btn-reviewed.disabled:focus,.btn-reviewed[disabled]:focus,fieldset[disabled] .btn-reviewed:focus,.btn-reviewed.disabled:active,.btn-reviewed[disabled]:active,fieldset[disabled] .btn-reviewed:active,.btn-reviewed.disabled.active,.btn-reviewed[disabled].active,fieldset[disabled] .btn-reviewed.active{background-color:#5cb85c;border-color:#4cae4c;}
+
 /*Tabs*/
 .nav{margin-bottom:0;padding-left:6;list-style:none;}.nav:before,.nav:after{content:" ";display:table;}
 .nav:after{clear:both;}

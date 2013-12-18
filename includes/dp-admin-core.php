@@ -76,8 +76,8 @@ class DP_Admin {
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
 		//if we're not trying to edit or publish edits of a post, return
-		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' &&
-			$cap !== 'edit_programs' && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'){
+		if( $cap !== 'edit_posts' /*&& $cap !== 'publish_posts'*/ && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' &&
+			$cap !== 'edit_programs' /*&& $cap !== 'publish_programs'*/ && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'){
 			return $caps;
 		}
 		
@@ -170,6 +170,24 @@ class DP_Admin {
 			array( 'base' => '#000', 'focus' => '#fff', 'current' => '#fff' )
 		);
 	}
+	
+	function make_pending_post($data) {
+	
+		global $current_user, $wpdb;
+		$role = $wpdb->prefix . 'capabilities';
+		$current_user->role = array_keys($current_user->$role);
+		$role = $current_user->role[0];
+		
+		if ('dp_editor' == $role ){
+
+			if(isset( $data['post_status'])) {
+				$data['post_status']= 'pending';	//set published status to pending review
+			}
+		}
+		
+		return $data;
+	}
+
 	
 } //dp_admin
 ?>
