@@ -1,29 +1,608 @@
 #wp-toolbar > ul > li {
-    display: block;
-}
+		display: block;
+	}
 
 #adminmenuback,
 #adminmenuwrap,
+#wpadminbar li#wp-admin-bar-menu-toggle,
 .add-new-h2{
 	display: none;
+}
+
+#wpbody {
+    padding-top: 28px;
+}
+
+#screen-meta {
+	margin: 0px, 53px, -1px, 0px;
+}
+
+#screen-meta-links {
+	margin: 0px, 53px, 0px, 0px;
+}
+
+.wrap {
+	margin: 10px 53px 0px 2px;
 }
 
 #wpcontent, #wpfooter {
 	margin-left: 45px;
 }
 
+/*****************************
+ * Edit Pages
+ ****************************/
+#wp-toolbar > ul > li#wp-admin-bar-view,
+ #titlediv .inside,
+.subsubsub, .search-box, .tablenav,
+#minor-publishing ,
+.wp-editor-tabs,
+.tab-content #titlediv,
+.tab-content #acf-degree_type,
+.tab-content #acf-fund_source{
+	display: none;
+}
+
+/*******************************
+ * Admin Bar
+ *******************************/
+
+#csun-bar ul li#department-name {
+	margin: 0 3px 0 21px;
+}
+
+#csun-bar * {
+	height: auto;
+	width: auto;
+	margin: 0;
+	padding: 0;
+	position: static;
+	text-shadow: none;
+	text-transform: none;
+	letter-spacing: normal;
+	font: normal 13px/32px "Open Sans", sans-serif;
+	border-radius: 0;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing:    content-box;
+	box-sizing:         content-box;
+	-webkit-transition: none;
+	-moz-transition:    none;
+	-o-transition:      none;
+	transition:         none;
+	-webkit-font-smoothing: subpixel-antialiased; /* Prevent Safari from switching to standard antialiasing on hover */
+}
+
+.rtl #csun-bar * {
+	font-family: Tahoma, sans-serif;
+}
+
+html:lang(he-il) .rtl #csun-bar *  {
+ 	font-family: Arial, sans-serif;
+}
+
+#csun-bar #wp-admin-bar-site-name a.ab-item,
+#csun-bar #wp-admin-bar-my-sites a.ab-item {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#csun-bar ul li:before,
+#csun-bar ul li:after {
+	content: normal;
+}
+
+#csun-bar a,
+#csun-bar a:hover,
+#csun-bar a img,
+#csun-bar a img:hover {
+	outline: none;
+	border: none;
+	text-decoration: none;
+	background: none;
+}
+
+#csun-bar a:focus,
+#csun-bar a:active,
+#csun-bar input[type="text"],
+#csun-bar input[type="password"],
+#csun-bar input[type="number"],
+#csun-bar input[type="search"],
+#csun-bar input[type="email"],
+#csun-bar input[type="url"],
+#csun-bar select,
+#csun-bar textarea,
+#csun-bar div {
+	outline: none;
+}
+
+#csun-bar {
+	direction: ltr;
+	font: normal 13px/32px "Open Sans", sans-serif;
+	height: 32px;
+	position: fixed;
+	top: 32px;
+	left: 0;
+	width: 100%;
+	min-width: 600px; /* match the min-width of the body in wp-admin.css */
+	z-index: 99990;
+}
+
+#csun-bar .ab-sub-wrapper,
+#csun-bar ul,
+#csun-bar ul li {
+	background: none;
+	clear: none;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	text-indent: 0;
+	z-index: 99990;
+}
+
+#csun-bar ul#csun-dept-bar>li {
+	margin-right: 0;
+}
+
+/* Prevent a Chrome bug that inadvertantly activates
+   :hover states on an element that touches the extreme 
+   top left corner of the viewport. See #18868 */
+#csun-bar .quicklinks {
+	border-left: 1px solid transparent;
+}
+
+#csun-bar .quicklinks ul {
+	text-align: left;
+}
+
+#csun-bar li {
+	float: left;
+}
+
+#csun-bar .ab-empty-item {
+	outline: none;
+}
+
+#csun-bar .quicklinks .ab-top-secondary > li {
+	float: right;
+}
+
+#csun-bar .quicklinks a,
+#csun-bar .quicklinks .ab-empty-item,
+#csun-bar .shortlink-input {
+	height: 32px;
+	display: block;
+	padding: 0 10px;
+	margin: 0;
+}
+
+#csun-bar .quicklinks > ul > li > a {
+	padding: 0 8px 0 7px;
+}
+
+#csun-bar .menupop .ab-sub-wrapper,
+#csun-bar .shortlink-input {
+	margin: 0;
+	padding: 0;
+	-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+	box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+	display: none;
+	position: absolute;
+	float: none;
+}
+
+#csun-bar.ie7 .menupop .ab-sub-wrapper,
+#csun-bar.ie7 .shortlink-input {
+	top: 32px;
+	left: 0;
+}
+
+#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper {
+	min-width: 100%;
+}
+
+#csun-bar .ab-top-secondary .menupop .ab-sub-wrapper {
+	right: 0;
+	left: auto;
+}
+
+#csun-bar .ab-submenu {
+	padding: 6px 0;
+}
+
+#csun-bar .selected .shortlink-input {
+	display: block;
+}
+
+#csun-bar .quicklinks .menupop ul li {
+	float: none;
+}
+
+#csun-bar .quicklinks .menupop ul li a strong {
+	font-weight: bold;
+}
+
+#csun-bar .quicklinks .menupop ul li .ab-item,
+#csun-bar .quicklinks .menupop ul li a strong,
+#csun-bar .quicklinks .menupop.hover ul li .ab-item,
+#csun-bar.nojs .quicklinks .menupop:hover ul li .ab-item,
+#csun-bar .shortlink-input {
+	line-height: 26px;
+	height: 26px;
+	white-space: nowrap;
+	min-width: 140px;
+}
+
+#csun-bar .shortlink-input {
+	width: 200px;
+}
+
+#csun-bar.nojs li:hover > .ab-sub-wrapper,
+#csun-bar li.hover > .ab-sub-wrapper {
+	display: block;
+}
+
+#csun-bar .menupop li:hover > .ab-sub-wrapper,
+#csun-bar .menupop li.hover > .ab-sub-wrapper {
+	margin-left: 100%;
+	margin-top: -32px;
+}
+
+#csun-bar .ab-top-secondary .menupop li:hover > .ab-sub-wrapper,
+#csun-bar .ab-top-secondary .menupop li.hover > .ab-sub-wrapper {
+	margin-left: 0;
+	left: inherit;
+	right: 100%;
+}
+
+
+#csun-bar > #csun-toolbar > #csun-dept-bar .ab-icon,
+#csun-bar .ab-icon,
+#csun-bar .ab-item:before {
+	position: relative;
+	float: left;
+	font: normal 20px/1 'dashicons';
+	speak: none;
+	padding: 4px 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-image: none !important;
+	margin-right: 6px;
+}
+
+#csun-bar .ab-icon:before,
+#csun-bar .ab-item:before {
+	position: relative;
+	-moz-transition: all .1s ease-in-out;
+	-webkit-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}
+
+#csun-bar .ab-label {
+	display: inline-block;
+	height: 32px;
+}
+
+#csun-bar .menupop .menupop > .ab-item:before,
+#csun-bar .ab-top-secondary .menupop .menupop > .ab-item:before {
+	position: absolute;
+	font: normal 17px/1 'dashicons';
+	speak: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#csun-bar .menupop .menupop > .ab-item {
+	display: block;
+	padding-right: 2em;
+}
+
+#csun-bar .menupop .menupop > .ab-item:before {
+	top: 1px;
+	right: 4px;
+	content: '\f139';
+	color: inherit;
+}
+
+#csun-bar .ab-top-secondary .menupop .menupop > .ab-item {
+	padding-left: 2em;
+	padding-right: 1em;
+}
+
+#csun-bar .ab-top-secondary .menupop .menupop > .ab-item:before {
+	top: 5px;
+	left: 3px;
+	content: '\f141';
+}
+
+#csun-bar .quicklinks .menupop ul.ab-sub-secondary {
+	display: block;
+	position: relative;
+	right: auto;
+	margin: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+
+#csun-bar .quicklinks a span#ab-updates {
+	display: inline;
+	padding: 2px 5px;
+	font-size: 10px;
+	font-weight: bold;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+}
+
+#csun-bar .ab-top-secondary {
+	float: right;
+}
+
+#csun-bar ul li:last-child,
+#csun-bar ul li:last-child .ab-item {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+
+/* Skip link */
+#csun-bar .screen-reader-text,
+#csun-bar .screen-reader-text span {
+	position: absolute;
+	left: -1000em;
+	top: -1000em;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+}
+
+#csun-bar .screen-reader-shortcut {
+	position: absolute;
+	top: -1000em;
+}
+
+#csun-bar .screen-reader-shortcut:focus {
+	left: 6px;
+	top: 7px;
+	height: auto;
+	width: auto;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 15px 23px 14px;
+	z-index: 99991;
+	line-height: normal;
+	text-decoration: none;
+}
+
+/**
+ * IE 6-targeted rules
+ */
+* html #csun-bar {
+	overflow: hidden;
+	position: absolute;
+}
+
+* html #csun-bar .quicklinks ul li a {
+	float: left;
+}
+
+* html #csun-bar .menupop a span {
+	background-image: none;
+}
+
+/* No @font-face support */
+.no-font-face #csun-bar ul.ab-second-menu > li > a.ab-item {
+	display: block;
+	width: 45px;
+	text-align: center;
+	overflow: hidden;
+	margin: 0 3px;
+}
+
+
+.no-font-face #csun-bar .ab-icon,
+.no-font-face #csun-bar .ab-icon:before,
+.no-font-face #csun-bar a.ab-item:before {
+	display: none !important;
+}
+
+.no-font-face #csun-bar ul.ab-second-menu > li > a > span.ab-label {
+	display: inline;
+}
+
+/* End no @font-face */
+
+@media screen and ( max-width: 782px ) {
+	/* Toolbar Touchification*/
+	html #csun-bar {
+		left: 0 !important;
+		z-index: 450 !important;
+		top: 46px;
+		height: 46px;
+		min-width: 300px;
+
+	/*	These rules break dropdown tappability on Chrome/Android.
+		-webkit-transform: translate3d(0, 0, 0);
+		-webkit-backface-visibility: hidden;
+		-webkit-transition: 0;
+		transform: translate3d(0, 0, 0);
+		backface-visibility: hidden;
+		transition: 0;
+	*/
+	}
+
+	#csun-bar * {
+		font: normal 14px/32px "Open Sans", sans-serif;
+	}
+
+	#csun-bar .quicklinks li > a,
+	#csun-bar .quicklinks .ab-empty-item {
+		padding: 0;
+		height: 46px;
+		line-height: 46px;
+		width: auto;
+	}
+
+	#csun-bar .ab-icon {
+		font: 40px/1 dashicons !important;
+		margin: 0;
+		padding: 0;
+		width: 50px;
+		height: 46px;
+		text-align: center;
+	}
+
+	#csun-bar .ab-icon:before {
+		text-align: center;
+	}
+
+	#csun-bar .ab-submenu {
+		padding: 0;
+	}
+
+	#csun-bar .ab-label {
+		display: none;
+	}
+
+	#csun-bar .menupop li:hover > .ab-sub-wrapper,
+	#csun-bar .menupop li.hover > .ab-sub-wrapper {
+		margin-top: -46px;
+	}
+
+	#csun-bar .ab-second-menu .menupop .ab-sub-wrapper .menupop > .ab-item {
+		padding-right: 30px;
+	}
+
+	#csun-bar .menupop .menupop > .ab-item:before {
+		top: 10px;
+		right: 6px;
+	}
+
+	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper .ab-item {
+		font-size: 16px;
+		padding: 6px 15px 12px;
+	}
+
+	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper a:empty {
+		display: none;
+	}
+
+	#csun-bar .ab-icon,
+	#csun-bar .ab-item:before {
+		padding: 0;
+	}
+	
+	#csun-bar > #csun-toolbar > #csun-dept-bar .ab-icon,
+	#csun-bar .ab-icon,
+	#csun-bar .ab-item:before {
+		padding: 0;
+		margin-right: 0;
+	}
+	
+	#wpbody {
+		padding-top: 46px;
+	}
+
+	/* Allow dropdown list items to appear normally */
+	#csun-bar li:hover ul li,
+	#csun-bar li.hover ul li,
+	#csun-bar li:hover ul li:hover ul li {
+		display: list-item;
+	}
+	
+	/* Override default min-width so dropdown lists aren't stretched
+		to 100% viewport width at responsive sizes. */
+	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper {
+		min-width: intrinsic;
+		min-width: -webkit-fit-content;
+		min-width: -moz-fit-content;
+		min-width: fit-content;
+	}
+
+	#csun-bar ul#csun-dept-bar > li {
+		margin-right: 0;
+	}
+
+	/* Experimental fix for touch toolbar dropdown positioning */
+	#csun-bar .ab-second-menu,
+	#csun-bar .ab-top-secondary{
+		position: static;
+	}
+
+}
+
+/* Smartphone */
+@media screen and (max-width: 600px) {
+	#csun-bar {
+		position: absolute;
+	}
+	
+	#wp-responsive-overlay {
+		position: fixed;
+		top: 46px;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 390;
+	}
+	
+	#wpbody {
+		padding-top: 92px;
+	}
+
+	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper {
+		position: fixed;
+		width: 100%;
+		left: 0;
+	}
+
+	#csun-bar .menupop .menupop > .ab-item:before {
+		display: none;
+	}
+	
+	#csun-bar .ab-second-menu > .menupop li > .ab-sub-wrapper {
+		margin: 0;
+		width: 100%;
+		top: auto;
+		left: auto;
+		position: relative;
+	}
+	
+	#csun-bar .ab-second-menu > .menupop li > .ab-sub-wrapper .ab-item {
+		font-size: 16px;
+		padding: 6px 15px 19px 30px;
+	}
+	
+	#csun-bar li:hover ul li ul li {
+		display: list-item;
+	}
+	
+	#csun-bar ul li#department-name {
+		display: none;
+	}
+
+}
+
+
+
+
+/**********************************
+ * Dash Icons
+ *********************************/
 #wp-admin-bar-csun_dashboard_link .ab-icon:before{
 	content: "\f102";
 }
 
-#wp-admin-bar-csun_progam_link .ab-icon:before{
+#csun-progam-link .ab-icon:before{
 	content: "\f118";
 }
 
-#wp-admin-bar-csun_course_link .ab-icon:before{
+#csun-course-link .ab-icon:before{
 	content: "\f327";
 }
 
-#wp-admin-bar-csun_file_link .ab-icon:before{
+#csun-file-link .ab-icon:before{
 	content: "\f233";
 }

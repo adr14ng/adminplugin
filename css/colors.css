@@ -40,30 +40,30 @@ input[type=radio]:checked:before {
 
 /* Core UI */
 .wp-core-ui .button-primary {
-  background: #4868e1;
-  border-color: #2348d3;
+  background: #428bca;
+  border-color: #3071a9;
   color: white;
-  -webkit-box-shadow: inset 0 1px 0 #8a9eec, 0 1px 0 rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 1px 0 #8a9eec, 0 1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 0 1px 0 #7eb0db, 0 1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 0 #7eb0db, 0 1px 0 rgba(0, 0, 0, 0.15);
 }
 .wp-core-ui .button-primary:hover, .wp-core-ui .button-primary:focus {
-  background: #254bdb;
-  border-color: #1f40bd;
+  background: #3276b1;
+  border-color: #2a6496;
   color: white;
-  -webkit-box-shadow: inset 0 1px 0 #748ce8, 0 1px 0 rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 1px 0 #748ce8, 0 1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 0 1px 0 #6aa3d5, 0 1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 0 #6aa3d5, 0 1px 0 rgba(0, 0, 0, 0.15);
 }
 .wp-core-ui .button-primary:active {
-  background: #254bdb;
-  border-color: #1f40bd;
+  background: #3276b1;
+  border-color: #2a6496;
   color: white;
   -webkit-box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
   box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
 }
 .wp-core-ui .button-primary[disabled], .wp-core-ui .button-primary:disabled, .wp-core-ui .button-primary.button-primary-disabled {
-  color: #c7c9d1 !important;
-  background: #254bdb !important;
-  border-color: #1f40bd !important;
+  color: #c7ccd1 !important;
+  background: #3276b1 !important;
+  border-color: #2a6496 !important;
   text-shadow: none !important;
 }
 .wp-core-ui .wp-ui-primary {
@@ -446,10 +446,10 @@ ul#adminmenu > li.current > a.current:after {
 .wp-slider .ui-slider-handle,
 .wp-slider .ui-slider-handle.ui-state-hover,
 .wp-slider .ui-slider-handle.focus {
-  background: #4868e1;
-  border-color: #2348d3;
-  -webkit-box-shadow: inset 0 1px 0 #8a9eec, 0 1px 0 rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 1px 0 #8a9eec, 0 1px 0 rgba(0, 0, 0, 0.15);
+  background: #428bca;
+  border-color: #3071a9;
+  -webkit-box-shadow: inset 0 1px 0 #7eb0db, 0 1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 0 #7eb0db, 0 1px 0 rgba(0, 0, 0, 0.15);
 }
 
 /* Thickbox: Plugin information */
@@ -459,7 +459,7 @@ ul#adminmenu > li.current > a.current:after {
 }
 
 #plugin-information .action-button {
-  background: #4868e1;
+  background: #428bca;
 }
 
 /* Responsive Component */
@@ -478,4 +478,63 @@ div#wp-responsive-toggle a:before {
 
 .wp-responsive-open #wpadminbar #wp-admin-bar-menu-toggle a {
   background: #333333;
+}
+
+/* CSUN Bar */
+#csun-bar {
+  color: white;
+  background: #990000;
+}
+
+#csun-bar .ab-item,
+#csun-bar a.ab-item,
+#csun-bar > #wp-toolbar span.ab-label,
+#csun-bar > #wp-toolbar span.noticon {
+  color: white;
+}
+
+#csun-bar .ab-icon,
+#csun-bar .ab-icon:before,
+#csun-bar .ab-item:before,
+#csun-bar .ab-item:after {
+  color: white;
+}
+
+#csun-bar .ab-second-menu > li:hover > .ab-item,
+#csun-bar .ab-second-menu > li.hover > .ab-item,
+#csun-bar .ab-second-menu > li > .ab-item:focus,
+#csun-bar.nojq .quicklinks .ab-second-menu > li > .ab-item:focus,
+#csun-bar-nojs .ab-second-menu > li.menupop:hover > .ab-item,
+#csun-bar .ab-second-menu > li.menupop.hover > .ab-item {
+  color: #990000;
+  background: #333333;
+}
+
+#csun-bar > #csun-toolbar li:hover span.ab-label,
+#csun-bar > #csun-toolbar li.hover span.ab-label,
+#csun-bar > #csun-toolbar a:focus span.ab-label {
+  color: #990000;
+}
+
+#csun-bar li:hover .ab-icon:before,
+#csun-bar li:hover .ab-item:before,
+#csun-bar li:hover .ab-item:after,
+#csun-bar li:hover #adminbarsearch:before {
+  color: #990000;
+}
+
+#csun-bar .ab-second-menu > li.active > .ab-item,
+#csun-bar > #csun-toolbar li.active span.ab-label,
+#csun-bar > #csun-toolbar li.active .ab-icon:before {
+  color: white;
+  background: #333333;
+}
+
+/* Active tab */
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: white;
+  background-color: #990000;
+  border-bottom: 1px solid #333333;
 }

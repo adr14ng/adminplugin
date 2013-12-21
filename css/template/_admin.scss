@@ -475,3 +475,64 @@ div#wp-responsive-toggle a:before {
 .wp-responsive-open #wpadminbar #wp-admin-bar-menu-toggle a {
 	background: $menu-submenu-background;
 }
+
+/* CSUN Bar */
+
+#csun-bar {
+	color: $menu-text;
+	background: $menu-submenu-background-alt;
+}
+
+#csun-bar .ab-item,
+#csun-bar a.ab-item,
+#csun-bar > #wp-toolbar span.ab-label,
+#csun-bar > #wp-toolbar span.noticon {
+	color: $menu-text;
+}
+
+#csun-bar .ab-icon,
+#csun-bar .ab-icon:before,
+#csun-bar .ab-item:before,
+#csun-bar .ab-item:after {
+	color: $menu-icon;
+}
+
+#csun-bar .ab-second-menu > li:hover > .ab-item,
+#csun-bar .ab-second-menu > li.hover > .ab-item,
+#csun-bar .ab-second-menu > li > .ab-item:focus,
+#csun-bar.nojq .quicklinks .ab-second-menu > li > .ab-item:focus,
+#csun-bar-nojs .ab-second-menu > li.menupop:hover > .ab-item,
+#csun-bar .ab-second-menu > li.menupop.hover > .ab-item {
+	color: $menu-submenu-focus-text;
+	background: $menu-submenu-background;
+}
+
+#csun-bar > #csun-toolbar li:hover span.ab-label,
+#csun-bar > #csun-toolbar li.hover span.ab-label,
+#csun-bar > #csun-toolbar a:focus span.ab-label {
+	color: $menu-submenu-focus-text;
+}
+
+#csun-bar li:hover .ab-icon:before,
+#csun-bar li:hover .ab-item:before,
+#csun-bar li:hover .ab-item:after,
+#csun-bar li:hover #adminbarsearch:before {
+	color: $menu-submenu-focus-text;
+}
+
+#csun-bar .ab-second-menu > li.active > .ab-item,
+#csun-bar > #csun-toolbar li.active span.ab-label,
+#csun-bar > #csun-toolbar li.active .ab-icon:before {
+	color: $menu-text;
+	background: $menu-submenu-background;
+}
+
+/* Active tab */
+
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:hover,
+.nav-tabs>li.active>a:focus{
+	color: $menu-text;
+	background-color: $menu-submenu-background-alt;
+	border-bottom:1px solid $menu-submenu-background;
+}

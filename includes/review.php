@@ -1,0 +1,170 @@
+<?php
+
+/**
+ * Creates the home page
+ */
+ 
+//need to enable url fopen
+//includes->dpadmin->plugs->wp-content->base
+$base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+
+function add_review_menu()
+{
+	add_menu_page( 'Review Status', 'Review Status', 'read', 
+				'review', 'review_page', $icon, 21 ); //need icon
+}
+
+//function that generates the aggregate post page
+function review_page() {	
+	global $current_user, $wpdb;
+		$role = $wpdb->prefix . 'capabilities';
+		$current_user->role = array_keys($current_user->$role);
+		$role = $current_user->role[0];
+		
+		if ('dp_editor' == $role ){
+			editor_home_page();
+		}
+		elseif ('administrator' == $role){
+			adminstrator_review_page();
+		}
+		else{
+			wp_die(__( 'You do not have permission to view this page.' ));
+		}
+}
+
+function editor_home_page() {
+	$option = get_option( 'main_dp_settings' );
+	$message = $option['welcome_message'];
+?>
+	<div class="wrap">
+	
+	<h2> Welcome to the CSUN Catalog </h2>
+	<p><?php echo $message; ?></p>
+	
+	
+<?php
+	
+	$due = $option['review_deadline'];
+	$user_id = get_current_user_id();
+	$userCat = get_user_meta($user_id, 'user_cat');
+	$userCat = $userCat[0];
+	?>
+	<table class="wp-list-table widefat" cellspacing="0">
+		<thead> 
+			<tr>
+				<th scope="col" id="col_name" class="manage-column column-col_name" style=""> <span>Department</span> </th>
+				<th scope="col" id="col_status" class="manage-column column-col_status" style=""><span>Status</span></th>
+				<th scope="col" id="col_date" class="manage-column column-col_date" style=""><span>Deadline</span></th>
+			</tr>
+		</thead>
+	<form name="review_status" action="<?php echo plugins_url().'/department-admin/includes/review.php'; ?>" method="post" id="review_status">
+		<?php wp_nonce_field('update_review_status'); ?>
+		<input type="hidden" id="referredby" name="referredby" value="<?php echo esc_url(wp_get_referer()); ?>" />
+		<input type="hidden" name="return" value="<?php echo admin_url('admin.php?page=review'); ?>" />
+		<input type="hidden" name="action" value="reviewed" />
+	<tbody id="the-list">
+	<?php
+	foreach($userCat as $link) :
+		$term_id = term_exists( $link );
+		
+		//Cleaned up term description holding department name
+		$dp_name = term_description( $term_id, 'department_shortname' );
+		$dp_name = strip_tags($dp_name);		//remove p tags
+		$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
+		
+		//Output row ?>
+
+		<tr>
+			<td class="col_name column-col_name">
+				<a class="row-title" href="<?php echo admin_url(); ?>admin.php?page=dp_page&department_shortname=<?php echo $link; ?>&action=edit">
+					<?php echo $dp_name; ?>
+				</a>
+			</td>
+			<td>
+				<input type="submit" name="reviewed-<?php echo $term_id; ?>" <?php 
+					if (get_field( 'reviewed', 'department_shortname_'.$term_id ))
+						echo ' value="Review Complete" class="btn btn-reviewed">';
+					else
+						echo ' value="Submit Final Review" class="btn">';
+					?>
+			<td>
+				<?php echo $due; ?>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+
+	</tbody></form></table></div>
+<?}
+
+function adminstrator_review_page() {
+	echo "This will list all eventually";
+}
+
+//Form action for reviewed status
+if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
+	unset($_POST['action']);
+
+	//includes->dpadmin->plugs->wp-content->base
+	$base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+	require_once($base_url.'/wp-admin/admin.php');
+
+	$field_key = get_option( 'main_dp_settings');	//acf field key for review, may need to change
+	$field_key = $field_key['review_field_key'];
+
+	//Security check
+	check_admin_referer( 'update_review_status');
+
+	
+	//Get all fields starting with reviewed- and their id
+	foreach($_POST as $key => $value){
+		$exp_key = explode('-', $key);
+		if($exp_key[0] == 'reviewed'){
+			 $update_terms[$exp_key[1]] = $value;
+		}
+	}
+	
+	//Update the values and send email when review is complete
+	foreach($update_terms as $term_id => $value){
+		if( $value === 'Review Complete')  //value based on form value
+			update_field($field_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
+		else {
+			update_field($field_key, 1, 'department_shortname_'.$term_id); //toggle to complete
+			
+			email_admin_review($term_id);	//notify admin
+		}
+	}
+	
+	//Redirect back to page
+	if(isset($_POST['return']))
+		wp_redirect( $_POST['return'] );
+	else
+		wp_redirect( admin_url() );
+}
+
+//Email admin to notify that a review is complete
+function email_admin_review($term_id) {
+	//Admin email from settings
+	$admin_email = get_bloginfo('admin_email');
+	
+	//Cleaned up term description holding department name
+	$dp_name = term_description( $term_id, 'department_shortname' );
+	$dp_name = strip_tags($dp_name);		//remove p tags
+	$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
+	
+	//Date in month, day, year format
+	$time = date('m-d-Y');
+	
+	$subject = $dp_name.' Review Completed';
+	$message = 'Hello Catalog Editor,
+			
+'.$dp_name.' has completed it\'s review of the catalog copy on '.$time.'. 
+
+Please examine and approve any changes.
+			
+Thank you.';
+	
+	//Send the email
+	wp_mail( $admin_email, $subject, $message);
+}
+
+?>

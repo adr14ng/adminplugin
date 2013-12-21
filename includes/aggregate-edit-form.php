@@ -101,12 +101,14 @@ function edit_aggregate_post(){
 	//this depends on the order in which they were created (so make departments first for now
 	
 	$term = get_term($term_id, 'department_shortname');
-?>
-	<br />
-	<h1><?php echo $term->description; ?> </h1>
-	<p>You can update the academic organization overview and programs associated with it on this page. Don't forget to save any updates.</p>
-	<p>Click on the links above to navigate to home, edit the courses, or view the approved circulum proposals of this department.</p>
-<?php
+	
+	$message = get_option( 'main_dp_settings');	//get message option
+	$message = $message['view_all_message'];
+
+	echo '<br />';
+	echo '<h1>'.$term->description.'</h1>';
+	echo '<p>'.$message.'</p>';
+
 	//Create top tabs to switch between posts
 	$isFirst = true; //to make active tab
 	echo '<ul id="edit-tabs" class="nav nav-tabs">';

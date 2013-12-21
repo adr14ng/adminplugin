@@ -8,7 +8,20 @@
 
 //Login redirect to dashpage
 function csun_login($redirect_to){
-	return admin_url('index.php');
+	//is there a user to check?
+    global $user;
+    if( isset( $user->roles ) && is_array( $user->roles ) ) {
+        //check for admins
+        if( in_array( "dp_editor", $user->roles ) ) {
+            // redirect them to the default place
+            return admin_url('admin.php?page=review');;
+        } else {
+		return admin_url('index.php');
+		}
+	}
+	else {
+		return $redirect_to;
+	}
 }
 add_filter( 'login_redirect', 'csun_login');
 
@@ -42,7 +55,15 @@ if ( is_admin() ) {
 	//Add menu for proposal files
 	require $plug_in_dir . '/includes/proposal-files.php';
 	add_action( 'admin_menu', 'add_proposal_menu' );
+	
+	//Add settings page
+	require $plug_in_dir . '/includes/dp-options.php';
+	$dp_settings_page = new DPAdminSettings();
 
+	//Add menu for review page
+	require $plug_in_dir . '/includes/review.php';
+	add_action( 'admin_menu', 'add_review_menu' );
+	
 	//Chage layout for department editors
 	add_action('init', array( 'DP_Admin', 'change_layout'));	
 	

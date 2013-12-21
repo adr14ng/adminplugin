@@ -323,7 +323,7 @@ do_meta_boxes($post_type, 'side', $post);
 <h3><span>Save Content</span></h3>
 <div class="inside">
 <div class="submitbox" id="submitall">
-<button type="button" class="btn btn-primary submitall">Save</button>
+	<button type="button" class="button button-primary submitall button-large" accesskey="p">Save</button>
 </div>
 </div>
 </div>

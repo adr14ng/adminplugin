@@ -15,14 +15,6 @@
 .btn-primary:active,.btn-primary.active,.open .dropdown-toggle.btn-primary{background-image:none;}
 .btn-primary.disabled,.btn-primary[disabled],fieldset[disabled] .btn-primary,.btn-primary.disabled:hover,.btn-primary[disabled]:hover,fieldset[disabled] .btn-primary:hover,.btn-primary.disabled:focus,.btn-primary[disabled]:focus,fieldset[disabled] .btn-primary:focus,.btn-primary.disabled:active,.btn-primary[disabled]:active,fieldset[disabled] .btn-primary:active,.btn-primary.disabled.active,.btn-primary[disabled].active,fieldset[disabled] .btn-primary.active{background-color:#428bca;border-color:#357ebd;}
 
-.btn-success{color:#ffffff;background-color:#94d094;border-color:#7fb97f;}.btn-success:hover,.btn-success:focus,.btn-success:active,.btn-success.active,.open .dropdown-toggle.btn-success{color:#ffffff;background-color:#69a369;border-color:#398439;}
-.btn-success:active,.btn-success.active,.open .dropdown-toggle.btn-success{background-image:none;}
-.btn-success.disabled,.btn-success[disabled],fieldset[disabled] .btn-success,.btn-success.disabled:hover,.btn-success[disabled]:hover,fieldset[disabled] .btn-success:hover,.btn-success.disabled:focus,.btn-success[disabled]:focus,fieldset[disabled] .btn-success:focus,.btn-success.disabled:active,.btn-success[disabled]:active,fieldset[disabled] .btn-success:active,.btn-success.disabled.active,.btn-success[disabled].active,fieldset[disabled] .btn-success.active{background-color:#5cb85c;border-color:#4cae4c;}
-
-.btn-pending{color:#ffffff;background-color:#d9534f;border-color:#d43f3a;}.btn-pending:hover,.btn-pending:focus,.btn-pending:active,.btn-pending.active,.open .dropdown-toggle.btn-pending{color:#ffffff;background-color:#d2322d;border-color:#ac2925;}
-.btn-pending:active,.btn-pending.active,.open .dropdown-toggle.btn-pending{background-image:none;}
-.btn-pending.disabled,.btn-pending[disabled],fieldset[disabled] .btn-pending,.btn-pending.disabled:hover,.btn-pending[disabled]:hover,fieldset[disabled] .btn-pending:hover,.btn-pending.disabled:focus,.btn-pending[disabled]:focus,fieldset[disabled] .btn-pending:focus,.btn-pending.disabled:active,.btn-pending[disabled]:active,fieldset[disabled] .btn-pending:active,.btn-pending.disabled.active,.btn-pending[disabled].active,fieldset[disabled] .btn-pending.active{background-color:#d9534f;border-color:#d43f3a;}
-
 .btn-reviewed{color:#ffffff;background-color:#5cb85c;border-color:#4cae4c;}.btn-reviewed:hover,.btn-reviewed:focus,.btn-reviewed:active,.btn-reviewed.active,.open .dropdown-toggle.btn-reviewed{color:#ffffff;background-color:#47a447;border-color:#398439;}
 .btn-reviewed:active,.btn-reviewed.active,.open .dropdown-toggle.btn-reviewed{background-image:none;}
 .btn-reviewed.disabled,.btn-reviewed[disabled],fieldset[disabled] .btn-reviewed,.btn-reviewed.disabled:hover,.btn-reviewed[disabled]:hover,fieldset[disabled] .btn-reviewed:hover,.btn-reviewed.disabled:focus,.btn-reviewed[disabled]:focus,fieldset[disabled] .btn-reviewed:focus,.btn-reviewed.disabled:active,.btn-reviewed[disabled]:active,fieldset[disabled] .btn-reviewed:active,.btn-reviewed.disabled.active,.btn-reviewed[disabled].active,fieldset[disabled] .btn-reviewed.active{background-color:#5cb85c;border-color:#4cae4c;}
@@ -36,15 +28,13 @@
 .nav>li>a{position:relative;display:block;padding:4px 15px 6px;margin:0 3px -1px 0;}
 .nav>li>a:hover,.nav>li>a:focus{text-decoration:none;background-color:#eeeeee;}
 
-/*.nav>li.disabled>a{color:#999999;}
-.nav>li.disabled>a:hover,.nav>li.disabled>a:focus{color:#999999;text-decoration:none;background-color:transparent;cursor:not-allowed;}*/
 .nav .nav-divider{height:1px;margin:9px 0;overflow:hidden;background-color:#e5e5e5;}
-/*.nav-tabs{border-width:1px solid #dddddd;}*/.nav-tabs>li{float:left;margin-bottom:-1px;}
+.nav-tabs>li{float:left;margin-bottom:-1px;}
 .nav-tabs{border-bottom:1px solid #ccc;}
 .nav-tabs>li>a{font-size:18px;font-weight: 700;line-height:24px;text-decoration:none;color:#555555;background-color:#e4e4e4;}
 .nav-tabs>li>a{border:1px solid #ccc;padding:4px 15px 6px;margin:0 0 0 4px;}
 .nav-tabs>li>a:hover{color:#555555;background-color:#fefefe;}
-.nav-tabs>li.active>a,.nav-tabs>li.active>a:hover,.nav-tabs>li.active>a:focus{color:#555555;background-color:#f2f2f2;border-bottom:1px solid #f2f2f2;}
+
 
 .tabbable:before,.tabbable:after{content:" ";display:table;}
 .tabbable:after{clear:both;}
