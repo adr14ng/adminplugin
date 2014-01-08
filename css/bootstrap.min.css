@@ -19,6 +19,10 @@
 .btn-reviewed:active,.btn-reviewed.active,.open .dropdown-toggle.btn-reviewed{background-image:none;}
 .btn-reviewed.disabled,.btn-reviewed[disabled],fieldset[disabled] .btn-reviewed,.btn-reviewed.disabled:hover,.btn-reviewed[disabled]:hover,fieldset[disabled] .btn-reviewed:hover,.btn-reviewed.disabled:focus,.btn-reviewed[disabled]:focus,fieldset[disabled] .btn-reviewed:focus,.btn-reviewed.disabled:active,.btn-reviewed[disabled]:active,fieldset[disabled] .btn-reviewed:active,.btn-reviewed.disabled.active,.btn-reviewed[disabled].active,fieldset[disabled] .btn-reviewed.active{background-color:#5cb85c;border-color:#4cae4c;}
 
+.btn-clear{color:#000000;background-color:#d2d2d2;border-color:#d0d0d0;}.btn-clear:hover,.btn-clear:focus,.btn-clear:active,.btn-clear.active,.open .dropdown-toggle.btn-clear{color:#000000;background-color:#ebebeb;border-color:#b9b9b9;}
+.btn-clear:active,.btn-clear.active,.open .dropdown-toggle.btn-clear{background-image:none;}
+.btn-clear.disabled,.btn-clear[disabled],fieldset[disabled] .btn-clear,.btn-clear.disabled:hover,.btn-clear[disabled]:hover,fieldset[disabled] .btn-clear:hover,.btn-clear.disabled:focus,.btn-clear[disabled]:focus,fieldset[disabled] .btn-clear:focus,.btn-clear.disabled:active,.btn-clear[disabled]:active,fieldset[disabled] .btn-clear:active,.btn-clear.disabled.active,.btn-clear[disabled].active,fieldset[disabled] .btn-clear.active{background-color:#d2d2d2;border-color:#d0d0d0;}
+
 /*Tabs*/
 .nav{margin-bottom:0;padding-left:6;list-style:none;}.nav:before,.nav:after{content:" ";display:table;}
 .nav:after{clear:both;}
