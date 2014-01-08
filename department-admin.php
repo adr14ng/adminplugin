@@ -14,9 +14,18 @@ function csun_login($redirect_to){
         //check for admins
         if( in_array( "dp_editor", $user->roles ) ) {
             // redirect them to the default place
-            return admin_url('admin.php?page=review');;
-        } else {
-		return admin_url('index.php');
+            return admin_url('admin.php?page=review');
+        } 
+		else if( in_array( "dp_faculty", $user->roles ) ) {
+            // redirect them to the default place
+            return admin_url('edit.php?post_type=faculty');
+        }
+		else if( in_array( "dp_ar", $user->roles ) ) {
+            // redirect them to the default place
+            return admin_url('edit.php?post_type=plans');
+        }
+		else {
+			return admin_url('index.php');
 		}
 	}
 	else {
@@ -79,4 +88,22 @@ if ( is_admin() ) {
 	
 	//Add custom colors
 	add_action( 'admin_init' , array( 'DP_Admin', 'add_csun_colors') );
+	
+	//Change update to save
+	add_filter( 'gettext', array( 'DP_Admin', 'change_publish_button'), 10, 2 );
 }//is_admin()
+
+//Change the Howdy, 
+function change_howdy($translated, $text, $domain) {
+	$message = get_option( 'main_dp_settings');	//get message option
+	$message = $message['username_text'];
+
+    if ('default' != $domain)
+        return $translated;
+
+    if (false !== strpos($translated, 'Howdy'))
+        return str_replace('Howdy,', $message, $translated);
+
+    return $translated;
+}
+ add_filter('gettext', 'change_howdy', 10, 3);

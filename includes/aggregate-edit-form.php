@@ -77,6 +77,7 @@ function edit_aggregate_post(){
 				'post_type' => array('programs', 'departments'),
 				'post__not_in' => $ids, // avoid duplicate posts
 				'department_shortname' => $post_cat,
+				'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
 				'numberposts' => 50,
 			);
 			

@@ -69,11 +69,19 @@ class DPAdminSettings
             array( $this, 'print_dp_settings_info' ), // Callback
             'dp-admin-options' // Page
         );  
-
-        add_settings_field(
+		
+		add_settings_field(
             'welcome_message', // ID
             'Welcome Message', // Title 
             array( $this, 'welcome_message_callback' ), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        ); 
+
+        add_settings_field(
+            'username_text', // ID
+            'Username Text', // Title 
+            array( $this, 'username_text_callback' ), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
         ); 
@@ -121,6 +129,9 @@ class DPAdminSettings
         $new_input = array();
         if( isset( $input['welcome_message'] ) )
             $new_input['welcome_message'] = sanitize_text_field( $input['welcome_message'] );
+			
+		if( isset( $input['username_text'] ) )
+            $new_input['username_text'] = sanitize_text_field( $input['username_text'] );
 
         if( isset( $input['view_all_message'] ) )
             $new_input['view_all_message'] = sanitize_text_field( $input['view_all_message'] );
@@ -153,6 +164,14 @@ class DPAdminSettings
         printf(
             '<textarea rows="4" cols="50" id="welcome_message" name="main_dp_settings[welcome_message]" class="large-text code">%s</textarea>',
             isset( $this->options['welcome_message'] ) ? esc_attr( $this->options['welcome_message']) : ''
+        );
+    }
+	
+	function username_text_callback()
+    {
+        printf(
+            '<input type="text" id="username_text" name="main_dp_settings[username_text]" value="%s" />',
+            isset( $this->options['username_text'] ) ? esc_attr( $this->options['username_text']) : ''
         );
     }
 	

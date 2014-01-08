@@ -21,6 +21,7 @@ class DP_Admin {
 		//Restrict access to faculty
 		add_role( 'dp_faculty', 'Faculty Editor', array(
 			'read' => true,
+			'edit_posts' => true,
 			'edit_faculty' => true,
 			'edit_facultys' => true,
 			'edit_others_facultys' => true,
@@ -37,6 +38,7 @@ class DP_Admin {
 		//Restrict access to programs, 4 year plans and star acts
 		add_role( 'dp_ar', 'Admissions and Records', array(
 			'read' => true,
+			'edit_posts' => true,
 			'edit_plan' => true,
 			'edit_plans' => true,
 			'edit_others_plans' => true,
@@ -138,11 +140,16 @@ class DP_Admin {
 	function change_layout() {
 		$user_ID = get_current_user_id();
 		$user = get_userdata( $user_ID );
+		$basedir = dirname(plugin_dir_url(__FILE__));
 	 
 		if ( empty( $user ) )
 			return false;
 		elseif( in_array( 'dp_editor', (array) $user->roles ))
 			include dirname(__FILE__) . '/dp_editor-design.php';
+		elseif( in_array( 'dp_ar', (array) $user->roles ))
+			wp_enqueue_style('ar-style', $basedir . '/css/admissions-style.css');
+		elseif( in_array( 'dp_faculty', (array) $user->roles ))
+			wp_enqueue_style('faculty-style', $basedir . '/css/faculty-style.css');
 	}//change layout
 	
 	//Add custom toolbar for CSUN
@@ -178,6 +185,7 @@ class DP_Admin {
 		);
 	}
 	
+	//If a dp editor, all posts must be reviewed
 	function make_pending_post($data) {
 	
 		global $current_user, $wpdb;
@@ -193,6 +201,21 @@ class DP_Admin {
 		}
 		
 		return $data;
+	}
+	
+	//Change publish, update, etc to Save
+	function change_publish_button( $translation, $text ) {
+
+	if ( $text == 'Publish' )
+		return 'Save';
+		
+	if ( $text == 'Update' )
+		return 'Save';
+		
+	if ( $text == 'Submit for Review' )
+		return 'Save';
+
+	return $translation;
 	}
 
 	

@@ -1,0 +1,10 @@
+#wp-admin-bar-new-content,
+#minor-publishing-actions,
+#misc-publishing-actions,
+#toplevel_page_review,
+#menu-users,
+#menu-dashboard,
+#wp-admin-bar-comments
+{
+	display: none;
+}

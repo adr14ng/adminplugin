@@ -1,0 +1,15 @@
+#wp-admin-bar-new-content,
+.post-type-programs #postdivrich,
+#department_shortnamediv,
+.post-type-programs #revisionsdiv,
+#degree_leveldiv,
+#minor-publishing-actions,
+#misc-publishing-actions,
+#toplevel_page_review,
+#menu-users,
+#menu-dashboard,
+#wp-admin-bar-comments,
+.bulkactions
+{
+	display: none;
+}

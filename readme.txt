@@ -6,7 +6,7 @@ To use with Advanced Custom Fields (3.0.0) the following files must be edited in
 acf.php
 	input.min.js -> input.js
 
-field_group.php
+/core/controllers/field_group.php
 	in function validate_page()
 		//validate page (Aggregate Edit)
 		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) )
@@ -15,7 +15,7 @@ field_group.php
 		}
 
 
-post.php 
+/core/controllers/post.php 
 	in function validate_page()
 		//validate page (Aggregate Edit)
 		if( $pagenow == "admin.php" && isset( $_GET['page'] ) && $_GET['page'] == "dp_page" && isset( $_GET['department_shortname'] ) )
@@ -42,6 +42,6 @@ post.php
 			$('#adv-settings label[for="<?php echo $id; ?>-hide"]').addClass('<?php echo $toggle_class; ?>');
 		<?php endif; ?>
 
-input.js
+/js/input.js
 	$(document).trigger('acf/setup_fields', [ $('.poststuff') ]);
  	$(document).trigger('acf/setup_fields', [ $('#poststuff') ]);

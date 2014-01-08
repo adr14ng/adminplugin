@@ -77,19 +77,19 @@ function add_csun_admin_bar() {
 		<ul id="csun-dept-bar" class="ab-second-menu">
 			<li id="department-name"><?php echo $dp_name.' : '; ?></li>
 			<li id="csun-progam-link" <?php if($page === 'program') echo 'class="active"'; ?>>
-				<a class="ab-item" href="http://csuncatalog.com/2014/wp-admin/admin.php?page=dp_page&amp;department_shortname=<?php echo $cat; ?>&amp;action=edit">
+				<a class="ab-item" href="<?php echo admin_url(); ?>admin.php?page=dp_page&amp;department_shortname=<?php echo $cat; ?>&amp;action=edit">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-programs" class="ab-label">Programs</span>
 				</a>		
 			</li>
 			<li id="csun-course-link" <?php if($page === 'course') echo 'class="active"'; ?>>
-				<a class="ab-item" href="http://csuncatalog.com/2014/wp-admin/edit.php?post_type=courses&amp;department_shortname=<?php echo $cat; ?>&amp;orderby=title&amp;order=asc">
+				<a class="ab-item" href="<?php echo admin_url(); ?>edit.php?post_type=courses&amp;department_shortname=<?php echo $cat; ?>&amp;orderby=title&amp;order=asc">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-courses" class="ab-label">Courses</span>
 				</a>		
 			</li>
 			<li id="csun-file-link" <?php if($page === 'file') echo 'class="active"'; ?>>
-				<a class="ab-item" href="http://csuncatalog.com/2014/wp-admin/admin.php?page=proposals&amp;department_shortname=<?php echo $cat; ?>">
+				<a class="ab-item" href="<?php echo admin_url(); ?>admin.php?page=proposals&amp;department_shortname=<?php echo $cat; ?>">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-files" class="ab-label">Files</span>
 				</a>		
