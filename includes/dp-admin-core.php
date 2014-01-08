@@ -169,6 +169,13 @@ class DP_Admin {
 			array( '#000000', '#666666', '#d99f5f', '#990000' ), 
 			array( 'base' => '#000', 'focus' => '#fff', 'current' => '#fff' )
 		);
+		
+		wp_admin_css_color( 
+			'csun-default', __( 'CSUN Default' ), 
+			$basedir . '/css/default-colors'.$suffix.'.css',
+			array( '#000000', '#222222', '#0074a2', '#d54e21' ), 
+			array( 'base' => '#222', 'focus' => '#fff', 'current' => '#fff' )
+		);
 	}
 	
 	function make_pending_post($data) {
