@@ -86,7 +86,7 @@ class DPAdminSettings
             'dp-main-settings' // Section           
         ); 
 
-	add_settings_field(
+		add_settings_field(
             'view_all_message', // ID
             'Edit All Message', // Title 
             array( $this, 'view_all_message_callback' ), // Callback
@@ -94,7 +94,7 @@ class DPAdminSettings
             'dp-main-settings' // Section           
         ); 
 		
-	add_settings_field(
+		add_settings_field(
             'course_message', // ID
             'Courses Message', // Title 
             array( $this, 'course_message_callback'), // Callback
@@ -102,7 +102,15 @@ class DPAdminSettings
             'dp-main-settings' // Section           
         );
 		
-	add_settings_field(
+		add_settings_field(
+            'file_message', // ID
+            'Files Message', // Title 
+            array( $this, 'file_message_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        );
+		
+		add_settings_field(
             'review_deadline', // ID
             'Review Deadline', // Title 
             array( $this, 'review_deadline_callback'), // Callback
@@ -110,7 +118,7 @@ class DPAdminSettings
             'dp-main-settings' // Section           
         );
 	
-	add_settings_field(
+		add_settings_field(
             'review_field_key', // ID
             'ACF Review Field Key', // Title 
             array( $this, 'review_field_key_callback'), // Callback
@@ -138,6 +146,9 @@ class DPAdminSettings
 			
 		if( isset( $input['course_message'] ) )
             $new_input['course_message'] = sanitize_text_field( $input['course_message'] );
+			
+		if( isset( $input['file_message'] ) )
+            $new_input['file_message'] = sanitize_text_field( $input['file_message'] );
 			
 		if( isset( $input['review_deadline'] ) )
             $new_input['review_deadline'] = sanitize_text_field( $input['review_deadline'] );
@@ -188,6 +199,14 @@ class DPAdminSettings
         printf(
             '<textarea rows="4" cols="50" id="course_message" name="main_dp_settings[course_message]" class="large-text code">%s</textarea>',
             isset( $this->options['course_message'] ) ? esc_attr( $this->options['course_message']) : ''
+        );
+    }
+	
+	function file_message_callback()
+    {
+        printf(
+            '<textarea rows="4" cols="50" id="file_message" name="main_dp_settings[file_message]" class="large-text code">%s</textarea>',
+            isset( $this->options['file_message'] ) ? esc_attr( $this->options['file_message']) : ''
         );
     }
 	

@@ -94,12 +94,16 @@ function edit_proposals(){
 	/********************************************
 	 * Build Overall Page
 	 ********************************************/
+		
+	$message = get_option( 'main_dp_settings');	//get message option
+	$message = $message['file_message'];
 	
 	$term = get_term($term_id, 'department_shortname');
 	$alternate = true;
 	?>
 	<div class="wrap">
-	<h2>Proposals and Memos : <?php echo $term->description; ?></h2> <br />
+	<h2>Proposals and Memos : <?php echo $term->description; ?></h2> 
+	<p> <?php echo $message; ?></p>
 	
 	<table class="wp-list-table widefat" cellspacing="0">
 	
