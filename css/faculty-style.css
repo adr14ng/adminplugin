@@ -4,7 +4,9 @@
 #toplevel_page_review,
 #menu-users,
 #menu-dashboard,
-#wp-admin-bar-comments
+#wp-admin-bar-comments,
+#wp-admin-bar-site-name,
+#wp-admin-bar-wp-logo
 {
 	display: none;
 }

@@ -2,6 +2,7 @@
 .post-type-programs #postdivrich,
 #department_shortnamediv,
 .post-type-programs #revisionsdiv,
+.post-type-programs #edit-slug-box,
 #degree_leveldiv,
 #minor-publishing-actions,
 #misc-publishing-actions,
@@ -9,7 +10,9 @@
 #menu-users,
 #menu-dashboard,
 #wp-admin-bar-comments,
-.bulkactions
+.bulkactions,
+#wp-admin-bar-site-name,
+#wp-admin-bar-wp-logo
 {
 	display: none;
 }
