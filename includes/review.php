@@ -64,6 +64,8 @@ function editor_home_page() {
 		<input type="hidden" name="action" value="reviewed" />
 	<tbody id="the-list">
 	<?php
+	$alt = false;
+	
 	foreach($userCat as $link) :
 		$term_id = term_exists( $link );
 		
@@ -74,7 +76,7 @@ function editor_home_page() {
 		
 		//Output row ?>
 
-		<tr>
+		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
 			<td class="col_name column-col_name">
 				<a class="row-title" href="<?php echo admin_url(); ?>admin.php?page=dp_page&department_shortname=<?php echo $link; ?>&action=edit">
 					<?php echo $dp_name; ?>
@@ -118,10 +120,11 @@ function adminstrator_review_page() {
 		</thead>
 	<tbody id="the-list">
 	<?php
+	$alt = false;
 	foreach($terms as $term) :
 
 		//Output row ?>
-		<tr>
+		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
 			<td class="col_name column-col_name">
 				<a class="row-title" href="<?php echo admin_url(); ?>admin.php?page=dp_page&department_shortname=<?php echo $link; ?>&action=edit">
 					<?php echo $term->description; ?>

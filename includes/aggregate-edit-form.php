@@ -72,16 +72,27 @@ function edit_aggregate_post(){
 		$term_id = term_exists( $post_cat );
 		
 		if($term_id != 0){	//if the term exists
-			//get all the posts with that department code
+			//get departments with that department code
 			$args=array(
-				'post_type' => array('programs', 'departments'),
+				'post_type' => 'departments',
 				'post__not_in' => $ids, // avoid duplicate posts
 				'department_shortname' => $post_cat,
 				'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
 				'numberposts' => 50,
 			);
+			$departments = get_posts( $args );
 			
-			$posts = get_posts( $args ); 
+			//get programs with that department code
+			$args=array(
+				'post_type' => 'programs',
+				'post__not_in' => $ids, // avoid duplicate posts
+				'department_shortname' => $post_cat,
+				'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
+				'numberposts' => 50,
+			);
+			$programs = get_posts( $args );
+			
+			$posts = array_merge($departments, $programs);
 		}
 		else{	//the term doesn't exist
 			wp_die(__( 'Department does not exist' ));
@@ -97,9 +108,6 @@ function edit_aggregate_post(){
 	 * Build Overall Page
 	 ********************************************/
 	$action ='edit';
-
-	$posts = array_reverse ($posts); //reverse order to show department first
-	//this depends on the order in which they were created (so make departments first for now
 	
 	$term = get_term($term_id, 'department_shortname');
 	
