@@ -37,9 +37,14 @@
 .subsubsub, .search-box, .tablenav,
 #minor-publishing ,
 .wp-editor-tabs,
-.tab-content #titlediv,
-.tab-content #acf-degree_type,
-.tab-content #acf-fund_source,
+.post-type-departments #titlediv,
+.post-type-programs #titlediv,
+.post-type-programs #acf-degree_type,
+.post-type-programs #acf-fund_source,
+.post-type-departments .wrap h2,
+.post-type-programs .wrap h2,
+#department_shortnamediv,
+#degree_leveldiv,
 #revisionsdiv{
 	display: none;
 }

@@ -81,7 +81,7 @@ class DP_Admin {
 		//if we're not trying to edit or publish edits of a post, return
 		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' && 
 			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' &&
-			$cap !== 'edit_programs' /*&& $cap !== 'publish_programs'*/ && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'){
+			$cap !== 'edit_progams' /*&& $cap !== 'publish_programs'*/ && $cap !== 'edit_progam'&& $cap !== 'edit_others_progams'){
 			return $caps;
 		}
 		
@@ -93,13 +93,15 @@ class DP_Admin {
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories
 		$userCat = $userCat[0];
 		
-		if(isset( $_GET['revision'] )) //revisions page post id is 0
+		if(isset( $_GET['post'] ))	//if we have the post id
+			$post_id = $_GET['post'];
+		elseif(isset( $_GET['revision'] )) //revisions page post id is 0
 			$post_id = $args[0];
 		else //post id is 1 otherwise
 			$post_id = $args[1];
 		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
 		
-		//if we didn;t get it from the args
+		//if we didn't get it from the args
 		if(!$cats && isset($_REQUEST['department_shortname']))
 			$cats = $_REQUEST['department_shortname'];
 
@@ -115,6 +117,7 @@ class DP_Admin {
 					$catName = strtolower($cat->slug);
 				else
 					$catName = strtolower($cat);
+					
 				//strict comparison
 				if($user === $catName) {		//if user and post have same cat
 					return array();	//no cap required

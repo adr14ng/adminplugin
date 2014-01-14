@@ -18,6 +18,7 @@ add_action('admin_enqueue_scripts', 'add_dp_style');
  *
  *****************************************************/
 function add_csun_admin_bar_links( $wp_admin_bar ) {
+	//add link to the department editor home page
 	$args = array(
 			'id' => 'csun_dashboard_link',
 			'title' => '<span class="ab-icon"></span>
@@ -26,7 +27,7 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 			);
 	$wp_admin_bar->add_node( $args );	//add dashboard link
 	
-	
+	//remove all the other links
 	$wp_admin_bar->remove_node( 'comments' );
 	$wp_admin_bar->remove_node( 'new-content' );
 	$wp_admin_bar->remove_node( 'wp-logo' );
@@ -36,23 +37,25 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 }
 add_action( 'admin_bar_menu', 'add_csun_admin_bar_links', 999 );
 
+//Add secondary bar for navigation in the department
 function add_csun_admin_bar() {
+	//if the correct category is in the url, use it (files&course list)
 	if(isset($_REQUEST['department_shortname'])){
-	
 		$cat = $_REQUEST['department_shortname'];
 	}
-	elseif(isset($_REQUEST['post'])){
+	elseif(isset($_REQUEST['post'])){	//figure out category from post (courses, programs, departments)
 		$terms =  wp_get_post_terms( $_REQUEST['post'], 'department_shortname' );
 		
 		foreach($terms as $term){
-			if($term->slug !== 'ge' && $term->term_group != 0) {
+			//ge and top level terms can't be the category
+			if($term->slug !== 'ge' && $term->parent != 0) {
 				$cat = $term->slug;
 			}
 		}
 	}
 	
 	if(isset($cat)) : 
-		$term_id = term_exists( $cat );
+		$term_id = term_exists( $cat );	//get term id from slug
 		
 		//Cleaned up term description holding department name
 		$dp_name = term_description( $term_id, 'department_shortname' );
@@ -60,8 +63,8 @@ function add_csun_admin_bar() {
 		$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
 		
 		//make li active for current page
-		$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL ;
-		$type = isset($_GET['post']) ? get_post_type( ($_GET['post'])) : NULL ;
+		$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL ;	//get uri
+		$type = isset($_GET['post']) ? get_post_type( ($_GET['post'])) : NULL ;	//get post type
 
 		if ($uri AND ($type === 'programs' || $type === 'departments')){
 			$page = 'program';
@@ -73,14 +76,14 @@ function add_csun_admin_bar() {
 			$page = 'file';
 		}
 
-		$department_id = get_first_term_post($term_id);
+		$department_id = get_first_term_post($cat);		//figure out which post is active first for programs/departments
 ?>
 	<div id="csun-bar" role="naviagation">
 	<div class="quicklinks" id="csun-toolbar" role="navigation" aria-label="Second navigation toolbar." tabindex="0">
 		<ul id="csun-dept-bar" class="ab-second-menu">
 			<li id="department-name"><?php echo $dp_name.' : '; ?></li>
 			<li id="csun-progam-link" <?php if($page === 'program') echo 'class="active"'; ?>>
-				<a class="ab-item" href="<?php get_edit_post_link( $department_id )?>">
+				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id;?>">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-programs" class="ab-label">Programs</span>
 				</a>		
@@ -204,7 +207,7 @@ function department_edit_tabs(){
 	 $terms = wp_get_post_terms( $curr_post, 'department_shortname', $args );
 	 
 	 foreach($terms as $term) {
-		if($term->term_group != 0) {	//we only want the child term
+		if($term->parent != 0) {	//we only want the child term
 			$post_cat = $term;
 			break;
 		}
@@ -216,19 +219,14 @@ function department_edit_tabs(){
 		//get departments with that department code
 		$args=array(
 			'post_type' => 'departments',
-			'department_shortname' => $term_id,
+			'department_shortname' => $post_cat->slug,
 			'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
 			'numberposts' => 50,
 		);
 		$departments = get_posts( $args );
 
 		//get programs with that department code
-		$args=array(
-			'post_type' => 'programs',
-			'department_shortname' => $term_id,
-			'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
-			'numberposts' => 50,
-		);
+		$args['post_type'] = 'programs';
 		$programs = get_posts( $args );
 		
 		$posts = array_merge($departments, $programs);
@@ -264,7 +262,7 @@ function department_edit_tabs(){
 			echo '<a href="'.get_edit_post_link( $post_ID ).'">'.$post_name;
 			if($post_type==='programs'){
 				echo ', ';
-				echo the_field('degree_type');
+				echo the_field('degree_type', $post_ID);
 			}
 			echo '</a></li>';
 		}	
@@ -273,8 +271,9 @@ function department_edit_tabs(){
 	}
 }
 //only show on program and department edit pages
-if( isset($_GET['post']) && ( get_post_type( $post ) === 'programs' ||  get_post_type( $post ) === 'departments'))
+if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs' ||  get_post_type( $_GET['post'] ) === 'departments')){
 	add_action( 'all_admin_notices' , 'department_edit_tabs');
+}
 	
 /*******************************************
  *
