@@ -173,6 +173,14 @@ function edit_aggregate_post(){
 					$('.dp-editform').ajaxForm();  
 				});
 			
+			$('.dp-editform').each(function () {
+				var currentId = $(this).attr('id');
+				
+				$(this).change(function() {
+					$("#" + currentId + "-acf").val(1);
+				});
+			});
+			
 			//Submit the forms
 			$( ".submitall" ).on( "click", function () {
 				$('.dp-editform').each(function () {

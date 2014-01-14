@@ -77,8 +77,10 @@ class DP_Admin {
 	 */	
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
+		
 		//if we're not trying to edit or publish edits of a post, return
-		if( $cap !== 'edit_posts' /*&& $cap !== 'publish_posts'*/ && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' &&
+		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' && 
+			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' &&
 			$cap !== 'edit_programs' /*&& $cap !== 'publish_programs'*/ && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'){
 			return $caps;
 		}
@@ -91,7 +93,10 @@ class DP_Admin {
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories
 		$userCat = $userCat[0];
 		
-		$post_id = $args[1];
+		if(isset( $_GET['revision'] )) //revisions page post id is 0
+			$post_id = $args[0];
+		else //post id is 1 otherwise
+			$post_id = $args[1];
 		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
 		
 		//if we didn;t get it from the args
@@ -186,7 +191,7 @@ class DP_Admin {
 	}
 	
 	//If a dp editor, all posts must be reviewed
-	function make_pending_post($data) {
+	function make_pending_post($post_id, $data, $post_before) {
 	
 		global $current_user, $wpdb;
 		$role = $wpdb->prefix . 'capabilities';
@@ -195,12 +200,11 @@ class DP_Admin {
 		
 		if ('dp_editor' == $role ){
 
-			if(isset( $data['post_status'])) {
-				$data['post_status']= 'pending';	//set published status to pending review
+			if(isset( $data->post_status) && $data->post_status === 'publish') {
+				$data->post_status= 'pending';	//set published status to pending review
+				wp_update_post($data);
 			}
 		}
-		
-		return $data;
 	}
 	
 	//Change publish, update, etc to Save

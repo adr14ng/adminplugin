@@ -77,7 +77,7 @@ if ( is_admin() ) {
 	add_action('init', array( 'DP_Admin', 'change_layout'));	
 	
 	//Make editor posts save as pending
-	add_filter( 'wp_insert_post_data', array( 'DP_Admin', 'make_pending_post'));
+	add_action( 'post_updated', array( 'DP_Admin', 'make_pending_post'), 10, 3 );
 	
 	//Add custom footer 
 	function csun_footer_admin () 
@@ -87,7 +87,7 @@ if ( is_admin() ) {
 	add_filter('admin_footer_text', 'csun_footer_admin');
 	
 	//Add custom colors
-	add_action( 'admin_init' , array( 'DP_Admin', 'add_csun_colors') );
+	add_action( 'admin_init' , array( 'DP_Admin', 'add_csun_colors'));
 	
 	//Change update to save
 	add_filter( 'gettext', array( 'DP_Admin', 'change_publish_button'), 10, 2 );

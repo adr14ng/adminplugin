@@ -39,7 +39,8 @@
 .wp-editor-tabs,
 .tab-content #titlediv,
 .tab-content #acf-degree_type,
-.tab-content #acf-fund_source{
+.tab-content #acf-fund_source,
+#revisionsdiv{
 	display: none;
 }
 
