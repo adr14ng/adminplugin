@@ -88,7 +88,7 @@ function editor_home_page() {
 
 		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
 			<td class="col_name column-col_name">
-				<a class="row-title" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id;?>">
+				<a class="row-title" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id.'&department_shortname='.$link;?>">
 					<?php echo $dp_name; ?>
 				</a>
 			</td>

@@ -106,7 +106,7 @@ function add_csun_admin_bar() {
 		<ul id="csun-dept-bar" class="ab-second-menu">
 			<li id="department-name"><?php echo $dp_name.' : '; ?></li>
 			<li id="csun-progam-link" <?php if($page === 'program') echo 'class="active"'; ?>>
-				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id;?>">
+				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id.'&department_shortname='.$cat;?>">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-programs" class="ab-label">Programs</span>
 				</a>		
@@ -305,7 +305,7 @@ if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs' ||  
  *
  *******************************************/
  
- //Takes either slug or id of term and returns id of the first department/program
+//Takes either slug or id of term and returns id of the first department/program
 function get_first_term_post($term) {
 	$args=array(
 		'post_type' => 'departments',
@@ -326,5 +326,18 @@ function get_first_term_post($term) {
 		
 	return 0;		
 }
+
+//Creates the edit link with the department shortname intact
+function department_edit_link($link, $post_ID, $context) {
+	if(isset($_REQUEST['department_shortname'])){
+		if ( 'display' == $context )
+			$link = $link.'&amp;department_shortname='.$_REQUEST['department_shortname'];
+		else
+			$action = $link.'&department_shortname='.$_REQUEST['department_shortname'];
+	}
+		
+	return $link;
+}
+add_filter('get_edit_post_link', 'department_edit_link', 10, 3);
 
 ?>
