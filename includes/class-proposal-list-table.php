@@ -1,9 +1,19 @@
 <?php
-/**
- * Builds the display table for all departments
- * Heavily based on the terms list table because we are essentially listing
- * taxonomy terms and linking them to an edit page
-*/
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Proposal List Table
+ *	
+ * 	Builds the display table for all 
+ *	departments. Heavily based on the terms 
+ *	list table because we are essentially 
+ *	listing taxonomy terms and linking them 
+ *	to a list of files
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
 class Proposal_List_Table extends WP_List_Table {
 	
 	var $callback_args;

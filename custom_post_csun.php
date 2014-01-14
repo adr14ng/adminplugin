@@ -451,6 +451,36 @@ Author: CSUN Undergraduate Studies
 		return $columns;
 	}
 	
+	add_filter( 'manage_edit-plans_sortable_columns', 'sortable_plan_column' );
+	add_filter( 'manage_edit-staract_sortable_columns', 'sortable_plan_column' );
+	function sortable_plan_column( $columns ) { 
+		$columns['year'] = 'year';
+		
+		return $columns;
+	}
+	
+	
+	function csun_custom_order($orderby, $wp_query){
+		global $wpdb;
+
+		if ( isset( $wp_query->query['orderby'] ) && 'year' == $wp_query->query['orderby'] ) {
+			$orderby = "(
+				SELECT GROUP_CONCAT(name ORDER BY name ASC)
+				FROM $wpdb->term_relationships
+				INNER JOIN $wpdb->term_taxonomy USING (term_taxonomy_id)
+				INNER JOIN $wpdb->terms USING (term_id)
+				WHERE $wpdb->posts.ID = object_id
+				AND taxonomy = 'year'
+				GROUP BY object_id
+			) ";
+			$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+		}
+
+		return $orderby;
+	}
+	add_filter('posts_orderby', 'csun_custom_order', 10, 2);
+	
+	
 	add_filter('manage_edit-faculty_columns', 'dept_columns');
 	add_filter('manage_edit-departments_columns', 'dept_columns');
 	function dept_columns($columns) {

@@ -1,4 +1,20 @@
 <?php
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Settings
+ *	
+ *	Custom settings including messages for
+ *	the editors home page, the course page,
+ *  files page and due date.
+ *
+ *	!The custom field for Review Status must
+ *	exist and have it's setting updated
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
 class DPAdminSettings
 {
     /**
@@ -168,7 +184,7 @@ class DPAdminSettings
     }
 
    /** 
-     * Get the settings option array and print one of its values
+     * Get the settings option array and print each settings current value
      */
     function welcome_message_callback()
     {

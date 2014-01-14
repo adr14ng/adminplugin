@@ -1,18 +1,53 @@
-#wp-admin-bar-new-content,
-.post-type-programs #postdivrich,
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Admissions and Records Style
+ *	
+ *	1. Editor
+ *	2. Menu Links
+ *	3. Admin Bar
+ *	4. Programs
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
+/* Editor */
 #department_shortnamediv,
-.post-type-programs #revisionsdiv,
-.post-type-programs #edit-slug-box,
-#degree_leveldiv,
 #minor-publishing-actions,
 #misc-publishing-actions,
+.bulkactions
+{
+	display: none;
+}
+
+/* Menu Links */
 #toplevel_page_review,
 #menu-users,
 #menu-dashboard,
-#wp-admin-bar-comments,
-.bulkactions,
+#menu-posts,
+#menu-posts-courses,
+#menu-posts-departments,
+#menu-posts-policies,
+#toplevel_page_proposals,
+#menu-comments,
+#menu-tools,
+.wp-submenu {
+	display: none;
+}
+
+/* Admin Bar */
+#wp-admin-bar-new-content,
 #wp-admin-bar-site-name,
-#wp-admin-bar-wp-logo
-{
+#wp-admin-bar-wp-logo,
+#wp-admin-bar-comments{
+	display: none;
+}
+
+/* Programs */
+.post-type-programs #postdivrich,
+.post-type-programs #revisionsdiv,
+.post-type-programs #edit-slug-box,
+#degree_leveldiv{
 	display: none;
 }

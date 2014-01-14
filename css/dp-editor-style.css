@@ -1,37 +1,62 @@
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Department Editor Style 
+ *	
+ *	1. Layout Adjustments
+ *	2. Edit Pages
+ *	3. Admin Bar
+ *		-General
+ *		-IE6
+ *		-No @font-face
+ *		-Small
+ *		-Extra Small
+ *	3. Dashicons
+ *
+ * CSUN Department of Undergraduate Studies
+ * 2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Layout Adjustments
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
 #wp-toolbar > ul > li {
 		display: block;
 	}
 
+/* Remove Menu */
 #adminmenuback,
 #adminmenuwrap,
 #wpadminbar li#wp-admin-bar-menu-toggle,
 .add-new-h2{
 	display: none;
 }
-
-#wpbody {
-    padding-top: 28px;
-}
-
-#screen-meta {
-	margin: 0px, 53px, -1px, 0px;
-}
-
-#screen-meta-links {
-	margin: 0px, 53px, 0px, 0px;
-}
-
-.wrap {
-	margin: 10px 53px 0px 2px;
-}
-
 #wpcontent, #wpfooter {
 	margin-left: 45px;
 }
 
-/*****************************
- * Edit Pages
- ****************************/
+/* Leave room for new admin bar */
+#wpbody {
+    padding-top: 28px;
+}
+#screen-meta {
+	margin: 0px, 53px, -1px, 0px;
+}
+#screen-meta-links {
+	margin: 0px, 53px, 0px, 0px;
+}
+.wrap {
+	margin: 10px 53px 0px 2px;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Edit Pages
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+ 
 #wp-toolbar > ul > li#wp-admin-bar-view,
  #titlediv .inside,
 .subsubsub, .search-box, .tablenav,
@@ -48,10 +73,12 @@
 #revisionsdiv{
 	display: none;
 }
-
-/*******************************
- * Admin Bar
- *******************************/
+ 
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Admin Bar
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
 
 #csun-bar ul li#department-name {
 	margin: 0 3px 0 21px;
@@ -106,20 +133,6 @@ html:lang(he-il) .rtl #csun-bar *  {
 	border: none;
 	text-decoration: none;
 	background: none;
-}
-
-#csun-bar a:focus,
-#csun-bar a:active,
-#csun-bar input[type="text"],
-#csun-bar input[type="password"],
-#csun-bar input[type="number"],
-#csun-bar input[type="search"],
-#csun-bar input[type="email"],
-#csun-bar input[type="url"],
-#csun-bar select,
-#csun-bar textarea,
-#csun-bar div {
-	outline: none;
 }
 
 #csun-bar {
@@ -183,86 +196,6 @@ html:lang(he-il) .rtl #csun-bar *  {
 	margin: 0;
 }
 
-#csun-bar .quicklinks > ul > li > a {
-	padding: 0 8px 0 7px;
-}
-
-#csun-bar .menupop .ab-sub-wrapper,
-#csun-bar .shortlink-input {
-	margin: 0;
-	padding: 0;
-	-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-	box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-	display: none;
-	position: absolute;
-	float: none;
-}
-
-#csun-bar.ie7 .menupop .ab-sub-wrapper,
-#csun-bar.ie7 .shortlink-input {
-	top: 32px;
-	left: 0;
-}
-
-#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper {
-	min-width: 100%;
-}
-
-#csun-bar .ab-top-secondary .menupop .ab-sub-wrapper {
-	right: 0;
-	left: auto;
-}
-
-#csun-bar .ab-submenu {
-	padding: 6px 0;
-}
-
-#csun-bar .selected .shortlink-input {
-	display: block;
-}
-
-#csun-bar .quicklinks .menupop ul li {
-	float: none;
-}
-
-#csun-bar .quicklinks .menupop ul li a strong {
-	font-weight: bold;
-}
-
-#csun-bar .quicklinks .menupop ul li .ab-item,
-#csun-bar .quicklinks .menupop ul li a strong,
-#csun-bar .quicklinks .menupop.hover ul li .ab-item,
-#csun-bar.nojs .quicklinks .menupop:hover ul li .ab-item,
-#csun-bar .shortlink-input {
-	line-height: 26px;
-	height: 26px;
-	white-space: nowrap;
-	min-width: 140px;
-}
-
-#csun-bar .shortlink-input {
-	width: 200px;
-}
-
-#csun-bar.nojs li:hover > .ab-sub-wrapper,
-#csun-bar li.hover > .ab-sub-wrapper {
-	display: block;
-}
-
-#csun-bar .menupop li:hover > .ab-sub-wrapper,
-#csun-bar .menupop li.hover > .ab-sub-wrapper {
-	margin-left: 100%;
-	margin-top: -32px;
-}
-
-#csun-bar .ab-top-secondary .menupop li:hover > .ab-sub-wrapper,
-#csun-bar .ab-top-secondary .menupop li.hover > .ab-sub-wrapper {
-	margin-left: 0;
-	left: inherit;
-	right: 100%;
-}
-
-
 #csun-bar > #csun-toolbar > #csun-dept-bar .ab-icon,
 #csun-bar .ab-icon,
 #csun-bar .ab-item:before {
@@ -290,48 +223,6 @@ html:lang(he-il) .rtl #csun-bar *  {
 	height: 32px;
 }
 
-#csun-bar .menupop .menupop > .ab-item:before,
-#csun-bar .ab-top-secondary .menupop .menupop > .ab-item:before {
-	position: absolute;
-	font: normal 17px/1 'dashicons';
-	speak: none;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-#csun-bar .menupop .menupop > .ab-item {
-	display: block;
-	padding-right: 2em;
-}
-
-#csun-bar .menupop .menupop > .ab-item:before {
-	top: 1px;
-	right: 4px;
-	content: '\f139';
-	color: inherit;
-}
-
-#csun-bar .ab-top-secondary .menupop .menupop > .ab-item {
-	padding-left: 2em;
-	padding-right: 1em;
-}
-
-#csun-bar .ab-top-secondary .menupop .menupop > .ab-item:before {
-	top: 5px;
-	left: 3px;
-	content: '\f141';
-}
-
-#csun-bar .quicklinks .menupop ul.ab-sub-secondary {
-	display: block;
-	position: relative;
-	right: auto;
-	margin: 0;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-
-
 #csun-bar .quicklinks a span#ab-updates {
 	display: inline;
 	padding: 2px 5px;
@@ -344,13 +235,6 @@ html:lang(he-il) .rtl #csun-bar *  {
 #csun-bar .ab-top-secondary {
 	float: right;
 }
-
-#csun-bar ul li:last-child,
-#csun-bar ul li:last-child .ab-item {
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-
 
 /* Skip link */
 #csun-bar .screen-reader-text,
@@ -420,6 +304,7 @@ html:lang(he-il) .rtl #csun-bar *  {
 
 /* End no @font-face */
 
+/* Small */
 @media screen and ( max-width: 782px ) {
 	/* Toolbar Touchification*/
 	html #csun-bar {
@@ -472,29 +357,6 @@ html:lang(he-il) .rtl #csun-bar *  {
 		display: none;
 	}
 
-	#csun-bar .menupop li:hover > .ab-sub-wrapper,
-	#csun-bar .menupop li.hover > .ab-sub-wrapper {
-		margin-top: -46px;
-	}
-
-	#csun-bar .ab-second-menu .menupop .ab-sub-wrapper .menupop > .ab-item {
-		padding-right: 30px;
-	}
-
-	#csun-bar .menupop .menupop > .ab-item:before {
-		top: 10px;
-		right: 6px;
-	}
-
-	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper .ab-item {
-		font-size: 16px;
-		padding: 6px 15px 12px;
-	}
-
-	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper a:empty {
-		display: none;
-	}
-
 	#csun-bar .ab-icon,
 	#csun-bar .ab-item:before {
 		padding: 0;
@@ -511,35 +373,12 @@ html:lang(he-il) .rtl #csun-bar *  {
 		padding-top: 46px;
 	}
 
-	/* Allow dropdown list items to appear normally */
-	#csun-bar li:hover ul li,
-	#csun-bar li.hover ul li,
-	#csun-bar li:hover ul li:hover ul li {
-		display: list-item;
-	}
-	
-	/* Override default min-width so dropdown lists aren't stretched
-		to 100% viewport width at responsive sizes. */
-	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper {
-		min-width: intrinsic;
-		min-width: -webkit-fit-content;
-		min-width: -moz-fit-content;
-		min-width: fit-content;
-	}
-
 	#csun-bar ul#csun-dept-bar > li {
 		margin-right: 0;
 	}
-
-	/* Experimental fix for touch toolbar dropdown positioning */
-	#csun-bar .ab-second-menu,
-	#csun-bar .ab-top-secondary{
-		position: static;
-	}
-
 }
 
-/* Smartphone */
+/* Extra Small */
 @media screen and (max-width: 600px) {
 	#csun-bar {
 		position: absolute;
@@ -558,29 +397,6 @@ html:lang(he-il) .rtl #csun-bar *  {
 		padding-top: 92px;
 	}
 
-	#csun-bar .ab-second-menu > .menupop > .ab-sub-wrapper {
-		position: fixed;
-		width: 100%;
-		left: 0;
-	}
-
-	#csun-bar .menupop .menupop > .ab-item:before {
-		display: none;
-	}
-	
-	#csun-bar .ab-second-menu > .menupop li > .ab-sub-wrapper {
-		margin: 0;
-		width: 100%;
-		top: auto;
-		left: auto;
-		position: relative;
-	}
-	
-	#csun-bar .ab-second-menu > .menupop li > .ab-sub-wrapper .ab-item {
-		font-size: 16px;
-		padding: 6px 15px 19px 30px;
-	}
-	
 	#csun-bar li:hover ul li ul li {
 		display: list-item;
 	}
@@ -588,27 +404,12 @@ html:lang(he-il) .rtl #csun-bar *  {
 	#csun-bar ul li#department-name {
 		display: none;
 	}
-
 }
-
-
-
 
 /**********************************
  * Dash Icons
  *********************************/
-#wp-admin-bar-csun_dashboard_link .ab-icon:before{
-	content: "\f102";
-}
-
-#csun-progam-link .ab-icon:before{
-	content: "\f118";
-}
-
-#csun-course-link .ab-icon:before{
-	content: "\f327";
-}
-
-#csun-file-link .ab-icon:before{
-	content: "\f233";
-}
+#wp-admin-bar-csun_dashboard_link .ab-icon:before{content: "\f102";}
+#csun-progam-link .ab-icon:before{content: "\f118";}
+#csun-course-link .ab-icon:before{content: "\f327";}
+#csun-file-link .ab-icon:before{content: "\f233";}

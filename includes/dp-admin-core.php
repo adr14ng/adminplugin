@@ -1,4 +1,23 @@
 <?php
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Department Admin Custom Experience
+ *	
+ *	1. Activation
+ *	2. Capabilities
+ *	3. Styles
+ *		-Enque Scripts
+ *		-Color Schemes
+ *		-Role Dependent Styles
+ *	4. TinyMCE Toolbars
+ *	5. Pending Post
+ *	6. Publish -> Save
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
 
 class DP_Admin {
 	
@@ -66,7 +85,7 @@ class DP_Admin {
 		remove_role( 'dp_editor' );
 		remove_role( 'dp_faculty' );
 		remove_role( 'dp_ar' );
-	}
+	}//uninstall
  
  
 	/**
@@ -85,47 +104,49 @@ class DP_Admin {
 			return $caps;
 		}
 		
-		//Allows viewing course list page
+		//Allows viewing course list page (all courses though)
 		if(isset($_REQUEST['post_type']))
 			if('courses' === $_REQUEST['post_type'])
-				return array();
+				return array();	//no caps required
 		
 		$userCat = get_user_meta($user_id, 'user_cat');		//get user categories
 		$userCat = $userCat[0];
 		
+		//get current post id
 		if(isset( $_GET['post'] ))	//if we have the post id
 			$post_id = $_GET['post'];
 		elseif(isset( $_GET['revision'] )) //revisions page post id is 0
 			$post_id = $args[0];
-		else //post id is 1 otherwise
+		else 		//post id might be 1 otherwise
 			$post_id = $args[1];
+		//get terms of that post
 		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
 		
-		//if we didn't get it from the args
+		//if we didn't get it from the args (courses list and proposal files)
 		if(!$cats && isset($_REQUEST['department_shortname']))
 			$cats = $_REQUEST['department_shortname'];
 
-		if(is_array($userCat)){foreach ($userCat as $user){
-			$user = strtolower($user);
+		//compare each post category to each user category until you find a match
+		if(is_array($userCat)){foreach ($userCat as $user){	//each users category
+			$user = strtolower($user);	//just in case there are capitals
 
-			//can just be a string
+			//can just be a string if only 1, need an array
 			if($cats)
 				$cats = (array) $cats;
 
-			if (is_array($cats)) {foreach($cats as $cat){
-				if(is_object($cat))
-					$catName = strtolower($cat->slug);
+			if (is_array($cats)) {foreach($cats as $cat){	//each post category
+				if(is_object($cat))	
+					$catName = strtolower($cat->slug);	//just in case of capitals
 				else
 					$catName = strtolower($cat);
 					
-				//strict comparison
 				if($user === $catName) {		//if user and post have same cat
 					return array();	//no cap required
 				}
 			}}
 		}}
 
-		return $caps;	//is not linked to category name
+		return $caps;	//is not linked to category name, whatever standard caps
 	} //match_category_user()
 
 
@@ -135,19 +156,41 @@ class DP_Admin {
 	function add_base_style() {
 		$basedir = dirname(plugin_dir_url(__FILE__));
 		wp_enqueue_style('base-style', $basedir . '/css/base-admin-style.css');
-		//wp_enqueue_style('csun-colors', $basedir . '/css/colors-csun.css');
-		wp_enqueue_style('dp-bootstrap-style', $basedir . '/css/bootstrap.min.css');
-		wp_enqueue_script('dp-bootstrap-script', $basedir . '/js/bootstrap.js');
-		wp_enqueue_script('dp-script', $basedir . '/js/jquery.form.min.js');
-	}
+	}//add base style
 
+	
+	/**
+	 * Register color schemes.
+	 */
+	function add_csun_colors() {
+		$basedir = dirname(plugin_dir_url(__FILE__));
+
+		//Red and black color scheme
+		wp_admin_css_color( 
+			'csun', __( 'CSUN' ), //name
+			$basedir . '/css/colors.css',
+			array( '#000000', '#666666', '#d99f5f', '#990000' ), 
+			array( 'base' => '#000', 'focus' => '#fff', 'current' => '#fff' )
+		);
 		
+		//Blue and black color scheme
+		wp_admin_css_color( 
+			'csun-default', __( 'CSUN Default' ), //name
+			$basedir . '/css/default-colors.css',
+			array( '#000000', '#222222', '#0074a2', '#d54e21' ), 
+			array( 'base' => '#222', 'focus' => '#fff', 'current' => '#fff' )
+		);
+	}//add csun colors
+	
+	
 	/**
 	 * Calls different layout files per user role
 	 */
 	function change_layout() {
+		//determine users role
 		$user_ID = get_current_user_id();
 		$user = get_userdata( $user_ID );
+		
 		$basedir = dirname(plugin_dir_url(__FILE__));
 	 
 		if ( empty( $user ) )
@@ -160,70 +203,61 @@ class DP_Admin {
 			wp_enqueue_style('faculty-style', $basedir . '/css/faculty-style.css');
 	}//change layout
 	
-	//Add custom toolbar for CSUN
+	
+	/**
+	 * Add custom toolbar for CSUN
+	 */
 	function my_toolbars( $toolbars )
 	{
 		// CSUN Custom
 		$toolbars['CSUN' ] = array();
+		//1 row tool bar
 		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'undo', 'redo');
 	 
 		// return $toolbars - IMPORTANT!
 		return $toolbars;
-	}
+	}//my_toolbars
+	
 	
 	/**
-	 * Register color schemes.
+	 * If a dp editor, all posts must be reviewed, so change them to pending
+	 * Hooks after saving changes to database
 	 */
-	function add_csun_colors() {
-		$suffix = is_rtl() ? '-rtl' : '';
-		$basedir = dirname(plugin_dir_url(__FILE__));
-
-		wp_admin_css_color( 
-			'csun', __( 'CSUN' ), 
-			$basedir . '/css/colors'.$suffix.'.css',
-			array( '#000000', '#666666', '#d99f5f', '#990000' ), 
-			array( 'base' => '#000', 'focus' => '#fff', 'current' => '#fff' )
-		);
-		
-		wp_admin_css_color( 
-			'csun-default', __( 'CSUN Default' ), 
-			$basedir . '/css/default-colors'.$suffix.'.css',
-			array( '#000000', '#222222', '#0074a2', '#d54e21' ), 
-			array( 'base' => '#222', 'focus' => '#fff', 'current' => '#fff' )
-		);
-	}
-	
-	//If a dp editor, all posts must be reviewed
 	function make_pending_post($post_id, $data, $post_before) {
-	
 		global $current_user, $wpdb;
+		
+		//Determine users role
 		$role = $wpdb->prefix . 'capabilities';
 		$current_user->role = array_keys($current_user->$role);
 		$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role ){
+		if ('dp_editor' == $role ){	//if a dp editor
 
+			//only change to pending if not already (assume all edited posts are published)
+			//avoids infinite loop of updating
 			if(isset( $data->post_status) && $data->post_status === 'publish') {
 				$data->post_status= 'pending';	//set published status to pending review
-				wp_update_post($data);
+				wp_update_post($data);	//update to pending
 			}
 		}
-	}
+	} //make pending post
 	
-	//Change publish, update, etc to Save
+	/**
+	 * Change publish, update, etc to Save
+	 */
 	function change_publish_button( $translation, $text ) {
+		//Typical words on 'Publish' button
+		if ( $text == 'Publish' )
+			return 'Save';
+			
+		if ( $text == 'Update' )
+			return 'Save';
+			
+		if ( $text == 'Submit for Review' )
+			return 'Save';
 
-	if ( $text == 'Publish' )
-		return 'Save';
-		
-	if ( $text == 'Update' )
-		return 'Save';
-		
-	if ( $text == 'Submit for Review' )
-		return 'Save';
-
-	return $translation;
-	}
+		return $translation;
+	}//change publish button
 
 	
 } //dp_admin

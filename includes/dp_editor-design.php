@@ -1,4 +1,21 @@
 <?php
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Department Editor Custom Creation
+ *	
+ *	1. Include Styles
+ *	2. Admin Bar
+ *	3. Advanced Edit Form
+ *	4. Edit Table Lists
+ *	5. Custom Course Message
+ *	6. Tabs
+ *	7. Helper Functions
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
 
 /*****************************************************
  *
@@ -17,6 +34,7 @@ add_action('admin_enqueue_scripts', 'add_dp_style');
  *  Editing the adminbar
  *
  *****************************************************/
+ //Remove admin bar links, add link to review page (editor home)
 function add_csun_admin_bar_links( $wp_admin_bar ) {
 	//add link to the department editor home page
 	$args = array(
@@ -39,29 +57,33 @@ add_action( 'admin_bar_menu', 'add_csun_admin_bar_links', 999 );
 
 //Add secondary bar for navigation in the department
 function add_csun_admin_bar() {
-	//if the correct category is in the url, use it (files&course list)
+	//if the category is in the url, use it (files&course list)
 	if(isset($_REQUEST['department_shortname'])){
 		$cat = $_REQUEST['department_shortname'];
 	}
-	elseif(isset($_REQUEST['post'])){	//figure out category from post (courses, programs, departments)
+	//otherwise, figure out category from post (courses, programs, departments)
+	elseif(isset($_REQUEST['post'])){
+		//get all departments relating to the post
 		$terms =  wp_get_post_terms( $_REQUEST['post'], 'department_shortname' );
 		
 		foreach($terms as $term){
 			//ge and top level terms can't be the category
 			if($term->slug !== 'ge' && $term->parent != 0) {
+				//save the slug of the category that works
 				$cat = $term->slug;
 			}
 		}
 	}
-	
+
+	//if we have a category, build the bar
 	if(isset($cat)) : 
 		$term_id = term_exists( $cat );	//get term id from slug
-		
+
 		//Cleaned up term description holding department name
 		$dp_name = term_description( $term_id, 'department_shortname' );
 		$dp_name = strip_tags($dp_name);		//remove p tags
 		$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
-		
+
 		//make li active for current page
 		$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL ;	//get uri
 		$type = isset($_GET['post']) ? get_post_type( ($_GET['post'])) : NULL ;	//get post type
@@ -76,7 +98,8 @@ function add_csun_admin_bar() {
 			$page = 'file';
 		}
 
-		$department_id = get_first_term_post($cat);		//figure out which post is active first for programs/departments
+		//figure out which post is active first for programs/departments (will link to that tab)
+		$department_id = get_first_term_post($cat);
 ?>
 	<div id="csun-bar" role="naviagation">
 	<div class="quicklinks" id="csun-toolbar" role="navigation" aria-label="Second navigation toolbar." tabindex="0">
@@ -89,22 +112,22 @@ function add_csun_admin_bar() {
 				</a>		
 			</li>
 			<li id="csun-course-link" <?php if($page === 'course') echo 'class="active"'; ?>>
-				<a class="ab-item" href="<?php echo admin_url(); ?>edit.php?post_type=courses&amp;department_shortname=<?php echo $cat; ?>&amp;orderby=title&amp;order=asc">
+				<a class="ab-item" href="<?php echo admin_url().'edit.php?post_type=courses&amp;department_shortname='.$cat.'&amp;orderby=title&amp;order=asc"';?>>
 					<span class="ab-icon"></span>
 					<span id="ab-csun-courses" class="ab-label">Courses</span>
 				</a>		
 			</li>
 			<li id="csun-file-link" <?php if($page === 'file') echo 'class="active"'; ?>>
-				<a class="ab-item" href="<?php echo admin_url(); ?>admin.php?page=proposals&amp;department_shortname=<?php echo $cat; ?>">
+				<a class="ab-item" href="<?php echo admin_url().'admin.php?page=proposals&amp;department_shortname='.$cat; ?>">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-files" class="ab-label">Files</span>
 				</a>		
 			</li>		
-		</ul>			
-	</div>
-	</div>
+		</ul><!-- /csun-dept-bar-->		
+	</div><!-- /quicklins-->
+	</div><!-- /csun-bar-->
 <?php
-	endif;
+	endif; //end isset($cat)
 }
 
 add_action( 'in_admin_header', 'add_csun_admin_bar');
@@ -118,6 +141,7 @@ add_action( 'in_admin_header', 'add_csun_admin_bar');
 //Remove meta-boxes
 function remove_meta_boxes() {
 	remove_meta_box('formatdiv', 'post', 'normal');
+	remove_meta_box('revisionsdiv', 'post', 'normal');
 	remove_meta_box('tagsdiv-post_tag', 'post', 'normal');
 	remove_meta_box('postimagediv', 'post', 'normal');
 	remove_meta_box('department_shortnamediv', 'courses', 'side');
@@ -277,7 +301,7 @@ if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs' ||  
 	
 /*******************************************
  *
- * Helper function
+ * Helper functions
  *
  *******************************************/
  

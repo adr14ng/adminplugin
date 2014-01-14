@@ -1,8 +1,16 @@
 <?php
 
-/**
- * Creates the home page
- */
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Review
+ *	
+ * 	Creates the home page for editors and a 
+ *	page with all review statuses for admin.
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
  
 //need to enable url fopen
 //includes->dpadmin->plugs->wp-content->base
@@ -14,7 +22,7 @@ function add_review_menu()
 				'review', 'review_page', $icon, 21 ); //need icon
 }
 
-//function that generates the aggregate post page
+//function that directs you to the correct view
 function review_page() {	
 	global $current_user, $wpdb;
 		$role = $wpdb->prefix . 'capabilities';
@@ -32,13 +40,14 @@ function review_page() {
 		}
 }
 
+//If you are a department editor, this creates the home page
 function editor_home_page() {
-	$option = get_option( 'main_dp_settings' );
+	$option = get_option( 'main_dp_settings' );	//get our options (message & due date)
 	$message = $option['welcome_message'];
 ?>
 	<div class="wrap">
 	
-	<h2> Welcome to the CSUN Catalog </h2>
+	<h2> Welcome to the 2014-2015 CSUN Catalog </h2>
 	<p><?php echo $message; ?></p>
 	
 	

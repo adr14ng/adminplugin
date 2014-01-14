@@ -1,9 +1,16 @@
 <?php
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Proposal Files View
+ *	
+ * 	Creates a page to display course 
+ *	proposal files.
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
 
-/**
- * Creates a page to display course proposal files
- */
- 
 //need to enable url fopen
 //includes->dpadmin->plugs->wp-content->base
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
@@ -16,7 +23,8 @@ function add_proposal_menu()
 
 //function that generates the aggregate post page
 function proposal_page() {	
-	if(isset($_REQUEST['department_shortname'])) //if we already have the category page request
+	//if we already have the category page request
+	if(isset($_REQUEST['department_shortname'])) 
 	{
 		edit_proposals();
 	}
@@ -32,23 +40,23 @@ function list_proposal() {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	require( dirname(__FILE__) . '/class-proposal-list-table.php' );
 	
-	//header title, plus links to make new programs/departments?>
+	//header title?>
 	<div class = "wrap">
-	<h2>Proposals and Memos</h2>
-	
-	<?//Createthe aggregate list table
-	$prop_list_table = new Proposal_List_Table();
-	$prop_list_table->prepare_items();
-	
-	//Search?>
-	<form class="search-form prop-form" action method="get">
-		<input type="hidden" name="page" value="proposals">
-		<?php $prop_list_table->search_box( 'Search', 'aggr' ); ?>
-	</form>
-	
-	<?php //display the aggregate list table
-	$prop_list_table->display(); ?>
-	</div>
+		<h2>Proposals and Memos</h2>
+		
+		<?//Create the list table
+		$prop_list_table = new Proposal_List_Table();
+		$prop_list_table->prepare_items();
+		
+		//Search?>
+		<form class="search-form prop-form" action method="get">
+			<input type="hidden" name="page" value="proposals">
+			<?php $prop_list_table->search_box( 'Search', 'aggr' ); ?>
+		</form>
+		
+		<?php //display the list table
+		$prop_list_table->display(); ?>
+	</div><!-- /wrap -->
 <?}	//end list aggregrate post
 
 
@@ -65,12 +73,11 @@ function edit_proposals(){
 			//get all the posts with that department code
 			$args=array(
 				'post_type' => 'attachment',
-				//'post__not_in' => $ids, // avoid duplicate posts
 				'numberposts' => -1,
 				'orderby' => 'title',
 				'order' => 'ASC',
 				'meta_key' => 'user_cat',
-				'meta_query' => array(
+				'meta_query' => array(	//check for the category in user cat field
 					array(
 						'key' => 'user_cat',
 						'value' => $post_cat,
@@ -99,7 +106,7 @@ function edit_proposals(){
 	$message = $message['file_message'];
 	
 	$term = get_term($term_id, 'department_shortname');
-	$alternate = true;
+	$alternate = true;	//alternate striping
 	?>
 	<div class="wrap">
 	<h2>Proposals and Memos : <?php echo $term->description; ?></h2> 
@@ -120,11 +127,11 @@ function edit_proposals(){
 			<a class="row-title" href=<?php echo $post->guid; ?> >
 			<?php echo $post->post_title; ?> </a>
 			<br />
-			<?php echo $post->post_content; ?> <br />
+			<?php echo $post->post_content; //display date information?> <br />
 		</tr></td>
 	<?php }
 	
-	echo '</tbody></table></div>';
+	echo '</tbody></table></div><!-- /wrap -->';
 	
 	}
 
