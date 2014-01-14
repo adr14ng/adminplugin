@@ -187,4 +187,90 @@ function editor_admin_footer()
     }
 }
 
+/**************************************************
+ *
+ * Fake Tabs
+ *
+ **************************************************/
+ //Creates the edit page where all posts are edited
+function edit_aggregate_post(){
+    global  $post, $pagenow, $typenow;
+    
+    $pagenow = 'post.php'; //mimicking post page
+	/******************************************
+	 * Get posts for category
+	 *****************************************/
+	 if($post_cat = $_REQUEST['department_shortname'] ){
+		$term_id = term_exists( $post_cat );
+		
+		if($term_id != 0){	//if the term exists
+			//get departments with that department code
+			$args=array(
+				'post_type' => 'departments',
+				'post__not_in' => $ids, // avoid duplicate posts
+				'department_shortname' => $post_cat,
+				'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
+				'numberposts' => 50,
+			);
+			$departments = get_posts( $args );
+			
+			//get programs with that department code
+			$args=array(
+				'post_type' => 'programs',
+				'post__not_in' => $ids, // avoid duplicate posts
+				'department_shortname' => $post_cat,
+				'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
+				'numberposts' => 50,
+			);
+			$programs = get_posts( $args );
+			
+			$posts = array_merge($departments, $programs);
+		}
+		else{	//the term doesn't exist
+			wp_die(__( 'Department does not exist' ));
+		}
+	}
+	else	//we were given no category
+		wp_die(__( 'Not enough information' ));
+		
+	if( !$posts )	//if no posts were retrieved
+		wp_die(__( 'No posts in this category' ));
+		
+	/********************************************
+	 * Build Tabs
+	 ********************************************/
+
+	$term = get_term($term_id, 'department_shortname');
+	
+	$message = get_option( 'main_dp_settings');	//get message option
+	$message = $message['view_all_message'];
+
+	echo '<br />';
+	echo '<h1>'.$term->description.'</h1>';
+	echo '<p>'.$message.'</p>';
+
+	//Create top tabs to switch between posts
+	$isFirst = true; //to make active tab
+	echo '<ul id="edit-tabs" class="nav nav-tabs">';
+	foreach($posts as $post) {
+		$post_ID = $post->ID;
+		$post_type = get_post_type( $post );
+		$post_name = $post->post_title;
+		if($isFirst){
+			$isFirst = false;
+			echo '<li class="active">';
+		}
+		else
+			echo '<li>';
+		
+		echo '<a href="#custom-edit-'.$post_ID.'" data-toggle="tab">'.$post_name;
+		if($post_type==='programs'){
+			echo ', ';
+			echo the_field('degree_type');
+		}
+		echo '</a></li>';
+	}	
+	echo'</ul><div class="tab-content"> ';
+}
+
 ?>
