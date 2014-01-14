@@ -55,11 +55,7 @@ if ( is_admin() ) {
 	add_action('admin_enqueue_scripts', array( 'DP_Admin', 'add_base_style'));	
 	
 	//Add new toolbar 
-	add_filter( 'acf/fields/wysiwyg/toolbars' , array( 'DP_Admin', 'my_toolbars'));
-	
-	//Add menu for aggregate view
-	require $plug_in_dir . '/includes/aggregate-edit-form.php';
-	add_action( 'admin_menu', 'add_aggregate_menu' );		
+	add_filter( 'acf/fields/wysiwyg/toolbars' , array( 'DP_Admin', 'my_toolbars'));		
 	
 	//Add menu for proposal files
 	require $plug_in_dir . '/includes/proposal-files.php';

@@ -74,11 +74,12 @@ function editor_home_page() {
 		$dp_name = strip_tags($dp_name);		//remove p tags
 		$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
 		
+		$department_id = get_first_term_post($term)		
 		//Output row ?>
 
 		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
 			<td class="col_name column-col_name">
-				<a class="row-title" href="<?php echo admin_url(); ?>admin.php?page=dp_page&department_shortname=<?php echo $link; ?>&action=edit">
+				<a class="row-title" href="<?php get_edit_post_link( $department_id )?>">
 					<?php echo $dp_name; ?>
 				</a>
 			</td>
