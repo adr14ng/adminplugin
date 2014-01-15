@@ -22,11 +22,11 @@
  *  Including the styles and js
  *
  ****************************************************/
-function add_dp_style() {
+function add_editor_style() {
 	$basedir = dirname(plugin_dir_url(__FILE__));
 	wp_enqueue_style('dp-editor-style', $basedir . '/css/dp-editor-style.css');
 }
-add_action('admin_enqueue_scripts', 'add_dp_style');
+add_action('admin_enqueue_scripts', 'add_editor_style');
 
 
 /*****************************************************

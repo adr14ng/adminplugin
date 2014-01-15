@@ -1,0 +1,16 @@
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	CSUN Default Color Scheme
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
+$menu-submenu-text: #e2e2e2;
+$menu-submenu-focus-text: #0074a2;
+$menu-submenu-background: #333333;
+$menu-submenu-background-alt: #0074a2;
+
+@import "template/colors.css";
+@import "template/_admin.scss";

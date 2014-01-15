@@ -198,7 +198,7 @@ class DP_Admin {
 		elseif( in_array( 'dp_editor', (array) $user->roles ))
 			include dirname(__FILE__) . '/dp_editor-design.php';
 		elseif( in_array( 'dp_ar', (array) $user->roles ))
-			wp_enqueue_style('ar-style', $basedir . '/css/admissions-style.css');
+			include dirname(__FILE__) . '/dp_ar-design.php';
 		elseif( in_array( 'dp_faculty', (array) $user->roles ))
 			wp_enqueue_style('faculty-style', $basedir . '/css/faculty-style.css');
 	}//change layout
@@ -212,12 +212,21 @@ class DP_Admin {
 		// CSUN Custom
 		$toolbars['CSUN' ] = array();
 		//1 row tool bar
-		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'undo', 'redo');
+		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'link', 'unlink', 'undo', 'redo');
 	 
 		// return $toolbars - IMPORTANT!
 		return $toolbars;
 	}//my_toolbars
 	
+	function csunFormatTinyMCE($in)
+	{	
+		$in['theme_advanced_buttons1']='formatselect,bullist,numlist,bold,italic,link,unlink,undo,redo';
+		$in['theme_advanced_buttons2']='';
+		$in['theme_advanced_buttons3']='';
+		$in['theme_advanced_buttons4']='';
+		
+		return $in;
+	}
 	
 	/**
 	 * If a dp editor, all posts must be reviewed, so change them to pending

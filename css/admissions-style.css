@@ -4,8 +4,7 @@
  *	
  *	1. Editor
  *	2. Menu Links
- *	3. Admin Bar
- *	4. Programs
+ *	3. Programs
  *
  * 	CSUN Department of Undergraduate Studies
  * 	2013-2014
@@ -16,7 +15,7 @@
 #department_shortnamediv,
 #minor-publishing-actions,
 #misc-publishing-actions,
-.bulkactions
+.actions
 {
 	display: none;
 }
@@ -33,14 +32,6 @@
 #menu-comments,
 #menu-tools,
 .wp-submenu {
-	display: none;
-}
-
-/* Admin Bar */
-#wp-admin-bar-new-content,
-#wp-admin-bar-site-name,
-#wp-admin-bar-wp-logo,
-#wp-admin-bar-comments{
 	display: none;
 }
 

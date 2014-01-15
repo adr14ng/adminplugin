@@ -6,6 +6,19 @@
 * Author: CSUN Undergraduate Studies 
 */
 
+function new_custom_login_logo() {
+    echo '<style type="text/css">
+        h1 a { background-image:url(http://csuncatalog.com/wp-content/uploads/2013/09/logo3.png) !important; height:85px !important; width: 225px !important; background-size: auto auto !important;} 
+		body.login {background-image: url(http://csuncatalog.com/wp-content/uploads/2013/09/bg.png) !important; background-size: 100%; background-repeat:no-repeat;}
+		#nav, #backtoblog {display:none}	
+		#loginform {opacity:0.90;}
+		#loginform label {font-weight:bold;color:black}
+		body.login div#login form#loginform input:focus#user_login {border-color:#990000}
+		body.login div#login form#loginform input:focus#user_pass {border-color:#990000}
+		</style>';
+}
+add_action('login_head', 'new_custom_login_logo');
+
 //Login redirect to dashpage
 function csun_login($redirect_to){
 	//is there a user to check?
@@ -55,7 +68,10 @@ if ( is_admin() ) {
 	add_action('admin_enqueue_scripts', array( 'DP_Admin', 'add_base_style'));	
 	
 	//Add new toolbar 
-	add_filter( 'acf/fields/wysiwyg/toolbars' , array( 'DP_Admin', 'my_toolbars'));		
+	add_filter( 'acf/fields/wysiwyg/toolbars' , array( 'DP_Admin', 'my_toolbars'));	
+
+	//Change wordpress toolbar
+	add_filter('tiny_mce_before_init', array( 'DP_Admin', 'csunFormatTinyMCE') );
 	
 	//Add menu for proposal files
 	require $plug_in_dir . '/includes/proposal-files.php';
