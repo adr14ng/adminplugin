@@ -400,7 +400,15 @@ Author: CSUN Undergraduate Studies
 			else
 				_e( '-', 'your_text_domain' );
 			break;
-
+			
+		case 'option' :
+			$terms = get_field('option_title', $post_id);
+			if ( is_string( $terms ) )
+				echo $terms;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+			
 		case 'year' :
 			$terms = get_the_term_list( $post_id , 'year' , '' , ', ' , '' );
 				if ( is_string( $terms ) )
@@ -434,8 +442,8 @@ Author: CSUN Undergraduate Studies
 			break;
 			
 		case 'level' :
-			$terms = get_the_term_list( $post_id , 'degree_level' , '' , ', ' , '' );
-				if ( is_string( $terms ) )
+			$terms = get_field('degree_type',$post_id);
+			if ( is_string( $terms ) )
 				echo $terms;
 			else
 				_e( '-', 'your_text_domain' );
@@ -490,6 +498,7 @@ Author: CSUN Undergraduate Studies
 	
 	add_filter('manage_edit-programs_columns', 'prog_columns');
 	function prog_columns($columns) {
+		$columns['option'] = 'Option Title';
 		$columns['department'] = 'Department';
 		$columns['level'] = 'Degree';
 		return $columns;

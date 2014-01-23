@@ -22,11 +22,11 @@
  *  Including the styles and js
  *
  ****************************************************/
-function add_editor_style() {
+function add_dp_editor_style() {
 	$basedir = dirname(plugin_dir_url(__FILE__));
 	wp_enqueue_style('dp-editor-style', $basedir . '/css/dp-editor-style.css');
 }
-add_action('admin_enqueue_scripts', 'add_editor_style');
+add_action('admin_enqueue_scripts', 'add_dp_editor_style');
 
 
 /*****************************************************
@@ -276,7 +276,12 @@ function department_edit_tabs(){
 		foreach($posts as $post) {
 			$post_ID = $post->ID;
 			$post_type = get_post_type( $post );
-			$post_name = $post->post_title;
+			
+			if($post_type==='programs')
+				$post_name=get_field('option_title', $post_ID);
+			
+			if($post_name=='')
+				$post_name = $post->post_title;
 
 			if($post_ID == $curr_post)
 				echo '<li class="active">';
