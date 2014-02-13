@@ -19,7 +19,7 @@ $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 function add_review_menu()
 {
 	add_menu_page( 'Review Status', 'Review Status', 'read', 
-				'review', 'review_page', $icon, 21 ); //need icon
+				'review', 'review_page', '', 21 ); //need icon
 }
 
 //function that directs you to the correct view

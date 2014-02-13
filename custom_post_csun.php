@@ -85,7 +85,7 @@ Author: CSUN Undergraduate Studies
 						'editor',
 						'revisions'
 				),
-			'rewrite'       => array('slug' => 'programs'),
+			'rewrite'       => FALSE,
 			'delete_with_user' => false,
 			//'map_meta_cap'  => true,
 			'capability_type' => 'program',
@@ -171,7 +171,7 @@ Author: CSUN Undergraduate Studies
 						'editor',
 						'revisions'
 				),
-			'rewrite' => array('slug' => 'departments'),
+			'rewrite' => FALSE,
 			'delete_with_user' => false,
 			'map_meta_cap'  => true,
 			)
@@ -517,4 +517,87 @@ Author: CSUN Undergraduate Studies
 		$columns['pol_key'] = 'Keywords';
 		return $columns;
 	}
+	
+
+//Custom reWrite Rules
+function csun_add_rewrite_rules() {
+	global $wp_rewrite;
+	
+	//print_r($wp_rewrite->extra_permastructs);
+	
+	$wp_rewrite->add_rewrite_tag('%programs%', '([^/]+)', 'programs=');
+	$wp_rewrite->add_rewrite_tag('%departments%', '([^/]+)', 'departments=');
+	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
+	$wp_rewrite->add_rewrite_tag('%option_name%', '([^/]+)', 'option_title=');
+	$wp_rewrite->add_rewrite_tag('%post_type%', '([^/]+)', 'post_type=');
+	
+	add_rewrite_rule('^academics/([a-z]+)/overview/?','index.php?post_type=departments&department_shortname=$matches[1]','top');
+	/*add_rewrite_rule('^academics/([a-z]+)/faculty/?','index.php?post_type=faculty&department_shortname=$matches[1]','top');
+	add_rewrite_rule('^academics/([a-z]+)/courses/?','index.php?post_type=courses&department_shortname=$matches[1]','top');*/
+	
+	$wp_rewrite->add_permastruct('programs', 'academics/%dpt_name%/programs/%programs%/%option_name%', false);
+	$wp_rewrite->add_permastruct('departments', 'department/%dpt_name%/%departments%', false);
+	$wp_rewrite->add_permastruct('department_shortname', 'academics/%dpt_name%/%post_type%', false);
+}
+add_action('init', 'csun_add_rewrite_rules');
+
+
+ 
+function csun_permalinks($permalink, $post, $leavename) {
+	//Defaults
+	$option_df = '';
+	$dpt_df = 'nodpt';
+	
+	$post_id = $post->ID;
+	$post_type = $post->post_type;
+	
+	$permalink = str_replace('%post_type%', $post_type, $permalink);
+	
+	if(($post_type != 'programs' && $post_type != 'faculty' && $post_type != 'departments' && $post_type != 'courses') || 
+		empty($permalink) || in_array($post->post_status, array('draft', 'pending', 'auto-draft')))
+		return $permalink;
+	
+	if($post->post_type == 'programs'){
+		$option = get_field( 'option_title', $post_id);
+		
+		$option = sanitize_title($option);
+		
+		if(!$option)
+			$option = $option_df;
+		
+		$permalink = str_replace('%option_name%', $option, $permalink);
+	}
+	
+	//get the category
+	if(isset($_REQUEST['department_shortname'])){
+		$dpt = $_REQUEST['department_shortname'];
+	}
+	//otherwise, figure out category from post (courses, programs, departments)
+	else{
+		//get all departments relating to the post
+		$terms =  wp_get_post_terms( $post_id, 'department_shortname' );
+		
+		foreach($terms as $term){
+			//ge and top level terms can't be the category
+			if($term->slug !== 'ge' && $term->parent != 0) {
+				//save the slug of the category that works
+				$dpt = $term->slug;
+			}
+		}
+	}
+	
+	//Sanatize fields
+	$dpt = sanitize_title($dpt);
+	
+	if(!$dpt)
+		$dpt = $dpt_df;
+	 
+	$permalink = str_replace('%dpt_name%', $dpt, $permalink);
+	
+
+	 
+	return $permalink;
+}
+add_filter('post_type_link', 'csun_permalinks', 10, 3);
+
 		

@@ -117,10 +117,14 @@ class DP_Admin {
 			$post_id = $_GET['post'];
 		elseif(isset( $_GET['revision'] )) //revisions page post id is 0
 			$post_id = $args[0];
-		else 		//post id might be 1 otherwise
+		elseif(isset($args[1]) )	//post id might be 1 otherwise
 			$post_id = $args[1];
+			
 		//get terms of that post
-		$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
+		if(isset($post_id) )
+			$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
+		else
+			$cats=false;
 		
 		//if we didn't get it from the args (courses list and proposal files)
 		if(!$cats && isset($_REQUEST['department_shortname']))

@@ -61,7 +61,6 @@ add_filter('manage_${post_type}_posts_columns', 'simplify_admissions_post_column
 function simplify_program_columns($defaults) {
   unset($defaults['cb']);
   unset($defaults['department']);
-  unset($defaults['level']);
   return $defaults;
 }
 add_filter('manage_edit-programs_columns', 'simplify_program_columns');

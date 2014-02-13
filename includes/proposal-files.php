@@ -18,7 +18,7 @@ $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 function add_proposal_menu()
 {
 	add_menu_page( 'Proposal Files', 'Proposal Files', 'edit_posts', 
-				'proposals', 'proposal_page', $icon, 18 ); //need icon
+				'proposals', 'proposal_page', '', 18 ); //need icon
 }
 
 //function that generates the aggregate post page
@@ -95,8 +95,7 @@ function edit_proposals(){
 	else	//we were given no category
 		wp_die(__( 'Not enough information' ));
 		
-	if( !$posts )	//if no posts were retrieved
-		wp_die(__( 'No files in this category' ));
+	
 		
 	/********************************************
 	 * Build Overall Page
@@ -111,6 +110,12 @@ function edit_proposals(){
 	<div class="wrap">
 	<h2>Proposals and Memos : <?php echo $term->description; ?></h2> 
 	<p> <?php echo $message; ?></p>
+	
+	<?php
+	if( !$posts )	//if no posts were retrieved
+		echo '<p>There is no record of any approved curriculum proposals.</p>';
+	
+	else{ ?>
 	
 	<table class="wp-list-table widefat" cellspacing="0">
 	
@@ -131,7 +136,9 @@ function edit_proposals(){
 		</tr></td>
 	<?php }
 	
+	
 	echo '</tbody></table></div><!-- /wrap -->';
+	}
 	
 	}
 
