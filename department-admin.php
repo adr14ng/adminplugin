@@ -94,9 +94,13 @@ if ( is_admin() ) {
 	//Add custom footer 
 	function csun_footer_admin () 
 	{	  
-		echo 'Powered by the Office of Undergraduate Studies.';	
+		return 'Powered by the Office of Undergraduate Studies.';	
 	}	
 	add_filter('admin_footer_text', 'csun_footer_admin');
+	function replace_footer_version(){
+		return 'California State University, Northridge';
+	}
+	add_filter( 'update_footer', 'replace_footer_version', 11);
 	
 	//Add custom colors
 	add_action( 'admin_init' , array( 'DP_Admin', 'add_csun_colors'));

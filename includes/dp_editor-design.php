@@ -200,6 +200,7 @@ function editor_admin_footer()
 
     $message = NULL;
 
+	//Only edit page they can get to is courses
     if ($uri AND strpos($uri,'edit.php'))
     {
         $message = get_option( 'main_dp_settings');	//get message option
@@ -215,6 +216,28 @@ function editor_admin_footer()
             });
         </script><?php
     }
+	
+	//They can edit multiple posts though
+	if ($uri AND strpos($uri,'post.php'))
+    {
+		$post_id = $_GET['post'];
+		$post_type = get_post_type( $post_id );
+	
+		if($post_type === 'programs')	//if its programs the basic box is overview
+			$description = '<label for="basic-box">Overview</label>Description of the program.';
+		elseif($post_type === 'departments')	//if its departments the basic box is misc
+			$description = '<label for="basic-box">Misc</label>Department information that fits no where else (e.g. accreditation).';
+		
+		if($description) {
+		?><script>
+			jQuery(function($) {
+				//both are after the high acf fields
+				$('<p class="label">' + '<?php echo $description; ?>' + '</p>').insertAfter('#acf_after_title-sortables')
+			});
+			</script><?php
+		}
+	}
+	
 }
 
 /**************************************************
@@ -268,7 +291,7 @@ function department_edit_tabs(){
 		$message = $message['view_all_message'];
 
 		echo '<br />';
-		echo '<h1>'.$term->description.'</h1>';
+		echo '<h1>'.$term->description.'</h1>';	//department name
 		echo '<p>'.$message.'</p>';
 
 		//Create top tabs to switch between posts
@@ -276,22 +299,29 @@ function department_edit_tabs(){
 		foreach($posts as $post) {
 			$post_ID = $post->ID;
 			$post_type = get_post_type( $post );
+			$post_name = $post->post_title;
 			
 			if($post_type==='programs')
-				$post_name=get_field('option_title', $post_ID);
-			
-			if($post_name=='')
-				$post_name = $post->post_title;
+				$post_option=get_field('option_title', $post_ID);
 
+			echo '<li class="';
+			
 			if($post_ID == $curr_post)
-				echo '<li class="active">';
+				echo 'active ';
+				
+			if(isset($post_option)&&$post_option!=='')
+				echo 'option" >';
 			else
-				echo '<li>';
+				echo 'nonoption" >';
 			
 			echo '<a href="'.get_edit_post_link( $post_ID ).'">'.$post_name;
 			if($post_type==='programs'){
 				echo ', ';
 				echo the_field('degree_type', $post_ID);
+			}
+			if(isset($post_option)&&$post_option!==''){
+				echo '<br />';
+				echo '<span class="option">'.$post_option.'</span>';
 			}
 			echo '</a></li>';
 		}	

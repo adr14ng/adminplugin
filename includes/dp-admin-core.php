@@ -97,12 +97,16 @@ class DP_Admin {
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
 		
+		
+		
 		//if we're not trying to edit or publish edits of a post, return
 		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' && 
 			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' &&
-			$cap !== 'edit_progams' /*&& $cap !== 'publish_programs'*/ && $cap !== 'edit_progam'&& $cap !== 'edit_others_progams'){
+			$cap !== 'edit_progams'  && $cap !== 'publish_progams' && $cap !== 'edit_progam'&& $cap !== 'edit_others_progams'){
+
 			return $caps;
 		}
+		
 		
 		//Allows viewing course list page (all courses though)
 		if(isset($_REQUEST['post_type']))
@@ -117,9 +121,12 @@ class DP_Admin {
 			$post_id = $_GET['post'];
 		elseif(isset( $_GET['revision'] )) //revisions page post id is 0
 			$post_id = $args[0];
+		elseif(isset( $_REQUEST['post_ID'] ))
+			$post_id = $_REQUEST['post_ID'];
 		elseif(isset($args[1]) )	//post id might be 1 otherwise
 			$post_id = $args[1];
 			
+		
 		//get terms of that post
 		if(isset($post_id) )
 			$cats = get_the_terms($post_id, 'department_shortname');//get categories of a post
@@ -130,6 +137,7 @@ class DP_Admin {
 		if(!$cats && isset($_REQUEST['department_shortname']))
 			$cats = $_REQUEST['department_shortname'];
 
+		
 		//compare each post category to each user category until you find a match
 		if(is_array($userCat)){foreach ($userCat as $user){	//each users category
 			$user = strtolower($user);	//just in case there are capitals

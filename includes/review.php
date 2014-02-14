@@ -97,7 +97,7 @@ function editor_home_page() {
 					if (get_field( 'reviewed', 'department_shortname_'.$term_id ))
 						echo ' value="Review Complete" class="btn btn-reviewed">';
 					else
-						echo ' value="Submit Final Review" class="btn">';
+						echo ' value="Submit for Review" class="btn">';
 					?>
 			<td>
 				<?php echo $due; ?>
@@ -146,7 +146,7 @@ function adminstrator_review_page() {
 					if (get_field( 'reviewed', 'department_shortname_'.$term->term_id))
 						echo ' value="Review Complete" class="btn btn-reviewed">';
 					else
-						echo ' value="Submit Final Review" class="btn">';
+						echo ' value="Submit for Review" class="btn">';
 					?>
 		</tr>
 	<?php endforeach; ?>

@@ -529,10 +529,20 @@ div#wp-responsive-toggle a:before {
 
 /* Active tab */
 
-.nav-tabs>li.active>a,
-.nav-tabs>li.active>a:hover,
-.nav-tabs>li.active>a:focus{
+.nav-tabs > li.active.nonoption  > a,
+.nav-tabs > li.active.nonoption  > a:hover,
+.nav-tabs > li.active.nonoption  > a:focus,
+.nav-tabs > li.active.option > a,
+.nav-tabs > li.active.option  > a:hover,
+.nav-tabs > li.active.option  > a:focus {
 	color: $menu-text;
 	background-color: $menu-submenu-background-alt;
 	border-bottom:1px solid $menu-submenu-background;
+}
+
+.nav-tabs > li.active.option  > a > span,
+.nav-tabs > li.active.option  > a:hover  > span,
+.nav-tabs > li.active.option  > a:focus  > span
+{
+	color: $menu-text;
 }

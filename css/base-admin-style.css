@@ -57,16 +57,25 @@ div.updated p{
 .nav:after{clear:both;}
 .nav:before,.nav:after{content:" ";display:table;}
 .nav:after{clear:both;}
-.nav>li{position:relative;display:block;}
-.nav>li>a{position:relative;display:block;padding:4px 15px 6px;margin:0 3px -1px 0;}
-.nav>li>a:hover,.nav>li>a:focus{text-decoration:none;background-color:#eeeeee;}
+.nav>li.nonoption{position:relative;display:block;}
+.nav>li.nonoption>a{position:relative;display:block;padding:4px 15px 6px;margin:0 3px -1px 0;}
+.nav>li.nonoption>a:hover,.nav>li>a:focus{text-decoration:none;background-color:#eeeeee;}
+.nav>li.option{position:relative;display:block;}
+.nav>li.option>a{position:relative;display:block;padding:4px 15px 6px;margin:0 3px -1px 0;}
+.nav>li.option>a:hover,.nav>li>a:focus{text-decoration:none;background-color:#eeeeee;}
 
 .nav .nav-divider{height:1px;margin:9px 0;overflow:hidden;background-color:#e5e5e5;}
-.nav-tabs>li{float:left;margin-bottom:-1px;}
 .nav-tabs{border-bottom:1px solid #ccc;}
-.nav-tabs>li>a{font-size:18px;font-weight: 700;line-height:24px;text-decoration:none;color:#555555;background-color:#e4e4e4;}
-.nav-tabs>li>a{border:1px solid #ccc;padding:4px 15px 6px;margin:0 0 0 4px;}
-.nav-tabs>li>a:hover{color:#555555;background-color:#fefefe;}
+
+.nav-tabs>li.nonoption{float:left;margin-bottom:-1px;min-height:53px;}
+.nav-tabs>li.option{float:left;margin-bottom:-1px;min-height:53px;}
+.nav-tabs>li.nonoption>a{font-size:20px;font-weight: 700;line-height:40px;text-decoration:none;color:#555555;background-color:#e4e4e4;}
+.nav-tabs>li.option>a{font-size:16px;font-weight: 700;line-height:20px;text-decoration:none;color:#555555;background-color:#e4e4e4;}
+.nav-tabs>li.option>a>span{font-size:12px;font-weight: 700;line-height:17px;text-decoration:none;color:#555555;}
+.nav-tabs>li.nonoption>a{border:1px solid #ccc;padding:4px 15px 6px;margin:0 0 0 4px;}
+.nav-tabs>li.nonoption>a:hover{color:#555555;background-color:#fefefe;}
+.nav-tabs>li.option>a{border:1px solid #ccc;padding:4px 15px 6px;margin:0 0 0 4px;}
+.nav-tabs>li.option>a:hover{color:#555555;background-color:#fefefe;}
 
 
 /* * * * * * * * * * * * * * * * * * * * * *

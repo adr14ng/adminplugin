@@ -539,10 +539,20 @@ div#wp-responsive-toggle a:before {
 }
 
 /* Active tab */
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus {
+.nav-tabs > li.active.nonoption  > a,
+.nav-tabs > li.active.nonoption  > a:hover,
+.nav-tabs > li.active.nonoption  > a:focus,
+.nav-tabs > li.active.option > a,
+.nav-tabs > li.active.option  > a:hover,
+.nav-tabs > li.active.option  > a:focus{
   color: white;
   background-color: #0074a2;
   border-bottom: 1px solid #333333;
+}
+
+.nav-tabs > li.active.option  > a > span,
+.nav-tabs > li.active.option  > a:hover  > span,
+.nav-tabs > li.active.option  > a:focus  > span
+{
+	color: white;
 }
