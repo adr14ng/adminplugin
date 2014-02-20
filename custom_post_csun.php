@@ -56,18 +56,18 @@ Author: CSUN Undergraduate Studies
 				),
 			'rewrite' => array('slug' => 'courses'),
 			'delete_with_user' => false,
-			'map_meta_cap'  => true,
-			'capability_type' => 'courses',
+			//'map_meta_cap'  => true,
+			'capability_type' => 'course',
 			'capabilities' => array(
-				'read_post' => 'read_courses',
-				'publish_posts' => 'publish_coursess',
-				'edit_posts' => 'edit_coursess',
-				'edit_others_posts' => 'edit_others_coursess',
-				'delete_posts' => 'delete_coursess',
-				'delete_others_posts' => 'delete_others_coursess',
-				'read_private_posts' => 'read_private_coursess',
-				'edit_post' => 'edit_courses',
-				'delete_post' => 'delete_courses',
+				'read_post' => 'read_course',
+				'publish_posts' => 'publish_courses',
+				'edit_posts' => 'edit_courses',
+				'edit_others_posts' => 'edit_others_courses',
+				'delete_posts' => 'delete_courses',
+				'delete_others_posts' => 'delete_others_courses',
+				'read_private_posts' => 'read_private_courses',
+				'edit_post' => 'edit_course',
+				'delete_post' => 'delete_course',
 			),
 			)
 		);
@@ -98,7 +98,6 @@ Author: CSUN Undergraduate Studies
 						'revisions'
 				),
 			'rewrite'       => FALSE,
-			'delete_with_user' => false,
 			//'map_meta_cap'  => true,
 			'capability_type' => 'program',
 			'capabilities' => array(
@@ -613,5 +612,6 @@ function csun_permalinks($permalink, $post, $leavename) {
 	return $permalink;
 }
 add_filter('post_type_link', 'csun_permalinks', 10, 3);
+
 
 		
