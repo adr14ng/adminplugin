@@ -57,6 +57,18 @@ Author: CSUN Undergraduate Studies
 			'rewrite' => array('slug' => 'courses'),
 			'delete_with_user' => false,
 			'map_meta_cap'  => true,
+			'capability_type' => 'courses',
+			'capabilities' => array(
+				'read_post' => 'read_courses',
+				'publish_posts' => 'publish_coursess',
+				'edit_posts' => 'edit_coursess',
+				'edit_others_posts' => 'edit_others_coursess',
+				'delete_posts' => 'delete_coursess',
+				'delete_others_posts' => 'delete_others_coursess',
+				'read_private_posts' => 'read_private_coursess',
+				'edit_post' => 'edit_courses',
+				'delete_post' => 'delete_courses',
+			),
 			)
 		);
 		
@@ -90,15 +102,15 @@ Author: CSUN Undergraduate Studies
 			//'map_meta_cap'  => true,
 			'capability_type' => 'program',
 			'capabilities' => array(
-				'read_post' => 'read_progam',
-				'publish_posts' => 'publish_progams',
-				'edit_posts' => 'edit_progams',
-				'edit_others_posts' => 'edit_others_progams',
-				'delete_posts' => 'delete_progams',
-				'delete_others_posts' => 'delete_others_progams',
-				'read_private_posts' => 'read_private_progams',
-				'edit_post' => 'edit_progam',
-				'delete_post' => 'delete_progam',
+				'read_post' => 'read_program',
+				'publish_posts' => 'publish_programs',
+				'edit_posts' => 'edit_programs',
+				'edit_others_posts' => 'edit_others_programs',
+				'delete_posts' => 'delete_programs',
+				'delete_others_posts' => 'delete_others_programs',
+				'read_private_posts' => 'read_private_programs',
+				'edit_post' => 'edit_program',
+				'delete_post' => 'delete_program',
 			),
 			)
 		);
@@ -526,16 +538,18 @@ function csun_add_rewrite_rules() {
 	//print_r($wp_rewrite->extra_permastructs);
 	
 	$wp_rewrite->add_rewrite_tag('%programs%', '([^/]+)', 'programs=');
+	$wp_rewrite->add_rewrite_tag('%faculty%', '([^/]+)', 'faculty=');
+	$wp_rewrite->add_rewrite_tag('%courses%', '([^/]+)', 'courses=');
 	$wp_rewrite->add_rewrite_tag('%departments%', '([^/]+)', 'departments=');
 	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
 	$wp_rewrite->add_rewrite_tag('%option_name%', '([^/]+)', 'option_title=');
 	$wp_rewrite->add_rewrite_tag('%post_type%', '([^/]+)', 'post_type=');
 	
 	add_rewrite_rule('^academics/([a-z]+)/overview/?','index.php?post_type=departments&department_shortname=$matches[1]','top');
-	/*add_rewrite_rule('^academics/([a-z]+)/faculty/?','index.php?post_type=faculty&department_shortname=$matches[1]','top');
-	add_rewrite_rule('^academics/([a-z]+)/courses/?','index.php?post_type=courses&department_shortname=$matches[1]','top');*/
 	
 	$wp_rewrite->add_permastruct('programs', 'academics/%dpt_name%/programs/%programs%/%option_name%', false);
+	$wp_rewrite->add_permastruct('faculty', 'academics/%dpt_name%/faculty/%faculty%', false);
+	$wp_rewrite->add_permastruct('courses', 'academics/%dpt_name%/courses/%courses%', false);
 	$wp_rewrite->add_permastruct('departments', 'department/%dpt_name%/%departments%', false);
 	$wp_rewrite->add_permastruct('department_shortname', 'academics/%dpt_name%/%post_type%', false);
 }

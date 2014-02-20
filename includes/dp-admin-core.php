@@ -35,6 +35,13 @@ class DP_Admin {
 			'read' => true,
 			'delete_posts' => false
 			));
+		
+		//Create a college editor role
+		//Restrict access to things not in the category of its name
+		add_role( 'dp_college', 'College Editor', array(
+			'read' => true,
+			'delete_posts' => false
+			));
 			
 		//Create a faculty editor role
 		//Restrict access to faculty
@@ -67,12 +74,12 @@ class DP_Admin {
 			'delete_plan' => true,
 			'delete_plans' => true,
 			'delete_others_plans' => true,
-			'edit_progam' => true,
-			'edit_progams' => true,
-			'edit_others_progams' => true, 
-			'publish_progams' => true, 
-			'read_progam' => true, 
-			'read_private_progams' => true,
+			'edit_program' => true,
+			'edit_programs' => true,
+			'edit_others_programs' => true, 
+			'publish_programs' => true, 
+			'read_program' => true, 
+			'read_private_programs' => true,
 			'assign_terms' => true,
 			));
 			
@@ -83,6 +90,7 @@ class DP_Admin {
 	 */
 	function uninstall() {
 		remove_role( 'dp_editor' );
+		remove_role( 'dp_college' );
 		remove_role( 'dp_faculty' );
 		remove_role( 'dp_ar' );
 	}//uninstall
@@ -96,17 +104,30 @@ class DP_Admin {
 	 */	
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
-		
+		$user = get_userdata( $user_id );
 		
 		
 		//if we're not trying to edit or publish edits of a post, return
 		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' && 
 			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' &&
-			$cap !== 'edit_progams'  && $cap !== 'publish_progams' && $cap !== 'edit_progam'&& $cap !== 'edit_others_progams'){
+			$cap !== 'edit_programs'  && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'
+			&& $cap !== 'edit_courses'  && $cap !== 'publish_courses' && $cap !== 'edit_course'&& $cap !== 'edit_others_courses'){
 
 			return $caps;
 		}
 		
+		//Truncate Department Editor Permissions
+		if(in_array( 'dp_editor', (array) $user->roles )){
+			//no publishing programs
+			if($cap == 'publish_programs' || $cap == 'edit_others_programs'){
+				return $caps;
+			}
+			
+			//No publishing courses
+			if($cap == 'publish_courses' || $cap == 'edit_others_courses'){
+				return $caps;
+			}
+		}
 		
 		//Allows viewing course list page (all courses though)
 		if(isset($_REQUEST['post_type']))
@@ -125,7 +146,6 @@ class DP_Admin {
 			$post_id = $_REQUEST['post_ID'];
 		elseif(isset($args[1]) )	//post id might be 1 otherwise
 			$post_id = $args[1];
-			
 		
 		//get terms of that post
 		if(isset($post_id) )
@@ -207,7 +227,7 @@ class DP_Admin {
 	 
 		if ( empty( $user ) )
 			return false;
-		elseif( in_array( 'dp_editor', (array) $user->roles ))
+		elseif( in_array( 'dp_editor', (array) $user->roles ) || in_array( 'dp_college', (array) $user->roles ))
 			include dirname(__FILE__) . '/dp_editor-design.php';
 		elseif( in_array( 'dp_ar', (array) $user->roles ))
 			include dirname(__FILE__) . '/dp_ar-design.php';
@@ -252,7 +272,7 @@ class DP_Admin {
 		$current_user->role = array_keys($current_user->$role);
 		$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role ){	//if a dp editor
+		if ('dp_editor' == $role || 'dp_college' == $role){	//if a dp editor
 
 			//only change to pending if not already (assume all edited posts are published)
 			//avoids infinite loop of updating
@@ -279,6 +299,7 @@ class DP_Admin {
 
 		return $translation;
 	}//change publish button
+	
 
 	
 } //dp_admin

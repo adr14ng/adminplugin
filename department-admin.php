@@ -25,7 +25,7 @@ function csun_login($redirect_to){
     global $user;
     if( isset( $user->roles ) && is_array( $user->roles ) ) {
         //check for admins
-        if( in_array( "dp_editor", $user->roles ) ) {
+        if( in_array( "dp_editor", $user->roles ) || in_array( "dp_college", $user->roles )) {
             // redirect them to the default place
             return admin_url('admin.php?page=review');
         } 

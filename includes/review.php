@@ -29,7 +29,7 @@ function review_page() {
 		$current_user->role = array_keys($current_user->$role);
 		$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role ){
+		if ('dp_editor' == $role || 'dp_college' == $role ){
 			editor_home_page();
 		}
 		elseif ('administrator' == $role){
@@ -48,8 +48,7 @@ function editor_home_page() {
 	<div class="wrap">
 	
 	<h2> Welcome to the 2014-2015 CSUN Catalog </h2>
-	<p><?php echo $message; ?></p>
-	
+	<p><?php echo $message; ?> <a href="http://csuncatalog.com/2014/guide/" target="_blank"> View training guide.</a></p> 
 	
 <?php
 	

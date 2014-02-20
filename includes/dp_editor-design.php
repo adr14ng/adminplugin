@@ -105,7 +105,7 @@ function add_csun_admin_bar() {
 	<div class="quicklinks" id="csun-toolbar" role="navigation" aria-label="Second navigation toolbar." tabindex="0">
 		<ul id="csun-dept-bar" class="ab-second-menu">
 			<li id="department-name"><?php echo $dp_name.' : '; ?></li>
-			<li id="csun-progam-link" <?php if($page === 'program') echo 'class="active"'; ?>>
+			<li id="csun-program-link" <?php if($page === 'program') echo 'class="active"'; ?>>
 				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id.'&department_shortname='.$cat;?>">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-programs" class="ab-label">Programs</span>
