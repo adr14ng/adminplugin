@@ -541,6 +541,7 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_rewrite_tag('%courses%', '([^/]+)', 'courses=');
 	$wp_rewrite->add_rewrite_tag('%departments%', '([^/]+)', 'departments=');
 	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
+    $wp_rewrite->add_rewrite_tag('%degree_level%', '([^/]+)', 'degree_level=');
 	$wp_rewrite->add_rewrite_tag('%option_name%', '([^/]+)', 'option_title=');
 	$wp_rewrite->add_rewrite_tag('%post_type%', '([^/]+)', 'post_type=');
 	
@@ -551,6 +552,7 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_permastruct('courses', 'academics/%dpt_name%/courses/%courses%', false);
 	$wp_rewrite->add_permastruct('departments', 'department/%dpt_name%/%departments%', false);
 	$wp_rewrite->add_permastruct('department_shortname', 'academics/%dpt_name%/%post_type%', false);
+    $wp_rewrite->add_permastruct('degree_level', 'degrees/%dpt_name%/%post_type%', false);
 }
 add_action('init', 'csun_add_rewrite_rules');
 
