@@ -1,5 +1,5 @@
 <?php
-/* * * * * * * * * * * * * * * * * * * * * *
+/** * * * * * * * * * * * * * * * * * * * * *
  *
  *	Department Admin Custom Experience
  *	
@@ -98,9 +98,15 @@ class DP_Admin {
  
 	/**
 	 * Adds a filter to map meta cap
-	 * If user has the same meta cat as one of the
-	 * categories of the post, they are able to edit
+	 * If user has the same meta cat as one of the categories of the post, they are able to edit
 	 * otherwise change nothing
+	 *
+	 * @param array  $caps    Returns the user's actual capabilities.
+	 * @param string $cap     Capability name.
+	 * @param int    $user_id The user ID.
+	 * @param array  $args    Adds the context to the cap. Typically the object ID.
+	 *
+	 * @return array
 	 */	
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
@@ -217,6 +223,8 @@ class DP_Admin {
 	
 	/**
 	 * Calls different layout files per user role
+	 *
+	 * @return bool
 	 */
 	function change_layout() {
 		//determine users role
@@ -238,21 +246,32 @@ class DP_Admin {
 	
 	/**
 	 * Add custom toolbar for CSUN
+	 *
+	 * @param array $toolbars	The current list of toolbars used by Advanced Custom Fields
+	 *
+	 * @return array
 	 */
 	function my_toolbars( $toolbars )
 	{
 		// CSUN Custom
 		$toolbars['CSUN' ] = array();
 		//1 row tool bar
-		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'link', 'unlink', 'undo', 'redo');
+		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'link', 'unlink', 'table','row_after','row_before', 'undo', 'redo');
 	 
 		// return $toolbars - IMPORTANT!
 		return $toolbars;
 	}//my_toolbars
 	
+	/**
+	 * Customize toolbar
+	 *
+	 * @param array $in	The default wordpress toolbar
+	 *
+	 * @return array
+	 */
 	function csunFormatTinyMCE($in)
 	{	
-		$in['theme_advanced_buttons1']='formatselect,bullist,numlist,bold,italic,link,unlink,undo,redo';
+		$in['theme_advanced_buttons1']='formatselect,bullist,numlist,bold,italic,link,unlink,table,row_after,row_before,undo,redo';
 		$in['theme_advanced_buttons2']='';
 		$in['theme_advanced_buttons3']='';
 		$in['theme_advanced_buttons4']='';
@@ -263,6 +282,10 @@ class DP_Admin {
 	/**
 	 * If a dp editor, all posts must be reviewed, so change them to pending
 	 * Hooks after saving changes to database
+	 *
+	 * @param int 	$post_id		The id of the post being saved
+	 * @param array	$data			The post data to be saved
+	 * @param array	$post_before	The post data before this update
 	 */
 	function make_pending_post($post_id, $data, $post_before) {
 		global $current_user, $wpdb;
@@ -272,7 +295,7 @@ class DP_Admin {
 		$current_user->role = array_keys($current_user->$role);
 		$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role || 'dp_college' == $role){	//if a dp editor
+		if ('dp_editor' == $role || 'dp_college' == $role){	//if a dp editor/college
 
 			//only change to pending if not already (assume all edited posts are published)
 			//avoids infinite loop of updating
@@ -285,6 +308,11 @@ class DP_Admin {
 	
 	/**
 	 * Change publish, update, etc to Save
+	 *
+	 * @param string $translation	Translated text.
+	 * @param string $text			Text to translate.
+	 *
+	 * @return string
 	 */
 	function change_publish_button( $translation, $text ) {
 		//Typical words on 'Publish' button
