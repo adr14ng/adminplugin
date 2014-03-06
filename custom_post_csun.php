@@ -54,7 +54,7 @@ Author: CSUN Undergraduate Studies
 						'editor',
 						'revisions'
 				),
-			'rewrite' => array('slug' => 'courses'),
+			'rewrite' => false,
 			'delete_with_user' => false,
 			//'map_meta_cap'  => true,
 			'capability_type' => 'course',
@@ -139,7 +139,7 @@ Author: CSUN Undergraduate Studies
 						'editor',
 						'revisions'
 				),
-			'rewrite' => array('slug' => 'faculty'),
+			'rewrite' => false,
 			'delete_with_user' => false,
 			//'map_meta_cap'  => true,
 			'capability_type' => 'faculty',
@@ -184,7 +184,18 @@ Author: CSUN Undergraduate Studies
 				),
 			'rewrite' => FALSE,
 			'delete_with_user' => false,
-			'map_meta_cap'  => true,
+			'capability_type' => 'department',
+			'capabilities' => array(
+				'read_post' => 'read_department',
+				'publish_posts' => 'publish_departments',
+				'edit_posts' => 'edit_departments',
+				'edit_others_posts' => 'edit_others_departments',
+				'delete_posts' => 'delete_departments',
+				'delete_others_posts' => 'delete_others_departments',
+				'read_private_posts' => 'read_private_departments',
+				'edit_post' => 'edit_department',
+				'delete_post' => 'delete_department',
+			),
 			)
 		);
 		
@@ -215,7 +226,18 @@ Author: CSUN Undergraduate Studies
 				),
 			'rewrite' => array('slug' => 'policies'),
 			'delete_with_user' => false,
-			'map_meta_cap'  => true,
+			'capability_type' => 'policy',
+			'capabilities' => array(
+				'read_post' => 'read_policy',
+				'publish_posts' => 'publish_policies',
+				'edit_posts' => 'edit_policies',
+				'edit_others_posts' => 'edit_others_policies',
+				'delete_posts' => 'delete_policies',
+				'delete_others_posts' => 'delete_others_policies',
+				'read_private_posts' => 'read_private_policies',
+				'edit_post' => 'edit_policy',
+				'delete_post' => 'delete_policy',
+			),
 			)
 		);
 		
@@ -614,6 +636,28 @@ function csun_permalinks($permalink, $post, $leavename) {
 	return $permalink;
 }
 add_filter('post_type_link', 'csun_permalinks', 10, 3);
+
+
+function add_event_caps() {
+$role = get_role( 'administrator' );
+
+	$role->add_cap( 'edit_policy' ); 
+	$role->add_cap( 'edit_policies' ); 
+	$role->add_cap( 'edit_others_policies' ); 
+	$role->add_cap( 'publish_policies' ); 
+	$role->add_cap( 'read_policy' ); 
+	$role->add_cap( 'read_private_policies' ); 
+	$role->add_cap( 'delete_policy' ); 
+	
+	$role->add_cap( 'edit_department' ); 
+	$role->add_cap( 'edit_departments' ); 
+	$role->add_cap( 'edit_others_departments' ); 
+	$role->add_cap( 'publish_departments' ); 
+	$role->add_cap( 'read_department' ); 
+	$role->add_cap( 'read_private_departments' ); 
+	$role->add_cap( 'delete_department' ); 
+}
+add_action( 'admin_init', 'add_event_caps');
 
 
 		

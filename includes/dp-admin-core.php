@@ -34,14 +34,23 @@ class DP_Admin {
 		add_role( 'dp_editor', 'Department Editor', array(
 			'read' => true,
 			'delete_posts' => false
-			));
+		));
 		
 		//Create a college editor role
 		//Restrict access to things not in the category of its name
+		//Restrict editing to Department information
 		add_role( 'dp_college', 'College Editor', array(
 			'read' => true,
 			'delete_posts' => false
-			));
+		));
+			
+		//Create a college editor role
+		//Restrict access to things not in the category of its name
+		//Do not allow editing
+		add_role( 'dp_reviewer', 'Reviewer', array(
+			'read' => true,
+			'delete_posts' => false
+		));
 			
 		//Create a faculty editor role
 		//Restrict access to faculty
@@ -58,7 +67,7 @@ class DP_Admin {
 			'delete_facultys' => true,
 			'delete_others_facultys' => true,
 			'assign_terms' => true,
-			));
+		));
 			
 		//Create a faculty editor role
 		//Restrict access to programs, 4 year plans and star acts
@@ -81,8 +90,45 @@ class DP_Admin {
 			'read_program' => true, 
 			'read_private_programs' => true,
 			'assign_terms' => true,
-			));
+		));
 			
+		//Create a policy editor role
+		//Restrict access to policies
+		add_role( 'dp_policy', 'Policy Editor', array(
+			'read' => true,
+			'edit_posts' => true,
+			'edit_policy' => true,
+			'edit_policies' => true,
+			'edit_others_policies' => true,
+			'publish_policies' => true, 
+			'read_policy' => true, 
+			'read_private_policies' => true,
+			'delete_policy' => true,
+			'delete_policies' => true,
+			'delete_others_policies' => true,
+			'assign_terms' => true,
+		));
+		
+		//Create a page editor role
+		//Restrict access to pages
+		add_role( 'dp_pages', 'Page Editor', array(
+			'read' => true,
+			'edit_posts' => true,
+			'read_page' => true, 
+			'read_private_pages' => true,
+			'edit_page' => true,
+			'edit_pages' => true,
+			'edit_private_pages' => true,
+			'edit_published_pages' => true,
+			'edit_others_pages' => true,
+			'publish_pages' => true, 
+			'delete_page' => true,
+			'delete_pages' => true,
+			'delete_others_pages' => true,
+			'delete_published_pages' => true,
+			'assign_terms' => true,
+		));
+
 	}//activate()
 	
 	/**
@@ -91,8 +137,11 @@ class DP_Admin {
 	function uninstall() {
 		remove_role( 'dp_editor' );
 		remove_role( 'dp_college' );
+		remove_role( 'dp_reviewer' );
 		remove_role( 'dp_faculty' );
 		remove_role( 'dp_ar' );
+		remove_role( 'dp_policy' );
+		remove_role( 'dp_pages' );
 	}//uninstall
  
  
@@ -115,15 +164,37 @@ class DP_Admin {
 		
 		//if we're not trying to edit or publish edits of a post, return
 		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' && 
-			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' &&
-			$cap !== 'edit_programs'  && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'
+			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' && $cap !== 'edit_departments'  
+			&& $cap !== 'publish_departments' && $cap !== 'edit_department'&& $cap !== 'edit_others_departments'
+			&& $cap !== 'edit_programs'  && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'
 			&& $cap !== 'edit_courses'  && $cap !== 'publish_courses' && $cap !== 'edit_course'&& $cap !== 'edit_others_courses'){
 
+			//print_r($cap);
+			
 			return $caps;
 		}
+
 		
 		//Truncate Department Editor Permissions
 		if(in_array( 'dp_editor', (array) $user->roles )){
+			//no publishing programs
+			if($cap == 'publish_programs' || $cap == 'edit_others_programs'){
+				return $caps;
+			}
+			
+			//No publishing courses
+			if($cap == 'publish_courses' || $cap == 'edit_others_courses'){
+				return $caps;
+			}
+		}
+		
+		//Truncate Reviewer Permissions
+		if(in_array( 'dp_reviewer', (array) $user->roles )){
+			//no editing posts
+			if($cap == 'publish_departments' || $cap == 'edit_others_departments'){
+				return $caps;
+			}
+			
 			//no publishing programs
 			if($cap == 'publish_programs' || $cap == 'edit_others_programs'){
 				return $caps;
@@ -235,12 +306,16 @@ class DP_Admin {
 	 
 		if ( empty( $user ) )
 			return false;
-		elseif( in_array( 'dp_editor', (array) $user->roles ) || in_array( 'dp_college', (array) $user->roles ))
+		elseif( in_array( 'dp_editor', (array) $user->roles ) || in_array( 'dp_college', (array) $user->roles ) || in_array( 'dp_reviewer', (array) $user->roles ))
 			include dirname(__FILE__) . '/dp_editor-design.php';
 		elseif( in_array( 'dp_ar', (array) $user->roles ))
 			include dirname(__FILE__) . '/dp_ar-design.php';
 		elseif( in_array( 'dp_faculty', (array) $user->roles ))
 			wp_enqueue_style('faculty-style', $basedir . '/css/faculty-style.css');
+		elseif( in_array( 'dp_policy', (array) $user->roles ))
+			wp_enqueue_style('policy-style', $basedir . '/css/policy-style.css');
+		elseif( in_array( 'dp_pages', (array) $user->roles ))
+			wp_enqueue_style('faculty-style', $basedir . '/css/page-style.css');
 	}//change layout
 	
 	

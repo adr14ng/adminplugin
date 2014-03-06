@@ -25,7 +25,7 @@ function csun_login($redirect_to){
     global $user;
     if( isset( $user->roles ) && is_array( $user->roles ) ) {
         //check for admins
-        if( in_array( "dp_editor", $user->roles ) || in_array( "dp_college", $user->roles )) {
+        if( in_array( "dp_editor", $user->roles ) || in_array( "dp_college", $user->roles )|| in_array( "dp_reviewer", $user->roles )) {
             // redirect them to the default place
             return admin_url('admin.php?page=review');
         } 
@@ -36,6 +36,14 @@ function csun_login($redirect_to){
 		else if( in_array( "dp_ar", $user->roles ) ) {
             // redirect them to the default place
             return admin_url('edit.php?post_type=plans');
+        }
+		else if( in_array( "dp_policy", $user->roles ) ) {
+            // redirect them to the default place
+            return admin_url('edit.php?post_type=policies');
+        }
+		else if( in_array( "dp_pages", $user->roles ) ) {
+            // redirect them to the default place
+            return admin_url('edit.php?post_type=page');
         }
 		else {
 			return admin_url('index.php');

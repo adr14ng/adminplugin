@@ -29,7 +29,7 @@ function review_page() {
 		$current_user->role = array_keys($current_user->$role);
 		$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role || 'dp_college' == $role ){
+		if ('dp_editor' == $role || 'dp_college' == $role || 'dp_reviewer' == $role ){
 			editor_home_page();
 		}
 		elseif ('administrator' == $role){

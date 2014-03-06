@@ -1,0 +1,43 @@
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Policy Editor Style
+ *	
+ *	1. Editor
+ *	2. Menu Links
+ *	3. Admin Bar
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
+/* Editor */
+#wp-admin-bar-new-content,
+#minor-publishing-actions,
+#misc-publishing-actions
+{
+	display: none;
+}
+
+/* Menu Links */
+#toplevel_page_review,
+#menu-users,
+#menu-dashboard,
+#menu-posts,
+#menu-posts-courses,
+#menu-posts-departments,
+#menu-posts-faculty,
+#toplevel_page_proposals,
+#menu-comments,
+#menu-tools
+{
+	display: none;
+}
+
+/* Admin Bar */
+#wp-admin-bar-comments,
+#wp-admin-bar-site-name,
+#wp-admin-bar-wp-logo
+{
+	display: none;
+}
