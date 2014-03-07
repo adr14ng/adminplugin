@@ -1,5 +1,5 @@
 <?php
-/* * * * * * * * * * * * * * * * * * * * * *
+/** * * * * * * * * * * * * * * * * * * * *
  *
  *	Admissions and Records Custom Creation
  *
@@ -13,22 +13,22 @@
  *
  * * * * * * * * * * * * * * * * * * * * * */
  
- /*****************************************************
+ /* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Including the styles and js
  *
- ****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
 function add_ar_style() {
 	$basedir = dirname(plugin_dir_url(__FILE__));
 	wp_enqueue_style('ar-style', $basedir . '/css/admissions-style.css');
 }
 add_action('admin_enqueue_scripts', 'add_ar_style');
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Editing the admin bar
  *
- *****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
  //Remove admin bar links
 function remove_admissions_admin_bar_links( $wp_admin_bar ) {
 	//remove all the other links
@@ -41,11 +41,11 @@ function remove_admissions_admin_bar_links( $wp_admin_bar ) {
 }
 add_action( 'admin_bar_menu', 'remove_admissions_admin_bar_links', 999 );
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Editing the list tables
  *
- *****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
 //remove extra info in list
 function simplify_admissions_post_columns($defaults) {
   unset($defaults['comments']);
@@ -80,11 +80,11 @@ function remove_quick_edit( $actions ) {
 }
 add_filter('post_row_actions','remove_quick_edit',10,1);
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Modifying the Program Link
  *
- *****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
 function change_program_link() {
 	global $menu;
 	

@@ -63,9 +63,9 @@ function list_proposal() {
 //Creates the edit page where all posts are edited
 function edit_proposals(){
 
-	/******************************************
+	/* * * * * * * * * * * * * * * * * * * * * *
 	 * Get attachments with meta
-	 *****************************************/
+	 * * * * * * * * * * * * * * * * * * * * * */
 	 if($post_cat = $_REQUEST['department_shortname'] ){
 		$term_id = term_exists( $post_cat );
 		
@@ -97,9 +97,9 @@ function edit_proposals(){
 		
 	
 		
-	/********************************************
+	/* * * * * * * * * * * * * * * * * * * * * *
 	 * Build Overall Page
-	 ********************************************/
+	 * * * * * * * * * * * * * * * * * * * * * */
 		
 	$message = get_option( 'main_dp_settings');	//get message option
 	$message = $message['file_message'];

@@ -11,9 +11,9 @@
  *		-Role Dependent Styles
  *	4. TinyMCE Toolbars
  *	5. Pending Post
- *	6. Publish -> Save
+ *	6. Publish => Save
  *
- * 	CSUN Department of Undergraduate Studies
+ * 	@author CSUN Department of Undergraduate Studies
  * 	2013-2014
  *
  * * * * * * * * * * * * * * * * * * * * * */
@@ -24,6 +24,7 @@ class DP_Admin {
 	/**
 	 * Any action that needs to be taken upon activation
 	 * Which includes registering new roles and capabilities
+	 * Hooks onto activation action.
 	 */ 
 	function activate() {
 		if( !current_user_can('activate_plugins') )
@@ -133,6 +134,7 @@ class DP_Admin {
 	
 	/**
 	 * Unistalling plugin clean up
+	 * Hooks onto uninstall action.
 	 */
 	function uninstall() {
 		remove_role( 'dp_editor' );
@@ -149,13 +151,14 @@ class DP_Admin {
 	 * Adds a filter to map meta cap
 	 * If user has the same meta cat as one of the categories of the post, they are able to edit
 	 * otherwise change nothing
+	 * Hooks onto map_meta_cap filter.
 	 *
 	 * @param array  $caps    Returns the user's actual capabilities.
 	 * @param string $cap     Capability name.
 	 * @param int    $user_id The user ID.
 	 * @param array  $args    Adds the context to the cap. Typically the object ID.
 	 *
-	 * @return array
+	 * @return array	Caps required to complete the task
 	 */	
 	function match_category_user($caps, $cap, $user_id, $args) {
 		global $post;
@@ -261,6 +264,7 @@ class DP_Admin {
 
 	/**
 	 *  Including the styles and js
+	 *  Hooks onto admin_enqueue_scripts action.
 	 */
 	function add_base_style() {
 		$basedir = dirname(plugin_dir_url(__FILE__));
@@ -270,6 +274,7 @@ class DP_Admin {
 	
 	/**
 	 * Register color schemes.
+	 * Hooks onto admin_init action.
 	 */
 	function add_csun_colors() {
 		$basedir = dirname(plugin_dir_url(__FILE__));
@@ -294,8 +299,7 @@ class DP_Admin {
 	
 	/**
 	 * Calls different layout files per user role
-	 *
-	 * @return bool
+	 * Hooks onto init action.
 	 */
 	function change_layout() {
 		//determine users role
@@ -321,10 +325,11 @@ class DP_Admin {
 	
 	/**
 	 * Add custom toolbar for CSUN
+	 * Hooks onto acf/fields/wysiwyg/toolbars filter
 	 *
 	 * @param array $toolbars	The current list of toolbars used by Advanced Custom Fields
 	 *
-	 * @return array
+	 * @return array	The updated list of toolbars for ACF
 	 */
 	function my_toolbars( $toolbars )
 	{
@@ -339,10 +344,11 @@ class DP_Admin {
 	
 	/**
 	 * Customize toolbar
+	 * Hooks onto tiny_mce_before_init filter.
 	 *
 	 * @param array $in	The default wordpress toolbar
 	 *
-	 * @return array
+	 * @return array	The updated wordpress toolbar
 	 */
 	function csunFormatTinyMCE($in)
 	{	
@@ -356,7 +362,7 @@ class DP_Admin {
 	
 	/**
 	 * If a dp editor, all posts must be reviewed, so change them to pending
-	 * Hooks after saving changes to database
+	 * Hooks onto post_updated action.
 	 *
 	 * @param int 	$post_id		The id of the post being saved
 	 * @param array	$data			The post data to be saved
@@ -383,11 +389,12 @@ class DP_Admin {
 	
 	/**
 	 * Change publish, update, etc to Save
+	 * Hooks onto gettext filter.
 	 *
 	 * @param string $translation	Translated text.
 	 * @param string $text			Text to translate.
 	 *
-	 * @return string
+	 * @return string	Updated text
 	 */
 	function change_publish_button( $translation, $text ) {
 		//Typical words on 'Publish' button
@@ -402,6 +409,27 @@ class DP_Admin {
 
 		return $translation;
 	}//change publish button
+	
+	/**
+	 * Changes footer version text.
+	 * Hooks onto update_footer filter.
+	 *
+	 * @return string	Updated text
+	 */
+	function replace_footer_version(){
+		return 'California State University, Northridge';
+	}
+	
+	/**
+	 * Changes footer text
+	 * Hooks onto admin_footer_text filter.
+	 *
+	 * @return string	Updated text
+	 */
+	function csun_footer_admin () 
+	{	  
+		return 'Powered by the Office of Undergraduate Studies.';	
+	}
 	
 
 	

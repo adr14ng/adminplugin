@@ -1,12 +1,15 @@
 <?php
-/*
-Plugin Name: CSUN Custom Post Types
-Description: Adds custom post types and taxonomy for catalog
-Version: 1.0
-Author: CSUN Undergraduate Studies
+/**
+*	Plugin Name: CSUN Custom Post Types
+*	Description: Adds custom post types and taxonomy for catalog
+*	Version: 1.0
+*	Author: CSUN Undergraduate Studies
 */
 
-
+	/**
+	 * Creates post types and flushes rewrite rules
+	 * Hooks onto activation action.
+	 */
 	function csun_custom_activate() {
 		if( !current_user_can('activate_plugins') )
 			return;
@@ -18,6 +21,7 @@ Author: CSUN Undergraduate Studies
 	
 	/**
 	 * Unistalling plugin clean up
+	 * Hooks onto uninstall action.
 	 */
 	function csun_custom_uninstall() {
 		flush_rewrite_rules();
@@ -26,7 +30,10 @@ Author: CSUN Undergraduate Studies
 	
 	
 	/**
-	 * Function to add custom post types
+	 * Function to add custom post types and taxonomies
+	 * Post Types: courses, programs, departments, faculty, policies, staract, plans
+	 * Taxonomies: department_shortname, general_education, degree_level, aca_year, policy_categories, policy_keywords
+	 * Hooks onto init action.
 	 */
 	function csun_create_post_type() {
 		register_post_type( 'courses',
@@ -386,7 +393,7 @@ Author: CSUN Undergraduate Studies
 		);
 		
 		//Year for star act and plans
-		register_taxonomy( 'year', null, 
+		register_taxonomy( 'aca_year', null, 
 			array(
 				'labels'	=> array(
 							'name' 			=> __( 'Years' ),
@@ -412,18 +419,21 @@ Author: CSUN Undergraduate Studies
 		register_taxonomy_for_object_type( 'degree_level', 'programs' );
 		register_taxonomy_for_object_type( 'policy_categories', 'policies' );
 		register_taxonomy_for_object_type( 'policy_keywords', 'policies' );
-		register_taxonomy_for_object_type( 'year', 'plans' );
-		register_taxonomy_for_object_type( 'year', 'staract' );
+		register_taxonomy_for_object_type( 'aca_year', 'plans' );
+		register_taxonomy_for_object_type( 'aca_year', 'staract' );
 	} //csun create post type
 	
 	//Add custom post types
 	add_action('init', 'csun_create_post_type' );
 	
 	
-	//Register collumns for the custom taxonomy and types
-	
-	add_action( 'manage_posts_custom_column' , 'custom_columns', 10, 2 );
-
+	/**
+	 * Populate Custom Collumns
+	 * Hooks onto manage_posts_custom_column action
+	 *
+	 * @param string $column	Collumn trying to populate
+	 * @param int $post_id		Post ID of row
+	 */
 	function custom_columns( $column, $post_id ) {
 		switch ( $column ) {
 		case 'department' :
@@ -442,8 +452,8 @@ Author: CSUN Undergraduate Studies
 				_e( '-', 'your_text_domain' );
 			break;
 			
-		case 'year' :
-			$terms = get_the_term_list( $post_id , 'year' , '' , ', ' , '' );
+		case 'aca_year' :
+			$terms = get_the_term_list( $post_id , 'aca_year' , '' , ', ' , '' );
 				if ( is_string( $terms ) )
 				echo $terms;
 			else
@@ -483,35 +493,60 @@ Author: CSUN Undergraduate Studies
 			break;
 		}
 	}
+	add_action( 'manage_posts_custom_column' , 'custom_columns', 10, 2 );
 	
-	add_filter('manage_edit-plans_columns', 'plan_columns');
-	add_filter('manage_edit-staract_columns', 'plan_columns');
+	/**
+	 * Adds collumns to Plans and Staract
+	 * Hooks onto manage_edit-plans_columns filter, manage_edit-staract_columns filter
+	 *
+	 * @param array $collumns	Default collumns
+	 *
+	 * @return array	Updated list of collumns
+	 */
 	function plan_columns($columns) {
-		$columns['year'] = 'Year';
+		$columns['aca_year'] = 'Year';
 		$columns['department'] = 'Department';
 		return $columns;
 	}
+	add_filter('manage_edit-plans_columns', 'plan_columns');
+	add_filter('manage_edit-staract_columns', 'plan_columns');
 	
-	add_filter( 'manage_edit-plans_sortable_columns', 'sortable_plan_column' );
-	add_filter( 'manage_edit-staract_sortable_columns', 'sortable_plan_column' );
+	/**
+	 * Adds sortable collumns to Plans and Staract
+	 * Hooks onto manage_edit-plans_sortable_columns filter, manage_edit-staract_sortable_columns filter
+	 *
+	 * @param array $collumns	Default sortable collumns
+	 *
+	 * @return array	Updated list of sortable collumns
+	 */
 	function sortable_plan_column( $columns ) { 
-		$columns['year'] = 'year';
+		$columns['aca_year'] = 'aca_year';
 		
 		return $columns;
 	}
+	add_filter( 'manage_edit-plans_sortable_columns', 'sortable_plan_column' );
+	add_filter( 'manage_edit-staract_sortable_columns', 'sortable_plan_column' );
 	
-	
+	/**
+	 * Creates logic for sorting by aca_year
+	 * Hooks onto posts_orderby filter.
+	 *
+	 * @param string $orderby		ASC or DESC ordering
+	 * @param WP_QUERY $wp_query	Current database query parameters
+	 *
+	 * @return string	Ordered database query
+	 */
 	function csun_custom_order($orderby, $wp_query){
 		global $wpdb;
 
-		if ( isset( $wp_query->query['orderby'] ) && 'year' == $wp_query->query['orderby'] ) {
+		if ( isset( $wp_query->query['orderby'] ) && 'aca_year' == $wp_query->query['orderby'] ) {
 			$orderby = "(
 				SELECT GROUP_CONCAT(name ORDER BY name ASC)
 				FROM $wpdb->term_relationships
 				INNER JOIN $wpdb->term_taxonomy USING (term_taxonomy_id)
 				INNER JOIN $wpdb->terms USING (term_id)
 				WHERE $wpdb->posts.ID = object_id
-				AND taxonomy = 'year'
+				AND taxonomy = 'aca_year'
 				GROUP BY object_id
 			) ";
 			$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
@@ -522,37 +557,71 @@ Author: CSUN Undergraduate Studies
 	add_filter('posts_orderby', 'csun_custom_order', 10, 2);
 	
 	
-	add_filter('manage_edit-faculty_columns', 'dept_columns');
-	add_filter('manage_edit-departments_columns', 'dept_columns');
+	/**
+	 * Adds department collumsn to Faculty and Departments
+	 * Hooks onto manage_edit-faculty_columns filter, manage_edit-departments_columns filter
+	 *
+	 * @param array $collumns	Default collumns
+	 *
+	 * @return array	Updated list of collumns
+	 */
 	function dept_columns($columns) {
 		$columns['department'] = 'Department';
 		return $columns;
 	}
+	add_filter('manage_edit-faculty_columns', 'dept_columns');
+	add_filter('manage_edit-departments_columns', 'dept_columns');
 	
-	add_filter('manage_edit-programs_columns', 'prog_columns');
+	/**
+	 * Adds collumns to Programs
+	 * Hooks onto manage_edit-programs_columns filter
+	 *
+	 * @param array $collumns	Default collumns
+	 *
+	 * @return array	Updated list of collumns
+	 */
 	function prog_columns($columns) {
 		$columns['option'] = 'Option Title';
 		$columns['department'] = 'Department';
 		$columns['level'] = 'Degree';
 		return $columns;
 	}
+	add_filter('manage_edit-programs_columns', 'prog_columns');
 	
-	add_filter('manage_edit-courses_columns', 'course_columns');
+	/**
+	 * Adds collumns to Courses
+	 * Hooks onto manage_edit-courses_columns filter
+	 *
+	 * @param array $collumns	Default collumns
+	 *
+	 * @return array	Updated list of collumns
+	 */
 	function course_columns($columns) {
 		$columns['department'] = 'Department';
 		$columns['ge'] = 'Gen Ed';
 		return $columns;
 	}
+	add_filter('manage_edit-courses_columns', 'course_columns');
 	
-	add_filter('manage_edit-policies_columns', 'policy_columns');
+	/**
+	 * Adds collumns to Policies
+	 * Hooks onto manage_edit-policies_columns filter
+	 *
+	 * @param array $collumns	Default collumns
+	 *
+	 * @return array	Updated list of collumns
+	 */
 	function policy_columns($columns) {
 		$columns['pol_cat'] = 'Category';
 		$columns['pol_key'] = 'Keywords';
 		return $columns;
 	}
-	
+	add_filter('manage_edit-policies_columns', 'policy_columns');
 
-//Custom reWrite Rules
+ /**
+  * Custom rewrite rules for url structure
+  * Hooks onto init action.
+  */
 function csun_add_rewrite_rules() {
 	global $wp_rewrite;
 	
@@ -562,45 +631,99 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_rewrite_tag('%faculty%', '([^/]+)', 'faculty=');
 	$wp_rewrite->add_rewrite_tag('%courses%', '([^/]+)', 'courses=');
 	$wp_rewrite->add_rewrite_tag('%departments%', '([^/]+)', 'departments=');
+	$wp_rewrite->add_rewrite_tag('%staract%', '([^/]+)', 'staract=');
+	$wp_rewrite->add_rewrite_tag('%plans%', '([^/]+)', 'plans=');
 	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
     $wp_rewrite->add_rewrite_tag('%degree_level%', '([^/]+)', 'degree_level=');
+	$wp_rewrite->add_rewrite_tag('%aca_year%', '([^/]+)', 'aca_year=');
 	$wp_rewrite->add_rewrite_tag('%option_name%', '([^/]+)', 'option_title=');
 	$wp_rewrite->add_rewrite_tag('%post_type%', '([^/]+)', 'post_type=');
 	
+	//Department Pages
 	add_rewrite_rule('^academics/([a-z]+)/overview/?','index.php?post_type=departments&department_shortname=$matches[1]','top');
 	
+	//Policies
+	//Need to use conditional template
+	add_rewrite_rule('^policies/alphabetical/?','index.php?post_type=policies&order=asc&orderby=title','top');
+	add_rewrite_rule('^policies/appendix/?','index.php?post_type=policies&order=asc&orderby=policy_categories','top');
+	
+	//General Education
+	add_rewrite_rule('^general-education/information-competence/?','index.php?general_education=ic','top');
+	add_rewrite_rule('^general-education/courses/?','index.php?department_shortname=ge','top');
+	
+	//Graduate Programs
+	add_rewrite_rule('^graduate-studies/masters/?','index.php?degree_level=master','top');
+	add_rewrite_rule('^graduate-studies/doctorates/?','index.php?degree_level=doctorate','top');
+	add_rewrite_rule('^graduate-studies/certificates/?','index.php?degree_level=certificate','top');
+	add_rewrite_rule('^graduate-studies/credential-office/credentials/?','index.php?degree_level=credential','top');
+	
+	//Core Pages (Department, Program, Courses and Faculty)
 	$wp_rewrite->add_permastruct('programs', 'academics/%dpt_name%/programs/%programs%/%option_name%', false);
 	$wp_rewrite->add_permastruct('faculty', 'academics/%dpt_name%/faculty/%faculty%', false);
 	$wp_rewrite->add_permastruct('courses', 'academics/%dpt_name%/courses/%courses%', false);
 	$wp_rewrite->add_permastruct('departments', 'department/%dpt_name%/%departments%', false);
 	$wp_rewrite->add_permastruct('department_shortname', 'academics/%dpt_name%/%post_type%', false);
-    $wp_rewrite->add_permastruct('degree_level', 'degrees/%dpt_name%/%post_type%', false);
+	
+	//4 Year Plans Star Act
+	$wp_rewrite->add_permastruct('staract', 'planning/staract/%aca_year%/%staract%', false);
+	$wp_rewrite->add_permastruct('plans', 'planning/plans/%aca_year%/%plans%', false);
+	$wp_rewrite->add_permastruct('aca_year', 'planning/%post_type%/%aca_year%', false);
+    
+	//List pages for degree level
+	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
 }
 add_action('init', 'csun_add_rewrite_rules');
 
 
- 
+/**
+ * Replace placeholders in rewrite rules
+ * Hooks onto post_type_link filter.
+ *
+ * @param string $permalink	The link format without replacements
+ * @param WP_Post $post		The post the link refers to
+ * @param bool $leavename	Wordpress flag
+ *
+ * @return string	Updated permalink
+ */
 function csun_permalinks($permalink, $post, $leavename) {
 	//Defaults
 	$option_df = '';
 	$dpt_df = 'nodpt';
+	$year_df = '0000';
 	
 	$post_id = $post->ID;
 	$post_type = $post->post_type;
 	
 	$permalink = str_replace('%post_type%', $post_type, $permalink);
 	
-	if(($post_type != 'programs' && $post_type != 'faculty' && $post_type != 'departments' && $post_type != 'courses') || 
+	if(($post_type != 'programs' && $post_type != 'faculty' && $post_type != 'departments' && $post_type != 'courses'
+		&& $post_type != 'staract' && $post_type != 'plans') || 
 		empty($permalink) || in_array($post->post_status, array('draft', 'pending', 'auto-draft')))
 		return $permalink;
+		
+	if($post_type == 'staract' || $post_type == 'plans') {
+		$terms =  wp_get_post_terms( $post_id, 'aca_year' );
+		
+		if(array($terms))
+			$year = $terms[0]->slug;
+		else
+			$year = $year_df;
+			
+		$year = sanitize_title($year);
+		
+		$permalink = str_replace('%aca_year%', $year, $permalink);
+		
+		return $permalink;
+	}
 	
-	if($post->post_type == 'programs'){
+	if($post_type == 'programs'){
 		$option = get_field( 'option_title', $post_id);
-		
-		$option = sanitize_title($option);
-		
+				
 		if(!$option)
 			$option = $option_df;
+			
+		$option = sanitize_title($option);
+
 		
 		$permalink = str_replace('%option_name%', $option, $permalink);
 	}
@@ -622,23 +745,24 @@ function csun_permalinks($permalink, $post, $leavename) {
 			}
 		}
 	}
+		
+	if(!isset($dpt))
+		$dpt = $dpt_df;
 	
 	//Sanatize fields
 	$dpt = sanitize_title($dpt);
-	
-	if(!$dpt)
-		$dpt = $dpt_df;
 	 
 	$permalink = str_replace('%dpt_name%', $dpt, $permalink);
-	
-
 	 
 	return $permalink;
 }
 add_filter('post_type_link', 'csun_permalinks', 10, 3);
 
-
-function add_event_caps() {
+/**
+ * Adds custom post capabilities. Only needs to be run once.
+ * Hooks onto admin_init action.
+ */
+/*function add_event_caps() {
 $role = get_role( 'administrator' );
 
 	$role->add_cap( 'edit_policy' ); 
@@ -657,7 +781,7 @@ $role = get_role( 'administrator' );
 	$role->add_cap( 'read_private_departments' ); 
 	$role->add_cap( 'delete_department' ); 
 }
-add_action( 'admin_init', 'add_event_caps');
+add_action( 'admin_init', 'add_event_caps');*/
 
 
 		

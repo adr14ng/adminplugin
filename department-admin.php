@@ -6,6 +6,11 @@
 * Author: CSUN Undergraduate Studies 
 */
 
+/**
+* Change the login page. 
+* Hooks onto login_head action.
+*/
+
 function new_custom_login_logo() {
     echo '<style type="text/css">
         h1 a { background-image:url(http://csuncatalog.com/wp-content/uploads/2013/09/logo3.png) !important; height:85px !important; width: 225px !important; background-size: auto auto !important;} 
@@ -19,7 +24,14 @@ function new_custom_login_logo() {
 }
 add_action('login_head', 'new_custom_login_logo');
 
-//Login redirect to dashpage
+/**
+* Login redirect to dashpage based on user role
+* Hooks onto login_redirect filter.
+*
+* @param string $redirect_to	URI sent after login.
+*
+* @return string
+*/
 function csun_login($redirect_to){
 	//is there a user to check?
     global $user;
@@ -54,6 +66,30 @@ function csun_login($redirect_to){
 	}
 }
 add_filter( 'login_redirect', 'csun_login');
+
+/**
+* Change the Howdy,
+* Hooks onto gettext filter.
+*
+* @param string $translation	Translated text.
+* @param string $text			Text to translate.
+* @param string $domain			Translation domain (multiple languages allowed).
+*
+* @return string
+*/
+function change_howdy($translated, $text, $domain) {
+	$message = get_option( 'main_dp_settings');	//get message option
+	$message = $message['username_text'];
+
+    if ('default' != $domain)
+        return $translated;
+
+    if (false !== strpos($translated, 'Howdy'))
+        return str_replace('Howdy,', $message, $translated);
+
+    return $translated;
+}
+ add_filter('gettext', 'change_howdy', 10, 3);
 
 //Is this admin pages?
 if ( is_admin() ) {
@@ -99,16 +135,9 @@ if ( is_admin() ) {
 	//Make editor posts save as pending
 	add_action( 'post_updated', array( 'DP_Admin', 'make_pending_post'), 10, 3 );
 	
-	//Add custom footer 
-	function csun_footer_admin () 
-	{	  
-		return 'Powered by the Office of Undergraduate Studies.';	
-	}	
-	add_filter('admin_footer_text', 'csun_footer_admin');
-	function replace_footer_version(){
-		return 'California State University, Northridge';
-	}
-	add_filter( 'update_footer', 'replace_footer_version', 11);
+	//Add custom footer 	
+	add_filter('admin_footer_text', array( 'DP_Admin', 'csun_footer_admin') );
+	add_filter( 'update_footer', array( 'DP_Admin', 'replace_footer_version'), 11);
 	
 	//Add custom colors
 	add_action( 'admin_init' , array( 'DP_Admin', 'add_csun_colors'));
@@ -116,18 +145,3 @@ if ( is_admin() ) {
 	//Change update to save
 	add_filter( 'gettext', array( 'DP_Admin', 'change_publish_button'), 10, 2 );
 }//is_admin()
-
-//Change the Howdy, 
-function change_howdy($translated, $text, $domain) {
-	$message = get_option( 'main_dp_settings');	//get message option
-	$message = $message['username_text'];
-
-    if ('default' != $domain)
-        return $translated;
-
-    if (false !== strpos($translated, 'Howdy'))
-        return str_replace('Howdy,', $message, $translated);
-
-    return $translated;
-}
- add_filter('gettext', 'change_howdy', 10, 3);

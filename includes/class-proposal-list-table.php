@@ -1,5 +1,5 @@
 <?php
-/* * * * * * * * * * * * * * * * * * * * * *
+/** * * * * * * * * * * * * * * * * * * * *
  *
  *	Proposal List Table
  *	
@@ -9,7 +9,7 @@
  *	listing taxonomy terms and linking them 
  *	to a list of files
  *
- * 	CSUN Department of Undergraduate Studies
+ * 	@author CSUN Department of Undergraduate StudiesCSUN Department of Undergraduate Studies
  * 	2013-2014
  *
  * * * * * * * * * * * * * * * * * * * * * */

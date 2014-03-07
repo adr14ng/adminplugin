@@ -1,5 +1,5 @@
 <?php
-/* * * * * * * * * * * * * * * * * * * * * *
+/** * * * * * * * * * * * * * * * * * * * *
  *
  *	Department Editor Custom Creation
  *	
@@ -17,11 +17,15 @@
  * * * * * * * * * * * * * * * * * * * * * */
 
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Including the styles and js
  *
- ****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
+/**
+ * Include custom styles for editor
+ * Hooks onto admin_enqueue_scripts action.
+ */
 function add_dp_editor_style() {
 	$basedir = dirname(plugin_dir_url(__FILE__));
 	wp_enqueue_style('dp-editor-style', $basedir . '/css/dp-editor-style.css');
@@ -29,12 +33,17 @@ function add_dp_editor_style() {
 add_action('admin_enqueue_scripts', 'add_dp_editor_style');
 
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Editing the adminbar
  *
- *****************************************************/
- //Remove admin bar links, add link to review page (editor home)
+ * * * * * * * * * * * * * * * * * * * * * */
+/**
+ * Remove admin bar links, add link to review page (editor home)
+ * Hooks onto admin_bar_menu action.
+ *
+ * @param WP_Admin_Bar $wp_admin_bar Wordpress admin bar
+ */
 function add_csun_admin_bar_links( $wp_admin_bar ) {
 	//add link to the department editor home page
 	$args = array(
@@ -55,7 +64,10 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 }
 add_action( 'admin_bar_menu', 'add_csun_admin_bar_links', 999 );
 
-//Add secondary bar for navigation in the department
+/**
+ * Add secondary bar for navigation in the department
+ * Hooks onto in_admin_header action
+ */
 function add_csun_admin_bar() {
 	//if the category is in the url, use it (files&course list)
 	if(isset($_REQUEST['department_shortname'])){
@@ -132,13 +144,16 @@ function add_csun_admin_bar() {
 
 add_action( 'in_admin_header', 'add_csun_admin_bar');
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Editing the advanced edit form
  *
- *****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
  
-//Remove meta-boxes
+/**
+ * Remove post meta-boxes
+ * Hooks onto admin_init action.
+ */
 function remove_meta_boxes() {
 	remove_meta_box('formatdiv', 'post', 'normal');
 	remove_meta_box('revisionsdiv', 'post', 'normal');
@@ -151,13 +166,20 @@ function remove_meta_boxes() {
 add_action('admin_init', 'remove_meta_boxes');
 
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *  Editing the edit list
  *
- *****************************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
  
-//remove extra info in list
+/**
+ * Remove extra collumns from list table
+ * Hooks onto manage_${post_type}_posts_columns filter
+ *
+ * @param array $defaults Default collumn list
+ *
+ * @return array	Simplified collumn list
+ */
 function simplify_post_columns($defaults) {
   unset($defaults['comments']);
   unset($defaults['cb']);
@@ -170,6 +192,14 @@ function simplify_post_columns($defaults) {
 }
 add_filter('manage_${post_type}_posts_columns', 'simplify_post_columns');
 
+/**
+ * Remove extra collumns from course list table
+ * Hooks onto manage_edit-courses_columns filter
+ *
+ * @param array $defaults Default course collumn list
+ *
+ * @return array	Simplified course collumn list
+ */
 function simplify_course_columns($defaults) {
   unset($defaults['cb']);
   unset($defaults['author']);
@@ -180,20 +210,31 @@ function simplify_course_columns($defaults) {
 }
 add_filter('manage_edit-courses_columns', 'simplify_course_columns');
 
-//remove quick edit
+/**
+ * Remove quick edit links
+ * Hooks onto post_row_actions filter.
+ *
+ * @param array $actions	List of available actions
+ *
+ * @return array	Updated list of available actions
+ */
 function remove_quick_edit( $actions ) {
 	unset($actions['inline hide-if-no-js']);
 	return $actions;
 }
 add_filter('post_row_actions','remove_quick_edit',10,1);
 
-/*****************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  *	Custom Messages
  *
- ****************************************************/
- 
- add_action('admin_footer', 'editor_admin_footer');
+ * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Adds custom messages where we need to use Javascript
+ * Courses page and above default wordpress boxes
+ * Hooks onto admin_footer action
+ */
 function editor_admin_footer()
 {
     $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL ;
@@ -238,17 +279,22 @@ function editor_admin_footer()
 		}
 	}
 	
-}
+} 
+add_action('admin_footer', 'editor_admin_footer');
 
-/**************************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  * Fake Tabs
  *
- **************************************************/
-function department_edit_tabs(){
-	/******************************************
+ * * * * * * * * * * * * * * * * * * * * * */
+/**
+ * Creates the Department and Program tabs
+ * Hooks onto all_admin_notices action.
+ */
+ function department_edit_tabs(){
+	/* * * * * * * * * * * * * * * * * * * * * *
 	 * Get posts for category
-	 *****************************************/
+	 * * * * * * * * * * * * * * * * * * * * * */
 	 $curr_post = $_GET['post'];
 	 
 	 $terms = wp_get_post_terms( $curr_post, 'department_shortname', $args );
@@ -281,9 +327,9 @@ function department_edit_tabs(){
 		
 	if( $posts ){
 		
-	/********************************************
+	/* * * * * * * * * * * * * * * * * * * * * *
 	 * Build Tabs
-	 ********************************************/
+	 * * * * * * * * * * * * * * * * * * * * * */
 
 		$term = get_term($term_id, 'department_shortname');
 		
@@ -334,13 +380,20 @@ if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs' ||  
 	add_action( 'all_admin_notices' , 'department_edit_tabs');
 }
 	
-/*******************************************
+/* * * * * * * * * * * * * * * * * * * * * *
  *
  * Helper functions
  *
- *******************************************/
+ * * * * * * * * * * * * * * * * * * * * * */
  
-//Takes either slug or id of term and returns id of the first department/program
+/**
+ * Takes either slug of term and returns id of the first department, if
+ * no department then the first program
+ * 
+ * @param string $term	The term which we need a post from
+ * 
+ * @return int 	ID of first post if successful, 0 if not
+ */
 function get_first_term_post($term) {
 	$args=array(
 		'post_type' => 'departments',
@@ -362,7 +415,16 @@ function get_first_term_post($term) {
 	return 0;		
 }
 
-//Creates the edit link with the department shortname intact
+/**
+ * Creates the edit link with the department shortname intact
+ * Hooks onto get_edit_post_link filter
+ * 
+ * @param string $link		Original edit post link
+ * @param int $post_ID		ID of post that this links to
+ * @param string $context	Determines &amp vs &
+ *
+ * @return string	Modified edit link
+ */
 function department_edit_link($link, $post_ID, $context) {
 	if(isset($_REQUEST['department_shortname'])){
 		if ( 'display' == $context )
