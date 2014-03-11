@@ -128,7 +128,7 @@ class DPAdminSettings
 		
 		add_settings_field(
             'review_deadline', // ID
-            'Review Deadline', // Title 
+            'Department Review Deadline', // Title 
             array( $this, 'review_deadline_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
@@ -136,8 +136,23 @@ class DPAdminSettings
 	
 		add_settings_field(
             'review_field_key', // ID
-            'ACF Review Field Key', // Title 
+            'ACF Department Review Field Key', // Title 
             array( $this, 'review_field_key_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        ); 
+		add_settings_field(
+            'college_deadline', // ID
+            'College Review Deadline', // Title 
+            array( $this, 'college_deadline_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        );
+	
+		add_settings_field(
+            'college_field_key', // ID
+            'ACF College Review Field Key', // Title 
+            array( $this, 'college_field_key_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
         ); 
@@ -171,6 +186,12 @@ class DPAdminSettings
 		
 		if( isset( $input['review_field_key'] ) )
             $new_input['review_field_key'] = sanitize_key( $input['review_field_key'] );
+			
+		if( isset( $input['college_deadline'] ) )
+            $new_input['college_deadline'] = sanitize_text_field( $input['college_deadline'] );
+		
+		if( isset( $input['college_field_key'] ) )
+            $new_input['college_field_key'] = sanitize_key( $input['college_field_key'] );
 
         return $new_input;
     }
@@ -239,6 +260,22 @@ class DPAdminSettings
         printf(
             '<input type="text" id="review_field_key" name="main_dp_settings[review_field_key]" value="%s" />',
             isset( $this->options['review_field_key'] ) ? esc_attr( $this->options['review_field_key']) : ''
+        );
+    }
+	
+	function college_deadline_callback()
+    {
+        printf(
+            '<input type="text" id="college_deadline" name="main_dp_settings[college_deadline]" value="%s" />',
+            isset( $this->options['college_deadline'] ) ? esc_attr( $this->options['college_deadline']) : ''
+        );
+    }
+	
+	function college_field_key_callback()
+    {
+        printf(
+            '<input type="text" id="college_field_key" name="main_dp_settings[college_field_key]" value="%s" />',
+            isset( $this->options['college_field_key'] ) ? esc_attr( $this->options['college_field_key']) : ''
         );
     }
 }

@@ -53,6 +53,7 @@ function editor_home_page() {
 <?php
 	
 	$due = $option['review_deadline'];
+	$college_due = $option['college_deadline'];
 	$user_id = get_current_user_id();
 	$userCat = get_user_meta($user_id, 'user_cat');
 	$userCat = $userCat[0];
@@ -61,8 +62,10 @@ function editor_home_page() {
 		<thead> 
 			<tr>
 				<th scope="col" id="col_name" class="manage-column column-col_name" style=""> <span>Department</span> </th>
-				<th scope="col" id="col_status" class="manage-column column-col_status" style=""><span>Status</span></th>
-				<th scope="col" id="col_date" class="manage-column column-col_date" style=""><span>Deadline</span></th>
+				<th scope="col" id="col_status" class="manage-column column-col_status" style="">
+					<span>Department Deadline:</span><br /><?php echo $due; ?> </th>
+				<th scope="col" id="col_date" class="manage-column column-col_date" style="">
+					<span>College Deadline:</span><br /><?php echo $college_due; ?> </th>
 			</tr>
 		</thead>
 	<form name="review_status" action="<?php echo plugins_url().'/department-admin/includes/review.php'; ?>" method="post" id="review_status">
@@ -93,13 +96,19 @@ function editor_home_page() {
 			</td>
 			<td>
 				<input type="submit" name="reviewed-<?php echo $term_id; ?>" <?php 
-					if (get_field( 'reviewed', 'department_shortname_'.$term_id ))
+					if (get_field( 'dept_reviewed', 'department_shortname_'.$term_id ))
 						echo ' value="Review Complete" class="btn btn-reviewed">';
 					else
 						echo ' value="Submit for Review" class="btn">';
 					?>
+			</td>
 			<td>
-				<?php echo $due; ?>
+				<input type="submit" name="college-<?php echo $term_id; ?>" <?php 
+					if (get_field( 'college_reviewed', 'department_shortname_'.$term_id ))
+						echo ' value="Review Complete" class="btn btn-reviewed">';
+					else
+						echo ' value="Submit for Review" class="btn">';
+					?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
@@ -124,7 +133,8 @@ function adminstrator_review_page() {
 		<thead> 
 			<tr>
 				<th scope="col" id="col_name" class="manage-column column-col_name" style=""> <span>Academic Org</span> </th>
-				<th scope="col" id="col_status" class="manage-column column-col_status" style=""><span>Status</span></th>
+				<th scope="col" id="col_department" class="manage-column column-col_status" style=""><span>Department</span></th>
+				<th scope="col" id="col_college" class="manage-column column-col_status" style=""><span>College</span></th>
 			</tr>
 		</thead>
 	<tbody id="the-list">
@@ -142,11 +152,21 @@ function adminstrator_review_page() {
 			<td>
 				<input type="hidden" name="post-<?php echo $term->term_id; ?>" value="0" />
 				<input type="submit" name="reviewed-<?php echo $term->term_id; ?>" <?php 
-					if (get_field( 'reviewed', 'department_shortname_'.$term->term_id))
+					if (get_field( 'dept_reviewed', 'department_shortname_'.$term->term_id))
 						echo ' value="Review Complete" class="btn btn-reviewed">';
 					else
 						echo ' value="Submit for Review" class="btn">';
 					?>
+			</td>
+			<td>
+				<input type="hidden" name="post-college-<?php echo $term->term_id; ?>" value="0" />
+				<input type="submit" name="college-<?php echo $term->term_id; ?>" <?php 
+					if (get_field( 'college_reviewed', 'department_shortname_'.$term->term_id))
+						echo ' value="Review Complete" class="btn btn-reviewed">';
+					else
+						echo ' value="Submit for Review" class="btn">';
+					?>
+			</td>
 		</tr>
 	<?php endforeach; ?>
 
@@ -167,7 +187,8 @@ if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
 	require_once($base_url.'/wp-admin/admin.php');
 
 	$field_key = get_option( 'main_dp_settings');	//acf field key for review, may need to change
-	$field_key = $field_key['review_field_key'];
+	$dept_key = $field_key['review_field_key'];
+	$college_key = $field_key['college_field_key'];
 
 	//Security check
 	check_admin_referer( 'update_review_status');
@@ -177,18 +198,36 @@ if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
 	foreach($_POST as $key => $value){
 		$exp_key = explode('-', $key);
 		if($exp_key[0] == 'reviewed'){
-			 $update_terms[$exp_key[1]] = $value;
+			 $department_terms[$exp_key[1]] = $value;
+		}
+		else if($exp_key[0] == 'college'){
+			 $college_terms[$exp_key[1]] = $value;
 		}
 	}
 	
-	//Update the values and send email when review is complete
-	foreach($update_terms as $term_id => $value){
-		if( $value === 'Review Complete')  //value based on form value
-			update_field($field_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
-		else {
-			update_field($field_key, 1, 'department_shortname_'.$term_id); //toggle to complete
-			
-			email_admin_review($term_id);	//notify admin
+	//Update the department values and send email when review is complete
+	if(isset($department_terms)) {
+		foreach($department_terms as $term_id => $value){
+			if( $value === 'Review Complete')  //value based on form value
+				update_field($dept_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
+			else {
+				update_field($dept_key, 1, 'department_shortname_'.$term_id); //toggle to complete
+				
+				email_admin_review($term_id);	//notify admin
+			}
+		}
+	}
+	
+	//Update the college values and send email when review is complete
+	if(isset($college_terms)) {
+		foreach($college_terms as $term_id => $value){
+			if( $value === 'Review Complete')  //value based on form value
+				update_field($college_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
+			else {
+				update_field($college_key, 1, 'department_shortname_'.$term_id); //toggle to complete
+				
+				email_admin_review($term_id);	//notify admin
+			}
 		}
 	}
 	
@@ -206,7 +245,8 @@ else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
 
 	//acf field key for review, may need to change
 	$field_key = get_option( 'main_dp_settings');	
-	$field_key = $field_key['review_field_key'];
+	$dept_key = $field_key['review_field_key'];
+	$college_key = $field_key['college_field_key'];
 
 	//Security check
 	check_admin_referer( 'update_review_status');
@@ -222,7 +262,8 @@ else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
 		
 		//Set all values to 0
 		foreach($update_terms as $term_id => $value){
-			update_field($field_key, $value, 'department_shortname_'.$term_id); //toggle to uncomplete
+			update_field($dept_key, $value, 'department_shortname_'.$term_id); //toggle to uncomplete
+			update_field($college_key, $value, 'department_shortname_'.$term_id); //toggle to uncomplete
 		}
 	}
 	//Toggle 1
@@ -231,17 +272,37 @@ else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
 		foreach($_POST as $key => $value){
 			$exp_key = explode('-', $key);
 			if($exp_key[0] == 'reviewed'){
-				 $update_terms[$exp_key[1]] = $value;
+				 $department_terms[$exp_key[1]] = $value;
+			}
+			else if($exp_key[0] == 'college'){
+				 $college_terms[$exp_key[1]] = $value;
 			}
 		}
 		
-		//Update the values and send email when review is complete
-		foreach($update_terms as $term_id => $value){
-			if( $value === 'Review Complete')  //value based on form value
-				update_field($field_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
-			else {
-				update_field($field_key, 1, 'department_shortname_'.$term_id); //toggle to complete
-
+		
+		//Update the department values and send email when review is complete
+		if(isset($department_terms)){
+			foreach($department_terms as $term_id => $value){
+				if( $value === 'Review Complete')  //value based on form value
+					update_field($dept_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
+				else {
+					update_field($dept_key, 1, 'department_shortname_'.$term_id); //toggle to complete
+					
+					email_admin_review($term_id);	//notify admin
+				}
+			}
+		}
+		
+		//Update the college values and send email when review is complete
+		if(isset($college_terms)){
+			foreach($college_terms as $term_id => $value){
+				if( $value === 'Review Complete')  //value based on form value
+					update_field($college_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
+				else {
+					update_field($college_key, 1, 'department_shortname_'.$term_id); //toggle to complete
+					
+					email_admin_review($term_id);	//notify admin
+				}
 			}
 		}
 	}
