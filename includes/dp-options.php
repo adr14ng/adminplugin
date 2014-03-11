@@ -17,9 +17,7 @@
 
 class DPAdminSettings
 {
-    /**
-     * Holds the values to be used in the fields callbacks
-     */
+    //Holds the values to be used in the fields callbacks
     private $options;
 
     /**
@@ -162,6 +160,8 @@ class DPAdminSettings
      * Sanitize each setting field as needed
      *
      * @param array $input Contains all settings fields as array keys
+	 *
+	 * @return array Updated with new settings fields
      */
     public function sanitize( $input )
     {
@@ -215,6 +215,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function username_text_callback()
     {
         printf(
@@ -223,6 +226,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function view_all_message_callback()
     {
         printf(
@@ -231,6 +237,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function course_message_callback()
     {
         printf(
@@ -239,6 +248,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function file_message_callback()
     {
         printf(
@@ -247,6 +259,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function review_deadline_callback()
     {
         printf(
@@ -255,6 +270,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function review_field_key_callback()
     {
         printf(
@@ -263,6 +281,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function college_deadline_callback()
     {
         printf(
@@ -271,6 +292,9 @@ class DPAdminSettings
         );
     }
 	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function college_field_key_callback()
     {
         printf(

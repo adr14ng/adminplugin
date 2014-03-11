@@ -1,5 +1,5 @@
 <?php
-/* * * * * * * * * * * * * * * * * * * * * *
+/** * * * * * * * * * * * * * * * * * * * *
  *
  *	Proposal Files View
  *	
@@ -15,13 +15,19 @@
 //includes->dpadmin->plugs->wp-content->base
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
+/**
+ * Creates the menu link for the proposal page
+ * Hooks onto admin_menu action.
+ */
 function add_proposal_menu()
 {
 	add_menu_page( 'Proposal Files', 'Proposal Files', 'edit_posts', 
 				'proposals', 'proposal_page', '', 18 ); //need icon
 }
 
-//function that generates the aggregate post page
+/**
+ * Generates the proposal files page
+ */
 function proposal_page() {	
 	//if we already have the category page request
 	if(isset($_REQUEST['department_shortname'])) 
@@ -34,7 +40,10 @@ function proposal_page() {
 	}
 }
 
-//list department pages
+/**
+ * Creates the page that lists all departments
+ * Uses Proposal List Table to do so
+ */
 function list_proposal() {
 	//need to use word presses list table and our custom one
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -60,7 +69,9 @@ function list_proposal() {
 <?}	//end list aggregrate post
 
 
-//Creates the edit page where all posts are edited
+/**
+ * Creates the page where all files per a department are viewed
+ */
 function edit_proposals(){
 
 	/* * * * * * * * * * * * * * * * * * * * * *
@@ -140,6 +151,6 @@ function edit_proposals(){
 	echo '</tbody></table></div><!-- /wrap -->';
 	}
 	
-	}
+}
 
 ?>

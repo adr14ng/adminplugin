@@ -7,6 +7,8 @@
  * 	Creates the home page for editors and a 
  *	page with all review statuses for admin.
  *
+ *  Processes review status change forms.
+ *
  * 	CSUN Department of Undergraduate Studies
  * 	2013-2014
  *
@@ -16,13 +18,19 @@
 //includes->dpadmin->plugs->wp-content->base
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
+/**
+ * Creates the menu link for the review page
+ * Hooks onto admin_menu action.
+ */
 function add_review_menu()
 {
 	add_menu_page( 'Review Status', 'Review Status', 'read', 
 				'review', 'review_page', '', 21 ); //need icon
 }
 
-//function that directs you to the correct view
+/**
+ * Directs user to the correct view per user role
+ */
 function review_page() {	
 	global $current_user, $wpdb;
 		$role = $wpdb->prefix . 'capabilities';
@@ -40,7 +48,9 @@ function review_page() {
 		}
 }
 
-//If you are a department editor, this creates the home page
+/**
+ * Creates department editor home page (review page)
+ */
 function editor_home_page() {
 	$option = get_option( 'main_dp_settings' );	//get our options (message & due date)
 	$message = $option['welcome_message'];
@@ -63,9 +73,9 @@ function editor_home_page() {
 			<tr>
 				<th scope="col" id="col_name" class="manage-column column-col_name" style=""> <span>Department</span> </th>
 				<th scope="col" id="col_status" class="manage-column column-col_status" style="">
-					<span>Department Deadline:</span><br /><?php echo $due; ?> </th>
+					<span>Department Deadline:</span><br /><strong><?php echo $due; ?></strong> </th>
 				<th scope="col" id="col_date" class="manage-column column-col_date" style="">
-					<span>College Deadline:</span><br /><?php echo $college_due; ?> </th>
+					<span>College Deadline:</span><br /><strong><?php echo $college_due; ?></strong> </th>
 			</tr>
 		</thead>
 	<form name="review_status" action="<?php echo plugins_url().'/department-admin/includes/review.php'; ?>" method="post" id="review_status">
@@ -116,6 +126,10 @@ function editor_home_page() {
 	</tbody></form></table></div>
 <?}
 
+/**
+ * Creates administration view of review page 
+ * Lists all departments and current review statuses
+ */
 function adminstrator_review_page() {
 	$terms = get_terms( 'department_shortname', $args );
 
@@ -314,7 +328,11 @@ else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
 		wp_redirect( admin_url() );
 }
 
-//Email admin to notify that a review is complete
+/**
+ * Email admin to notify that a review is complete
+ *
+ * @param int $term_id ID of department term which completed review
+ */
 function email_admin_review($term_id) {
 	//Admin email from settings
 	$admin_email = get_bloginfo('admin_email');

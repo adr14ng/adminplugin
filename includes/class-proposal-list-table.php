@@ -9,7 +9,7 @@
  *	listing taxonomy terms and linking them 
  *	to a list of files
  *
- * 	@author CSUN Department of Undergraduate StudiesCSUN Department of Undergraduate Studies
+ * 	@author CSUN Department of Undergraduate Studies
  * 	2013-2014
  *
  * * * * * * * * * * * * * * * * * * * * * */
@@ -31,7 +31,11 @@ class Proposal_List_Table extends WP_List_Table {
 		$tax = get_taxonomy( $taxonomy );
 	}
 	
-	//Add collumns
+	/**
+	 * Provides list of collumns for the table
+	 *
+	 * @return array Collumns included in table
+	 */
 	function get_columns() {
 		return $columns= array(
 			'col_name'=>__('Name'),
@@ -39,14 +43,21 @@ class Proposal_List_Table extends WP_List_Table {
 		);
 	}
 	
-	//Sortable columns
+	/**
+	 * Provides list of sortable collumns for the table
+	 *
+	 * @return array Sortable collumns included in table
+	 */
 	function get_sortable_columns() {
 		return $sortable = array(
 			'col_name' => 'name'
 		);
 	}
 		
-	//Prepare the data table
+	/**
+	 * Prepare the data table with pagination arguments, search
+	 * terms, ordering and collumn registration
+	 */
 	function prepare_items() {
 		global $wpdb, $_wp_column_headers;
 		$screen = get_current_screen();
@@ -86,11 +97,20 @@ class Proposal_List_Table extends WP_List_Table {
 		$this->_column_headers = array($columns, $hidden, $sortable);
 	}
 
+	/**
+	 * Required, copied from WP
+	 *
+	 * @return bool True
+	 */
 	function has_items() {
 		// todo: populate $this->items in prepare_items()
 		return true;
 	}
 	
+	/**
+	 * Creates the rows including handling the term
+	 * hierarchy and an empty table
+	 */
 	function display_rows_or_placeholder() {
 		$taxonomy = 'department_shortname';
 
@@ -140,6 +160,9 @@ class Proposal_List_Table extends WP_List_Table {
 		}
 	}
 	
+	/**
+	 * Populates rows with regard to hierarchy
+	 */
 	function _rows( $taxonomy, $terms, &$children, $start, $per_page, &$count, $parent = 0, $level = 0 ) {
 
 		$end = $start + $per_page;
@@ -188,6 +211,12 @@ class Proposal_List_Table extends WP_List_Table {
 		}
 	}
 	
+	/**
+	 * Creates an individual row
+	 *
+	 * @param object $tag	Term we are currently listing
+	 * @param int $level	If parent, 0, then child depth
+	 */
 	function single_row( $tag, $level = 0 ) {
 		static $row_class = '';
 
@@ -200,6 +229,13 @@ class Proposal_List_Table extends WP_List_Table {
 		echo '</tr>';
 	}
 	
+	/**
+	 * Generates the name collumn for a specific term with link
+	 *
+	 * @param object $tag	Term we are getting the name of
+	 *
+	 * @return string Mark-up and content that goes in name collumn
+	 */
 	function column_col_name( $tag ) {
 		$taxonomy = 'department_shortname';
 		$tax = get_taxonomy( $taxonomy );
@@ -222,10 +258,25 @@ class Proposal_List_Table extends WP_List_Table {
 		return $out;
 	}
 	
+	/**
+	 * Generates the description collumn for a specific term
+	 *
+	 * @param object $tag	Term we are getting the description of
+	 *
+	 * @return string Term discription
+	 */
 	function column_col_descrip( $tag ) {
 		return $tag->description;
 	}
 	
+	/**
+	 * Directs calls to proper function to generate collumn
+	 *
+	 * @param object $tag			Term we are listing
+	 * @param string $column_name	Name of collumn we need to populate
+	 *
+	 * @return string The function for the collumn
+	 */
 	function column_default( $tag, $column_name ) {
 		return apply_filters( "manage_department_shortname_custom_column", '', $column_name, $tag->term_id );
 	}
