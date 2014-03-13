@@ -119,12 +119,12 @@ function add_csun_admin_bar() {
 			<li id="department-name"><?php echo $dp_name.' : '; ?></li>
 			<li id="csun-program-link" <?php if($page === 'program') echo 'class="active"'; ?>>
 				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id.'&department_shortname='.$cat;?>">
-					<span class="ab-icon"></span>
+					<span class="ab-icon dashicons dashicons-welcome-learn-more"></span>
 					<span id="ab-csun-programs" class="ab-label">Programs</span>
 				</a>		
 			</li>
 			<li id="csun-course-link" <?php if($page === 'course') echo 'class="active"'; ?>>
-				<a class="ab-item" href="<?php echo admin_url().'edit.php?post_type=courses&amp;department_shortname='.$cat.'&amp;orderby=title&amp;order=asc"';?>>
+				<a class="ab-item" href="<?php echo admin_url().'edit.php?post_type=courses&amp;department_shortname='.$cat.'&amp;orderby=title&amp;order=asc';?>">
 					<span class="ab-icon"></span>
 					<span id="ab-csun-courses" class="ab-label">Courses</span>
 				</a>		
@@ -267,7 +267,7 @@ function editor_admin_footer()
 		if($post_type === 'programs')	//if its programs the basic box is overview
 			$description = '<label for="basic-box">Overview</label>Description of the program.';
 		elseif($post_type === 'departments')	//if its departments the basic box is misc
-			$description = '<label for="basic-box">Misc</label>Department information that fits no where else (e.g. accreditation).';
+			$description = '<label for="basic-box">Misc</label>Department information that fits no where else (e.g. awards and scholarships).';
 		
 		if($description) {
 		?><script>

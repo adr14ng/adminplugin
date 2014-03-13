@@ -635,6 +635,7 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_rewrite_tag('%plans%', '([^/]+)', 'plans=');
 	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
     $wp_rewrite->add_rewrite_tag('%degree_level%', '([^/]+)', 'degree_level=');
+	$wp_rewrite->add_rewrite_tag('%policy_keywords%', '([^/]+)', 'policy_keywords=');
 	$wp_rewrite->add_rewrite_tag('%aca_year%', '([^/]+)', 'aca_year=');
 	$wp_rewrite->add_rewrite_tag('%option_name%', '([^/]+)', 'option_title=');
 	$wp_rewrite->add_rewrite_tag('%post_type%', '([^/]+)', 'post_type=');
@@ -671,6 +672,10 @@ function csun_add_rewrite_rules() {
     
 	//List pages for degree level
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
+	
+	//Tag pages for policies
+	//$wp_rewrite->add_permastruct('policy_keywords', 'policies/keywords/%policy_keywords%', false);
+	
 }
 add_action('init', 'csun_add_rewrite_rules');
 
