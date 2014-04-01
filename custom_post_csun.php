@@ -633,9 +633,11 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_rewrite_tag('%departments%', '([^/]+)', 'departments=');
 	$wp_rewrite->add_rewrite_tag('%staract%', '([^/]+)', 'staract=');
 	$wp_rewrite->add_rewrite_tag('%plans%', '([^/]+)', 'plans=');
+	$wp_rewrite->add_rewrite_tag('%policies%', '([^/]+)', 'policies=');
 	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
     $wp_rewrite->add_rewrite_tag('%degree_level%', '([^/]+)', 'degree_level=');
 	$wp_rewrite->add_rewrite_tag('%policy_keywords%', '([^/]+)', 'policy_keywords=');
+	$wp_rewrite->add_rewrite_tag('%policy_categories%', '([^/]+)', 'policy_categories=');
 	$wp_rewrite->add_rewrite_tag('%aca_year%', '([^/]+)', 'aca_year=');
 	$wp_rewrite->add_rewrite_tag('%option_name%', '([^/]+)', 'option_title=');
 	$wp_rewrite->add_rewrite_tag('%post_type%', '([^/]+)', 'post_type=');
@@ -647,16 +649,14 @@ function csun_add_rewrite_rules() {
 	//Need to use conditional template
 	add_rewrite_rule('^policies/alphabetical/?','index.php?post_type=policies&order=asc&orderby=title','top');
 	add_rewrite_rule('^policies/appendix/?','index.php?post_type=policies&order=asc&orderby=policy_categories','top');
+	add_rewrite_rule('^policies/keywords/([a-z]+)/?', 'index.php?policy_keywords=$matches[1]', 'top');
+	add_rewrite_rule('^policies/categories/([a-z]+)/?', 'index.php?policy_categories=$matches[1]', 'top');
+	add_rewrite_rule('^faculty/emeriti?', 'index.php?post_type=faculty&department_shortname=emeriti', 'top');
+	add_rewrite_rule('^faculty/?', 'index.php?post_type=faculty', 'top');
 	
 	//General Education
 	add_rewrite_rule('^general-education/information-competence/?','index.php?general_education=ic','top');
 	add_rewrite_rule('^general-education/courses/?','index.php?department_shortname=ge','top');
-	
-	//Graduate Programs
-	add_rewrite_rule('^graduate-studies/masters/?','index.php?degree_level=master','top');
-	add_rewrite_rule('^graduate-studies/doctorates/?','index.php?degree_level=doctorate','top');
-	add_rewrite_rule('^graduate-studies/certificates/?','index.php?degree_level=certificate','top');
-	add_rewrite_rule('^graduate-studies/credential-office/credentials/?','index.php?degree_level=credential','top');
 	
 	//Core Pages (Department, Program, Courses and Faculty)
 	$wp_rewrite->add_permastruct('programs', 'academics/%dpt_name%/programs/%programs%/%option_name%', false);
@@ -673,8 +673,9 @@ function csun_add_rewrite_rules() {
 	//List pages for degree level
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
 	
-	//Tag pages for policies
+	//Tag and category pages for policies
 	//$wp_rewrite->add_permastruct('policy_keywords', 'policies/keywords/%policy_keywords%', false);
+	//$wp_rewrite->add_permastruct('policy_categories', 'policies/categories/%policy_categories%', false);
 	
 }
 add_action('init', 'csun_add_rewrite_rules');
@@ -708,8 +709,8 @@ function csun_permalinks($permalink, $post, $leavename) {
 		
 	if($post_type == 'staract' || $post_type == 'plans') {
 		$terms =  wp_get_post_terms( $post_id, 'aca_year' );
-		
-		if(array($terms))
+
+		if(isset($terms[0]))
 			$year = $terms[0]->slug;
 		else
 			$year = $year_df;

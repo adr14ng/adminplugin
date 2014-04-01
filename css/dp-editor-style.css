@@ -64,6 +64,11 @@
 	display: none;
 }
 
+a.row-title{
+	text-decoration: underline;
+	font-size: 16px !important;
+}
+
 
 /* * * * * * * * * * * * * * * * * * * * * *
  *
@@ -82,9 +87,10 @@
 .post-type-programs #acf-fund_source,
 .post-type-departments .wrap h2,
 .post-type-programs .wrap h2,
+.revisions-buttons, .revisions-checkbox, .revisions-tickmarks, .wp-slider,
 #department_shortnamediv,
 #degree_leveldiv,
-#revisionsdiv{
+#wp-admin-bar-updates{
 	display: none;
 }
 

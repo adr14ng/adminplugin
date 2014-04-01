@@ -131,7 +131,7 @@ function editor_home_page() {
  * Lists all departments and current review statuses
  */
 function adminstrator_review_page() {
-	$terms = get_terms( 'department_shortname', $args );
+	$terms = get_terms( 'department_shortname');
 
 	?>
 	<div class="wrap">

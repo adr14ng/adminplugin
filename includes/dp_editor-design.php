@@ -109,6 +109,9 @@ function add_csun_admin_bar() {
 		else if ($uri AND strpos($uri,'proposals')) {
 			$page = 'file';
 		}
+		else{
+			$page = 'unknown';
+		}
 
 		//figure out which post is active first for programs/departments (will link to that tab)
 		$department_id = get_first_term_post($cat);
@@ -134,7 +137,13 @@ function add_csun_admin_bar() {
 					<span class="ab-icon"></span>
 					<span id="ab-csun-files" class="ab-label">Files</span>
 				</a>		
-			</li>		
+			</li>	
+			<li id="csun-faculty-link">
+				<a class="ab-item" href="<?php echo site_url().'/academics/'.$cat.'/faculty/'; ?>">
+					<span class="ab-icon dashicons dashicons-groups"></span>
+					<span id="ab-csun-files" class="ab-label">Faculty</span>
+				</a>		
+			</li>
 		</ul><!-- /csun-dept-bar-->		
 	</div><!-- /quicklins-->
 	</div><!-- /csun-bar-->
@@ -297,7 +306,7 @@ add_action('admin_footer', 'editor_admin_footer');
 	 * * * * * * * * * * * * * * * * * * * * * */
 	 $curr_post = $_GET['post'];
 	 
-	 $terms = wp_get_post_terms( $curr_post, 'department_shortname', $args );
+	 $terms = wp_get_post_terms( $curr_post, 'department_shortname' );
 	 
 	 foreach($terms as $term) {
 		if($term->parent != 0) {	//we only want the child term
@@ -335,10 +344,25 @@ add_action('admin_footer', 'editor_admin_footer');
 		
 		$message = get_option( 'main_dp_settings');	//get message option
 		$message = $message['view_all_message'];
+		$noedit = '<h3><div class="dashicons dashicons-lock"></div>This content is read only. No changes will be saved. </h3>
+					<style type="text/css">
+						#postbox-container-1{display: none;}
+					</style>';
 
 		echo '<br />';
 		echo '<h1>'.$term->description.'</h1>';	//department name
 		echo '<p>'.$message.'</p>';
+		
+		//if user is not an adean, they cannot save changes
+		$user_ID = get_current_user_id();
+		$user = get_userdata( $user_ID );
+		
+		if((in_array( 'dp_editor', (array) $user->roles ) && get_post_type( $_GET['post'] ) === 'programs') 
+			|| in_array( 'dp_reviewer', (array) $user->roles )){
+			echo $noedit;
+			
+		}
+		
 
 		//Create top tabs to switch between posts
 		echo '<ul id="edit-tabs" class="nav nav-tabs">';

@@ -108,6 +108,19 @@ class DP_Admin {
 			'delete_policies' => true,
 			'delete_others_policies' => true,
 			'assign_terms' => true,
+			'read_page' => true, 
+			'read_private_pages' => true,
+			'edit_page' => true,
+			'edit_pages' => true,
+			'edit_private_pages' => true,
+			'edit_published_pages' => true,
+			'edit_others_pages' => true,
+			'publish_pages' => true, 
+			'delete_page' => true,
+			'delete_pages' => true,
+			'delete_others_pages' => true,
+			'delete_published_pages' => true,
+			'assign_terms' => true,
 		));
 		
 		//Create a page editor role
@@ -164,13 +177,16 @@ class DP_Admin {
 		global $post;
 		$user = get_userdata( $user_id );
 		
+		if(isset( $_GET['revision'] )){
+			return;
+		}
 		
 		//if we're not trying to edit or publish edits of a post, return
 		if( $cap !== 'edit_posts' && $cap !== 'publish_posts' && $cap !== 'edit_post'&& $cap !== 'edit_others_posts' && 
 			$cap !== 'edit_private_posts' && $cap !== 'read_private_posts' && $cap !== 'edit_departments'  
-			&& $cap !== 'publish_departments' && $cap !== 'edit_department'&& $cap !== 'edit_others_departments'
-			&& $cap !== 'edit_programs'  && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'
-			&& $cap !== 'edit_courses'  && $cap !== 'publish_courses' && $cap !== 'edit_course'&& $cap !== 'edit_others_courses'){
+			&& $cap !== 'publish_departments' && $cap !== 'edit_department'&& $cap !== 'edit_others_departments'&& $cap !== 'read_department'
+			&& $cap !== 'edit_programs'  && $cap !== 'publish_programs' && $cap !== 'edit_program'&& $cap !== 'edit_others_programs'&& $cap !== 'read_program'
+			&& $cap !== 'edit_courses'  && $cap !== 'publish_courses' && $cap !== 'edit_course'&& $cap !== 'edit_others_courses'&& $cap !== 'read_course'){
 
 			//print_r($cap);
 			
@@ -220,8 +236,8 @@ class DP_Admin {
 		//get current post id
 		if(isset( $_GET['post'] ))	//if we have the post id
 			$post_id = $_GET['post'];
-		elseif(isset( $_GET['revision'] )) //revisions page post id is 0
-			$post_id = $args[0];
+		elseif(isset( $_GET['revision'] )){ //revisions page post id is 0
+			if(isset($args[0])) $post_id = $args[0];}
 		elseif(isset( $_REQUEST['post_ID'] ))
 			$post_id = $_REQUEST['post_ID'];
 		elseif(isset($args[1]) )	//post id might be 1 otherwise
@@ -237,6 +253,10 @@ class DP_Admin {
 		if(!$cats && isset($_REQUEST['department_shortname']))
 			$cats = $_REQUEST['department_shortname'];
 
+		/*echo "<br />Post: ";
+		print_r($cats);
+		echo "<br />User: ";
+		print_r($userCat);*/
 		
 		//compare each post category to each user category until you find a match
 		if(is_array($userCat)){foreach ($userCat as $user){	//each users category
@@ -352,16 +372,29 @@ class DP_Admin {
 	 */
 	function csunFormatTinyMCE($in)
 	{	
-		$in['theme_advanced_buttons1']='formatselect,bullist,numlist,bold,italic,link,unlink,table,row_after,row_before,undo,redo';
+		$in['theme_advanced_buttons1']='formatselect,styleselect,bullist,numlist,bold,italic,link,unlink,table,row_after,row_before,undo,redo';
 		$in['theme_advanced_buttons2']='';
 		$in['theme_advanced_buttons3']='';
 		$in['theme_advanced_buttons4']='';
+		
+		//<span class="section-title"><span><h2>CONTENT</h2></span></span>
+		$style_formats = array(  
+			// Each array child is a format with it's own settings
+			array(  
+				'title' => 'Section Title',  
+				'block' => 'h2',  
+				'classes' => 'section-header',
+			)
+		);
+		
+		// Insert the array, JSON ENCODED, into 'style_formats'
+		$in['style_formats'] = json_encode( $style_formats );  
 		
 		return $in;
 	}
 	
 	/**
-	 * If a dp editor, all posts must be reviewed, so change them to pending
+	 * If not an administrator, all posts must be reviewed, so change them to pending
 	 * Hooks onto post_updated action.
 	 *
 	 * @param int 	$post_id		The id of the post being saved
@@ -376,7 +409,7 @@ class DP_Admin {
 		$current_user->role = array_keys($current_user->$role);
 		$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role || 'dp_college' == $role){	//if a dp editor/college
+		if ('administrator' !== $role && 'dp_faculty' !== $role && 'dp_ar' !== $role){	//if not an administrator/faculty editor
 
 			//only change to pending if not already (assume all edited posts are published)
 			//avoids infinite loop of updating
