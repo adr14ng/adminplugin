@@ -118,15 +118,15 @@ if ( is_admin() ) {
 	add_filter('tiny_mce_before_init', array( 'DP_Admin', 'csunFormatTinyMCE') );
 	
 	//Add menu for proposal files
-	require $plug_in_dir . '/includes/proposal-files.php';
+	require_once $plug_in_dir . '/includes/proposal-files.php';
 	add_action( 'admin_menu', 'add_proposal_menu' );
 	
 	//Add settings page
-	require $plug_in_dir . '/includes/dp-options.php';
+	require_once $plug_in_dir . '/includes/dp-options.php';
 	$dp_settings_page = new DPAdminSettings();
 
 	//Add menu for review page
-	require $plug_in_dir . '/includes/review.php';
+	require_once $plug_in_dir . '/includes/review.php';
 	add_action( 'admin_menu', 'add_review_menu' );
 	
 	//Chage layout for department editors
