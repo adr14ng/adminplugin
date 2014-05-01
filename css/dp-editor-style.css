@@ -76,7 +76,7 @@ a.row-title{
  *
  * * * * * * * * * * * * * * * * * * * * * */
  
-#wp-toolbar > ul > li#wp-admin-bar-view,
+/*#wp-toolbar > ul > li#wp-admin-bar-view,*/
  #titlediv .inside,
 .subsubsub, .search-box, .tablenav,
 #minor-publishing ,

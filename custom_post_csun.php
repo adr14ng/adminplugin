@@ -392,6 +392,19 @@
 			)
 		);
 		
+		//Policy Tags (money, cheating)
+		register_taxonomy( 'policy_tags', 'policies', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Policy Tags' ),
+							'singular_name'	=> __( 'Policy Tag' )
+							),
+				'public'			=> true,
+				'show_tagcloud'		=> true,
+				'hierarchical'		=> false
+			)
+		);
+		
 		//Year for star act and plans
 		register_taxonomy( 'aca_year', null, 
 			array(
@@ -419,6 +432,7 @@
 		register_taxonomy_for_object_type( 'degree_level', 'programs' );
 		register_taxonomy_for_object_type( 'policy_categories', 'policies' );
 		register_taxonomy_for_object_type( 'policy_keywords', 'policies' );
+		register_taxonomy_for_object_type( 'policy_tags', 'policies' );
 		register_taxonomy_for_object_type( 'aca_year', 'plans' );
 		register_taxonomy_for_object_type( 'aca_year', 'staract' );
 	} //csun create post type
@@ -476,8 +490,8 @@
 				_e( '-', 'your_text_domain' );
 			break;
 		
-		case 'pol_key' :
-			$terms = get_the_term_list( $post_id , 'policy_keywords' , '' , ', ' , '' );
+		case 'pol_tag' :
+			$terms = get_the_term_list( $post_id , 'policy_tags' , '' , ', ' , '' );
 				if ( is_string( $terms ) )
 				echo $terms;
 			else
@@ -613,7 +627,7 @@
 	 */
 	function policy_columns($columns) {
 		$columns['pol_cat'] = 'Category';
-		$columns['pol_key'] = 'Keywords';
+		$columns['pol_tag'] = 'Tags';
 		return $columns;
 	}
 	add_filter('manage_edit-policies_columns', 'policy_columns');
@@ -636,6 +650,7 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_rewrite_tag('%policies%', '([^/]+)', 'policies=');
 	$wp_rewrite->add_rewrite_tag('%dpt_name%', '([^/]+)', 'department_shortname=');
     $wp_rewrite->add_rewrite_tag('%degree_level%', '([^/]+)', 'degree_level=');
+	$wp_rewrite->add_rewrite_tag('%policy_tags%', '([^/]+)', 'policy_tags=');
 	$wp_rewrite->add_rewrite_tag('%policy_keywords%', '([^/]+)', 'policy_keywords=');
 	$wp_rewrite->add_rewrite_tag('%policy_categories%', '([^/]+)', 'policy_categories=');
 	$wp_rewrite->add_rewrite_tag('%aca_year%', '([^/]+)', 'aca_year=');
@@ -649,6 +664,7 @@ function csun_add_rewrite_rules() {
 	//Need to use conditional template
 	add_rewrite_rule('^policies/alphabetical/?','index.php?post_type=policies&order=asc&orderby=title','top');
 	add_rewrite_rule('^policies/appendix/?','index.php?post_type=policies&order=asc&orderby=policy_categories','top');
+	add_rewrite_rule('^policies/tags/([a-z]+)/?', 'index.php?policy_tags=$matches[1]', 'top');
 	add_rewrite_rule('^policies/keywords/([a-z]+)/?', 'index.php?policy_keywords=$matches[1]', 'top');
 	add_rewrite_rule('^policies/categories/([a-z]+)/?', 'index.php?policy_categories=$matches[1]', 'top');
 	add_rewrite_rule('^faculty/emeriti?', 'index.php?post_type=faculty&department_shortname=emeriti', 'top');
@@ -656,6 +672,7 @@ function csun_add_rewrite_rules() {
 	
 	//General Education
 	add_rewrite_rule('^general-education/information-competence/?','index.php?general_education=ic','top');
+	add_rewrite_rule('^general-education/upper-division/?','index.php?general_education=ud','top');
 	add_rewrite_rule('^general-education/courses/?','index.php?department_shortname=ge','top');
 	
 	//Core Pages (Department, Program, Courses and Faculty)
@@ -674,7 +691,7 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
 	
 	//Tag and category pages for policies
-	//$wp_rewrite->add_permastruct('policy_keywords', 'policies/keywords/%policy_keywords%', false);
+	//$wp_rewrite->add_permastruct('policy_tags', 'policies/keywords/%policy_tags%', false);
 	//$wp_rewrite->add_permastruct('policy_categories', 'policies/categories/%policy_categories%', false);
 	
 }

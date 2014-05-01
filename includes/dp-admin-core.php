@@ -240,6 +240,8 @@ class DP_Admin {
 			if(isset($args[0])) $post_id = $args[0];}
 		elseif(isset( $_REQUEST['post_ID'] ))
 			$post_id = $_REQUEST['post_ID'];
+		elseif(isset( $_REQUEST['p'] ))	//preview post
+			$post_id = $_REQUEST['p'];
 		elseif(isset($args[1]) )	//post id might be 1 otherwise
 			$post_id = $args[1];
 		
@@ -356,7 +358,7 @@ class DP_Admin {
 		// CSUN Custom
 		$toolbars['CSUN' ] = array();
 		//1 row tool bar
-		$toolbars['CSUN' ][1] = array('formatselect', 'bullist', 'numlist', 'bold', 'italic', 'link', 'unlink', 'table','row_after','row_before', 'undo', 'redo');
+		$toolbars['CSUN' ][1] = array('formatselect','styleselect', 'bullist', 'numlist', 'bold', 'italic', 'link', 'unlink', 'table', 'undo', 'redo', 'removeformat');
 	 
 		// return $toolbars - IMPORTANT!
 		return $toolbars;
@@ -366,31 +368,70 @@ class DP_Admin {
 	 * Customize toolbar
 	 * Hooks onto tiny_mce_before_init filter.
 	 *
-	 * @param array $in	The default wordpress toolbar
+	 * @param array $buttons	The default wordpress toolbar
 	 *
-	 * @return array	The updated wordpress toolbar
+	 * @return array			The updated wordpress toolbar
 	 */
-	function csunFormatTinyMCE($in)
+	function csunFormatTinyMCEButtons($buttons)
 	{	
-		$in['theme_advanced_buttons1']='formatselect,styleselect,bullist,numlist,bold,italic,link,unlink,table,row_after,row_before,undo,redo';
-		$in['theme_advanced_buttons2']='';
-		$in['theme_advanced_buttons3']='';
-		$in['theme_advanced_buttons4']='';
+		$buttons=array('formatselect','styleselect','bullist','numlist',
+			'bold','italic','link','unlink','table','undo','redo','removeformat');
 		
-		//<span class="section-title"><span><h2>CONTENT</h2></span></span>
+		return $buttons;
+	}
+	
+	/**
+	 * Customize toolbar
+	 * Hooks onto tiny_mce_before_init filter.
+	 *
+	 * @param array $buttons	The default wordpress toolbar
+	 *
+	 * @return array			The updated wordpress toolbar
+	 */
+	function csunFormatTinyMCEButtons2($buttons)
+	{
+		$buttons=array();
+		
+		return $buttons;
+	}
+	
+	/**
+	 * Customize toolbar
+	 * Hooks onto tiny_mce_before_init filter.
+	 *
+	 * @param array $init_array	The default wordpress toolbar
+	 *
+	 * @return array			The updated wordpress toolbar
+	 */
+	function csunFormatTinyMCE( $init_array ) {  
+	//<span class="section-title"><span><h2>CONTENT</h2></span></span>
 		$style_formats = array(  
 			// Each array child is a format with it's own settings
 			array(  
 				'title' => 'Section Title',  
 				'block' => 'h2',  
 				'classes' => 'section-header',
-			)
+			),
+			array(  
+				'title' => 'Link Grid',  
+				'block' => 'div',  
+				'classes' => 'plan-grid',
+				//'wrapper' => true,
+			),
 		);
 		
 		// Insert the array, JSON ENCODED, into 'style_formats'
-		$in['style_formats'] = json_encode( $style_formats );  
+		$init_array['style_formats'] = json_encode( $style_formats );  
 		
-		return $in;
+		return $init_array;
+	} 
+	
+	function custom_tinyMCE_plugins () {
+		$basedir = dirname(plugin_dir_url(__FILE__));
+	
+		$plugins_array[ 'table' ] = $basedir . '/js/table-plugin.min.js';
+		
+		return $plugins_array;
 	}
 	
 	/**

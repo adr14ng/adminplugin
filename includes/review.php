@@ -190,12 +190,15 @@ function adminstrator_review_page() {
 	</form>
 	</div>
 <? }
+//error_reporting( E_ALL );
+//ini_set( "display_errors", 1 );
 
 //includes->dpadmin->plugs->wp-content->base
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
 //Form action for reviewed status
 if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
+
 	unset($_POST['action']);
 
 	require_once($base_url.'/wp-admin/admin.php');
@@ -207,7 +210,6 @@ if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
 	//Security check
 	check_admin_referer( 'update_review_status');
 
-	
 	//Get all fields starting with reviewed- and their id
 	foreach($_POST as $key => $value){
 		$exp_key = explode('-', $key);
@@ -244,12 +246,13 @@ if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
 			}
 		}
 	}
-	
+
 	//Redirect back to page
 	if(isset($_POST['return']))
 		wp_redirect( $_POST['return'] );
 	else
 		wp_redirect( admin_url() );
+		
 }
 //Form action for admin review (allows clear all)
 else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
@@ -326,6 +329,7 @@ else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
 		wp_redirect( $_POST['return'] );
 	else
 		wp_redirect( admin_url() );
+		
 }
 
 /**
