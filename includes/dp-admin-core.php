@@ -418,6 +418,19 @@ class DP_Admin {
 				'classes' => 'plan-grid',
 				//'wrapper' => true,
 			),
+			array(  
+				'title' => 'Basic Table',  
+				'selector' => 'table',  
+				'classes' => 'csun-table',
+				//'wrapper' => true,
+			),
+			array(  
+				'title' => 'Table Header/Footer',  
+				'selector' => 'tr',  
+				'classes' => 'header-footer',
+				//'wrapper' => true,
+			),
+
 		);
 		
 		// Insert the array, JSON ENCODED, into 'style_formats'
