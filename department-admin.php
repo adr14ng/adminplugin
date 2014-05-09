@@ -91,22 +91,17 @@ function change_howdy($translated, $text, $domain) {
 }
  add_filter('gettext', 'change_howdy', 10, 3);
  
-/*function myplugin_buttonhooks() {
-
-}*/
-
-
-	$plug_in_dir = dirname(__FILE__);
+$plug_in_dir = dirname(__FILE__);
 	
-    //Load the plugin
-    require_once $plug_in_dir . '/includes/dp-admin-core.php';
-	$dp_new_admin = new DP_Admin();
+//Load the plugin
+require_once $plug_in_dir . '/includes/dp-admin-core.php';
+$dp_new_admin = new DP_Admin();
 	
-	//Add filter to allow departments to edit own files
-	add_filter( 'map_meta_cap', array( 'DP_Admin','match_category_user'), 10, 4);
-	
-	//Chage layout for department editors
-	add_action('init', array( 'DP_Admin', 'change_layout'));	
+//Add filter to allow departments to edit own files
+add_filter( 'map_meta_cap', array( 'DP_Admin','match_category_user'), 10, 4);
+
+//Chage layout for department editors
+add_action('init', array( 'DP_Admin', 'change_layout'));	
 
 //Is this admin pages?
 if ( is_admin() ) {

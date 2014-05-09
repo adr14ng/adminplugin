@@ -375,7 +375,8 @@ class DP_Admin {
 	function csunFormatTinyMCEButtons($buttons)
 	{	
 		$buttons=array('formatselect','styleselect','bullist','numlist',
-			'bold','italic','link','unlink','table','undo','redo','removeformat');
+			'bold','italic','subscript', 'superscript','outdent','indent',
+			'link','unlink','table','undo','redo','removeformat');
 		
 		return $buttons;
 	}
@@ -443,6 +444,7 @@ class DP_Admin {
 		$basedir = dirname(plugin_dir_url(__FILE__));
 	
 		$plugins_array[ 'table' ] = $basedir . '/js/table-plugin.min.js';
+		$plugins_array[ 'advlist' ] = $basedir . '/js/advlist-plugin.min.js';
 		
 		return $plugins_array;
 	}

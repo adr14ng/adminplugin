@@ -767,6 +767,15 @@ function csun_permalinks($permalink, $post, $leavename) {
 				$dpt = $term->slug;
 			}
 		}
+		
+		if(!isset($dpt)){		//if it only has a top level
+			foreach($terms as $term){
+				if($term->slug !== 'ge') {
+					//save the slug of the category that works
+					$dpt = $term->slug;
+				}
+			}
+		}
 	}
 		
 	if(!isset($dpt))

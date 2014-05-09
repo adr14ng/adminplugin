@@ -85,6 +85,15 @@ function add_csun_admin_bar() {
 				$cat = $term->slug;
 			}
 		}
+		
+		if(!isset($cat)){	//if it only has a top level category
+			foreach($terms as $term){
+				if($term->slug !== 'ge') {
+					//save the slug of the category that works
+					$cat = $term->slug;
+				}
+			}
+		}
 	}
 
 	//if we have a category, build the bar
@@ -314,6 +323,10 @@ add_action('admin_footer', 'editor_admin_footer');
 			break;
 		}
 	 }
+	 
+	 if(!isset($post_cat))		//but if there is only a parent term
+		foreach($terms as $term)
+			$post_cat = $term;		//get the parent
 	 
 	 if( isset($post_cat)){
 		$term_id = $post_cat->term_id;
