@@ -431,7 +431,12 @@ class DP_Admin {
 				'classes' => 'header-footer',
 				//'wrapper' => true,
 			),
-
+			array(  
+				'title' => 'TOC Collumn',  
+				'block' => 'div',  
+				'classes' => 'col-xs-12 col-sm-6 col-md-6 col-lg-6',
+				'wrapper' => true,
+			),
 		);
 		
 		// Insert the array, JSON ENCODED, into 'style_formats'
