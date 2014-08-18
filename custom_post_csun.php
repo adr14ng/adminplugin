@@ -335,7 +335,7 @@
 				'show_tagcloud'		=> false,
 				'hierarchical'		=> true,
 				'capabilities' => array(
-					'assign_terms' => 'edit_faculty'
+					'assign_terms' => 'read'
 				),
 			)
 		);
@@ -792,10 +792,9 @@ add_filter('post_type_link', 'csun_permalinks', 10, 3);
 
 /**
  * Adds custom post capabilities. Only needs to be run once.
- * Hooks onto admin_init action.
- */
-/*function add_event_caps() {
-$role = get_role( 'administrator' );
+ * Hooks onto admin_init action. 
+function add_event_caps() {
+$role = get_role( 'dp_ar' );
 
 	$role->add_cap( 'edit_policy' ); 
 	$role->add_cap( 'edit_policies' ); 
@@ -803,17 +802,14 @@ $role = get_role( 'administrator' );
 	$role->add_cap( 'publish_policies' ); 
 	$role->add_cap( 'read_policy' ); 
 	$role->add_cap( 'read_private_policies' ); 
-	$role->add_cap( 'delete_policy' ); 
+	$role->add_cap( 'delete_policy' );
 	
-	$role->add_cap( 'edit_department' ); 
-	$role->add_cap( 'edit_departments' ); 
-	$role->add_cap( 'edit_others_departments' ); 
-	$role->add_cap( 'publish_departments' ); 
-	$role->add_cap( 'read_department' ); 
-	$role->add_cap( 'read_private_departments' ); 
-	$role->add_cap( 'delete_department' ); 
+	$role->remove_cap( 'edit_faculty' ); 
+	$role->remove_cap( 'edit_facultys' ); 
+	$role->remove_cap( 'edit_others_facultys' ); 
+	$role->remove_cap( 'publish_facultys' ); 
+	$role->remove_cap( 'read_faculty' ); 
+	$role->remove_cap( 'read_private_facultys' ); 
+	//$role->add_cap( 'edit_faculty' ); 
 }
-add_action( 'admin_init', 'add_event_caps');*/
-
-
-		
+add_action( 'admin_init', 'add_event_caps'); */

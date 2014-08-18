@@ -68,7 +68,6 @@ function simplify_admissions_post_columns($defaults) {
   unset($defaults['cb']);
   unset($defaults['author']);
   unset($defaults['tags']);
-  unset($defaults['department']);
   unset($defaults['level']);
   return $defaults;
 }
@@ -84,7 +83,6 @@ add_filter('manage_${post_type}_posts_columns', 'simplify_admissions_post_column
  */
 function simplify_program_columns($defaults) {
   unset($defaults['cb']);
-  unset($defaults['department']);
   return $defaults;
 }
 add_filter('manage_edit-programs_columns', 'simplify_program_columns');
@@ -99,7 +97,6 @@ add_filter('manage_edit-programs_columns', 'simplify_program_columns');
  */
 function simplify_plan_columns($defaults) {
   unset($defaults['cb']);
-  unset($defaults['department']);
   return $defaults;
 }
 add_filter('manage_edit-plans_columns', 'simplify_plan_columns');

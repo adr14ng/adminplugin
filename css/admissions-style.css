@@ -12,7 +12,6 @@
  * * * * * * * * * * * * * * * * * * * * * */
 
 /* Editor */
-#department_shortnamediv,
 #minor-publishing-actions,
 #misc-publishing-actions,
 .actions
@@ -39,6 +38,8 @@
 .post-type-programs #postdivrich,
 .post-type-programs #revisionsdiv,
 .post-type-programs #edit-slug-box,
-#degree_leveldiv{
+.post-type-programs #department_shortnamediv,
+#degree_leveldiv,
+#course-link{
 	display: none;
 }
