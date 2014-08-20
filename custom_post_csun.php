@@ -762,7 +762,7 @@ function csun_permalinks($permalink, $post, $leavename) {
 		
 		foreach($terms as $term){
 			//ge and top level terms can't be the category
-			if($term->slug !== 'ge' && $term->parent != 0) {
+			if($term->slug !== 'ge' && $term->parent != 0 && $term->parent != 511) {
 				//save the slug of the category that works
 				$dpt = $term->slug;
 			}

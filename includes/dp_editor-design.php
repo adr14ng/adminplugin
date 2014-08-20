@@ -80,7 +80,7 @@ function add_csun_admin_bar() {
 		
 		foreach($terms as $term){
 			//ge and top level terms can't be the category
-			if($term->slug !== 'ge' && $term->parent != 0) {
+			if($term->slug !== 'ge' && $term->parent != 0 && $term->parent != 511) {
 				//save the slug of the category that works
 				$cat = $term->slug;
 			}
@@ -318,7 +318,7 @@ add_action('admin_footer', 'editor_admin_footer');
 	 $terms = wp_get_post_terms( $curr_post, 'department_shortname' );
 	 
 	 foreach($terms as $term) {
-		if($term->parent != 0) {	//we only want the child term
+		if($term->parent != 0 && $term->parent != 511) {	//we only want the child term
 			$post_cat = $term;
 			break;
 		}
