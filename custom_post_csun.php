@@ -435,6 +435,7 @@
 		register_taxonomy_for_object_type( 'policy_tags', 'policies' );
 		register_taxonomy_for_object_type( 'aca_year', 'plans' );
 		register_taxonomy_for_object_type( 'aca_year', 'staract' );
+		register_taxonomy_for_object_type( 'category', 'departments' );
 	} //csun create post type
 	
 	//Add custom post types
