@@ -32,7 +32,7 @@
 	/**
 	 * Function to add custom post types and taxonomies
 	 * Post Types: courses, programs, departments, faculty, policies, staract, plans
-	 * Taxonomies: department_shortname, general_education, degree_level, aca_year, policy_categories, policy_keywords
+	 * Taxonomies: department_shortname, general_education, degree_level, aca_year, policy_categories, policy_keywords, directory
 	 * Hooks onto init action.
 	 */
 	function csun_create_post_type() {
@@ -420,6 +420,13 @@
 				),
 			)
 		);
+		
+		//Directory tax to do alpha pages
+		register_taxonomy( 'directory', 'faculty',
+			array( 
+				'show_ui' => false 
+			)
+		);
 	
 	//Assign taxonomies for custom post types
 		register_taxonomy_for_object_type( 'department_shortname', 'courses' );
@@ -436,6 +443,10 @@
 		register_taxonomy_for_object_type( 'aca_year', 'plans' );
 		register_taxonomy_for_object_type( 'aca_year', 'staract' );
 		register_taxonomy_for_object_type( 'category', 'departments' );
+		register_taxonomy_for_object_type( 'post_tag', 'programs' );
+		register_taxonomy_for_object_type( 'post_tag', 'departments' );
+		register_taxonomy_for_object_type( 'post_tag', 'page' );
+		register_taxonomy_for_object_type( 'post_tag', 'policies' );
 	} //csun create post type
 	
 	//Add custom post types
@@ -671,11 +682,6 @@ function csun_add_rewrite_rules() {
 	add_rewrite_rule('^faculty/emeriti?', 'index.php?post_type=faculty&department_shortname=emeriti', 'top');
 	add_rewrite_rule('^faculty/?', 'index.php?post_type=faculty', 'top');
 	
-	//General Education
-	add_rewrite_rule('^general-education/information-competence/?','index.php?general_education=ic','top');
-	add_rewrite_rule('^general-education/upper-division/?','index.php?general_education=ud','top');
-	add_rewrite_rule('^general-education/courses/?','index.php?department_shortname=ge','top');
-	
 	//Core Pages (Department, Program, Courses and Faculty)
 	$wp_rewrite->add_permastruct('programs', 'academics/%dpt_name%/programs/%programs%/%option_name%', false);
 	$wp_rewrite->add_permastruct('faculty', 'academics/%dpt_name%/faculty/%faculty%', false);
@@ -791,6 +797,56 @@ function csun_permalinks($permalink, $post, $leavename) {
 }
 add_filter('post_type_link', 'csun_permalinks', 10, 3);
 
+/**
+ * Adds the taxonomy first letter to the post without users
+ * having to.
+ */
+ function csun_save_first_letter($post_id) {
+	//if autosave, don't do anything
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+		return;
+
+	//only for faculty
+	if($_POST['post_type'] !== 'faculty')
+		return;
+	
+	//have correct permission
+	if( !current_user_can( 'edit_post', $post_id))
+		return;
+
+	//set term as first letter of title
+	wp_set_post_terms( $post_id, strtolower(substr($_POST['post_title'], 0, 1)), 'directory');
+ }
+ add_action('save_post', 'csun_save_first_letter');
+ 
+ 
+ /**
+ * Define default terms for custom taxonomies in WordPress 3.0.1
+ *
+ * @author	Michael Fields	http://wordpress.mfields.org/
+ * @props	John P. Bloch	http://www.johnpbloch.com/
+ *
+ * @since	2010-09-13
+ * @alter	2010-09-14
+ *
+ * @license		GPLv2
+ */
+function mfields_set_default_object_terms( $post_id, $post ) {
+	if ( 'publish' === $post->post_status ) {
+		$defaults = array(
+			'degree_level' => array('other'),
+			);
+		$taxonomies = get_object_taxonomies( $post->post_type );
+		foreach ( (array) $taxonomies as $taxonomy ) {
+			$terms = wp_get_post_terms( $post_id, $taxonomy );
+			if ( empty( $terms ) && array_key_exists( $taxonomy, $defaults ) ) {
+				wp_set_object_terms( $post_id, $defaults[$taxonomy], $taxonomy );
+			}
+		}
+	}
+}
+add_action( 'save_post', 'mfields_set_default_object_terms', 100, 2 );
+ 
 /**
  * Adds custom post capabilities. Only needs to be run once.
  * Hooks onto admin_init action. 
