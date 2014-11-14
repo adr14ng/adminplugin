@@ -454,10 +454,10 @@
 	
 	
 	/**
-	 * Populate Custom Collumns
+	 * Populate Custom Columns
 	 * Hooks onto manage_posts_custom_column action
 	 *
-	 * @param string $column	Collumn trying to populate
+	 * @param string $column	Column trying to populate
 	 * @param int $post_id		Post ID of row
 	 */
 	function custom_columns( $column, $post_id ) {
@@ -522,12 +522,12 @@
 	add_action( 'manage_posts_custom_column' , 'custom_columns', 10, 2 );
 	
 	/**
-	 * Adds collumns to Plans and Staract
+	 * Adds columns to Plans and Staract
 	 * Hooks onto manage_edit-plans_columns filter, manage_edit-staract_columns filter
 	 *
-	 * @param array $collumns	Default collumns
+	 * @param array $columns	Default columns
 	 *
-	 * @return array	Updated list of collumns
+	 * @return array	Updated list of columns
 	 */
 	function plan_columns($columns) {
 		$columns['aca_year'] = 'Year';
@@ -538,12 +538,12 @@
 	add_filter('manage_edit-staract_columns', 'plan_columns');
 	
 	/**
-	 * Adds sortable collumns to Plans and Staract
+	 * Adds sortable columns to Plans and Staract
 	 * Hooks onto manage_edit-plans_sortable_columns filter, manage_edit-staract_sortable_columns filter
 	 *
-	 * @param array $collumns	Default sortable collumns
+	 * @param array $columns	Default sortable columns
 	 *
-	 * @return array	Updated list of sortable collumns
+	 * @return array	Updated list of sortable columns
 	 */
 	function sortable_plan_column( $columns ) { 
 		$columns['aca_year'] = 'aca_year';
@@ -584,12 +584,12 @@
 	
 	
 	/**
-	 * Adds department collumsn to Faculty and Departments
+	 * Adds department columns to Faculty and Departments
 	 * Hooks onto manage_edit-faculty_columns filter, manage_edit-departments_columns filter
 	 *
-	 * @param array $collumns	Default collumns
+	 * @param array $columns	Default columns
 	 *
-	 * @return array	Updated list of collumns
+	 * @return array	Updated list of columns
 	 */
 	function dept_columns($columns) {
 		$columns['department'] = 'Department';
@@ -599,12 +599,12 @@
 	add_filter('manage_edit-departments_columns', 'dept_columns');
 	
 	/**
-	 * Adds collumns to Programs
+	 * Adds columns to Programs
 	 * Hooks onto manage_edit-programs_columns filter
 	 *
-	 * @param array $collumns	Default collumns
+	 * @param array $columns	Default columns
 	 *
-	 * @return array	Updated list of collumns
+	 * @return array	Updated list of columns
 	 */
 	function prog_columns($columns) {
 		$columns['option'] = 'Option Title';
@@ -615,12 +615,12 @@
 	add_filter('manage_edit-programs_columns', 'prog_columns');
 	
 	/**
-	 * Adds collumns to Courses
+	 * Adds columns to Courses
 	 * Hooks onto manage_edit-courses_columns filter
 	 *
-	 * @param array $collumns	Default collumns
+	 * @param array $columns	Default columns
 	 *
-	 * @return array	Updated list of collumns
+	 * @return array	Updated list of columns
 	 */
 	function course_columns($columns) {
 		$columns['department'] = 'Department';
@@ -630,12 +630,12 @@
 	add_filter('manage_edit-courses_columns', 'course_columns');
 	
 	/**
-	 * Adds collumns to Policies
+	 * Adds columns to Policies
 	 * Hooks onto manage_edit-policies_columns filter
 	 *
-	 * @param array $collumns	Default collumns
+	 * @param array $columns	Default columns
 	 *
-	 * @return array	Updated list of collumns
+	 * @return array	Updated list of columns
 	 */
 	function policy_columns($columns) {
 		$columns['pol_cat'] = 'Category';
@@ -679,7 +679,11 @@ function csun_add_rewrite_rules() {
 	add_rewrite_rule('^policies/tags/([a-z]+)/?', 'index.php?policy_tags=$matches[1]', 'top');
 	add_rewrite_rule('^policies/keywords/([a-z]+)/?', 'index.php?policy_keywords=$matches[1]', 'top');
 	add_rewrite_rule('^policies/categories/([a-z]+)/?', 'index.php?policy_categories=$matches[1]', 'top');
-	add_rewrite_rule('^faculty/emeriti?', 'index.php?post_type=faculty&department_shortname=emeriti', 'top');
+	
+	//Faculty
+	add_rewrite_rule('^emeriti/([a-zA-Z])/?', 'index.php?post_type=faculty&department_shortname=emeriti&directory=$matches[1]', 'top');
+	add_rewrite_rule('^emeriti/?', 'index.php?post_type=faculty&department_shortname=emeriti', 'top');
+	add_rewrite_rule('^faculty/([a-zA-Z])/?', 'index.php?post_type=faculty&directory=$matches[1]', 'top');
 	add_rewrite_rule('^faculty/?', 'index.php?post_type=faculty', 'top');
 	
 	//Core Pages (Department, Program, Courses and Faculty)
