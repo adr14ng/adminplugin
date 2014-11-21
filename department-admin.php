@@ -100,8 +100,8 @@ $dp_new_admin = new DP_Admin();
 //Add filter to allow departments to edit own files
 add_filter( 'map_meta_cap', array( 'DP_Admin','match_category_user'), 10, 4);
 
-//Chage layout for department editors
-add_action('init', array( 'DP_Admin', 'change_layout'));	
+//Change layout for department editors
+add_action('init', array( 'DP_Admin', 'change_layout'));
 
 //Is this admin pages?
 if ( is_admin() ) {

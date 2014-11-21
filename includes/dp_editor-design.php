@@ -109,7 +109,11 @@ function add_csun_admin_bar() {
 		$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : NULL ;	//get uri
 		$type = isset($_GET['post']) ? get_post_type( ($_GET['post'])) : NULL ;	//get post type
 
-		if ($uri AND ($type === 'programs' || $type === 'departments')){
+		if($uri AND $type === 'departments')
+		{
+			$page = 'overview';
+		}
+		else if ($uri AND $type === 'programs'){
 			$page = 'program';
 		}
 		else if ($uri AND (strpos($uri,'courses')||$type === 'courses')) {
@@ -123,14 +127,21 @@ function add_csun_admin_bar() {
 		}
 
 		//figure out which post is active first for programs/departments (will link to that tab)
-		$department_id = get_first_term_post($cat);
+		$department_id = get_department($cat);
+		$program_id = get_first_program($cat);
 ?>
 	<div id="csun-bar" role="naviagation">
 	<div class="quicklinks" id="csun-toolbar" role="navigation" aria-label="Second navigation toolbar." tabindex="0">
 		<ul id="csun-dept-bar" class="ab-second-menu">
 			<li id="department-name"><?php echo $dp_name.' : '; ?></li>
-			<li id="csun-program-link" <?php if($page === 'program') echo 'class="active"'; ?>>
+			<li id="csun-overeview-link" <?php if($page === 'overview') echo 'class="active"'; ?>>
 				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$department_id.'&department_shortname='.$cat;?>">
+					<span class="ab-icon dashicons dashicons-welcome-write-blog"></span>
+					<span id="ab-csun-overview" class="ab-label">Overview</span>
+				</a>		
+			</li>
+			<li id="csun-program-link" <?php if($page === 'program') echo 'class="active"'; ?>>
+				<a class="ab-item" href="<?php echo admin_url().'post.php?action=edit&post='.$program_id.'&department_shortname='.$cat;?>">
 					<span class="ab-icon dashicons dashicons-welcome-learn-more"></span>
 					<span id="ab-csun-programs" class="ab-label">Programs</span>
 				</a>		
@@ -141,25 +152,24 @@ function add_csun_admin_bar() {
 					<span id="ab-csun-courses" class="ab-label">Courses</span>
 				</a>		
 			</li>
-			<li id="csun-file-link" <?php if($page === 'file') echo 'class="active"'; ?>>
-				<a class="ab-item" href="<?php echo admin_url().'admin.php?page=proposals&amp;department_shortname='.$cat; ?>">
-					<span class="ab-icon"></span>
-					<span id="ab-csun-files" class="ab-label">Files</span>
-				</a>		
-			</li>	
 			<li id="csun-faculty-link">
 				<a class="ab-item" href="<?php echo site_url().'/academics/'.$cat.'/faculty/'; ?>">
 					<span class="ab-icon dashicons dashicons-groups"></span>
 					<span id="ab-csun-files" class="ab-label">Faculty</span>
 				</a>		
 			</li>
+			<li id="csun-file-link" <?php if($page === 'file') echo 'class="active"'; ?>>
+				<a class="ab-item" href="<?php echo admin_url().'admin.php?page=proposals&amp;department_shortname='.$cat; ?>">
+					<span class="ab-icon"></span>
+					<span id="ab-csun-files" class="ab-label">Files</span>
+				</a>		
+			</li>	
 		</ul><!-- /csun-dept-bar-->		
 	</div><!-- /quicklins-->
 	</div><!-- /csun-bar-->
 <?php
 	endif; //end isset($cat)
 }
-
 add_action( 'in_admin_header', 'add_csun_admin_bar');
 
 /* * * * * * * * * * * * * * * * * * * * * *
@@ -191,12 +201,12 @@ add_action('admin_init', 'remove_meta_boxes');
  * * * * * * * * * * * * * * * * * * * * * */
  
 /**
- * Remove extra collumns from list table
+ * Remove extra columns from list table
  * Hooks onto manage_${post_type}_posts_columns filter
  *
- * @param array $defaults Default collumn list
+ * @param array $defaults Default column list
  *
- * @return array	Simplified collumn list
+ * @return array	Simplified column list
  */
 function simplify_post_columns($defaults) {
   unset($defaults['comments']);
@@ -211,12 +221,12 @@ function simplify_post_columns($defaults) {
 add_filter('manage_${post_type}_posts_columns', 'simplify_post_columns');
 
 /**
- * Remove extra collumns from course list table
+ * Remove extra columns from course list table
  * Hooks onto manage_edit-courses_columns filter
  *
- * @param array $defaults Default course collumn list
+ * @param array $defaults Default course column list
  *
- * @return array	Simplified course collumn list
+ * @return array	Simplified course column list
  */
 function simplify_course_columns($defaults) {
   unset($defaults['cb']);
@@ -331,20 +341,14 @@ add_action('admin_footer', 'editor_admin_footer');
 	 if( isset($post_cat)){
 		$term_id = $post_cat->term_id;
 
-		//get departments with that department code
+		//get programs with that department code
 		$args=array(
-			'post_type' => 'departments',
+			'post_type' => 'programs',
 			'department_shortname' => $post_cat->slug,
 			'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
 			'numberposts' => 50,
 		);
-		$departments = get_posts( $args );
-
-		//get programs with that department code
-		$args['post_type'] = 'programs';
-		$programs = get_posts( $args );
-		
-		$posts = array_merge($departments, $programs);
+		$posts = get_posts( $args );
 	}
 		
 	if( $posts ){
@@ -384,8 +388,7 @@ add_action('admin_footer', 'editor_admin_footer');
 			$post_type = get_post_type( $post );
 			$post_name = $post->post_title;
 			
-			if($post_type==='programs')
-				$post_option=get_field('option_title', $post_ID);
+			$post_option=get_field('option_title', $post_ID);
 
 			echo '<li class="';
 			
@@ -398,10 +401,8 @@ add_action('admin_footer', 'editor_admin_footer');
 				echo 'nonoption" >';
 			
 			echo '<a href="'.get_edit_post_link( $post_ID ).'">'.$post_name;
-			if($post_type==='programs'){
-				echo ', ';
-				echo the_field('degree_type', $post_ID);
-			}
+			echo ', ';
+			echo the_field('degree_type', $post_ID);
 			if(isset($post_option)&&$post_option!==''){
 				echo '<br />';
 				echo '<span class="option">'.$post_option.'</span>';
@@ -412,9 +413,41 @@ add_action('admin_footer', 'editor_admin_footer');
 	
 	}
 }
-//only show on program and department edit pages
-if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs' ||  get_post_type( $_GET['post'] ) === 'departments')){
+//only show on program edit pages
+if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs')){
 	add_action( 'all_admin_notices' , 'department_edit_tabs');
+}
+
+function overview_header()
+{
+	/* * * * * * * * * * * * * * * * * * * * * *
+	 * Get category
+	 * * * * * * * * * * * * * * * * * * * * * */
+	 $curr_post = $_GET['post'];
+	 
+	 $terms = wp_get_post_terms( $curr_post, 'department_shortname' );
+	 
+	 foreach($terms as $term) {
+		if($term->parent != 0 && $term->parent != 511) {	//we only want the child term
+			$post_cat = $term;
+			break;
+		}
+	 }
+	 
+	 if(!isset($post_cat))		//but if there is only a parent term
+		foreach($terms as $term)
+			$post_cat = $term;		//get the parent
+		
+	$message = get_option( 'main_dp_settings');	//get message option
+	$message = $message['view_all_message'];
+
+	echo '<br />';
+	echo '<h1>'.$post_cat->description.'</h1>';	//department name
+	echo '<p>'.$message.'</p>';
+}
+//only show on program edit pages
+if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'departments')){
+	add_action( 'all_admin_notices' , 'overview_header');
 }
 	
 /* * * * * * * * * * * * * * * * * * * * * *
@@ -424,14 +457,13 @@ if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs' ||  
  * * * * * * * * * * * * * * * * * * * * * */
  
 /**
- * Takes either slug of term and returns id of the first department, if
- * no department then the first program
+ * Takes either slug of term and returns id of the first department
  * 
  * @param string $term	The term which we need a post from
  * 
  * @return int 	ID of first post if successful, 0 if not
  */
-function get_first_term_post($term) {
+function get_department($term) {
 	$args=array(
 		'post_type' => 'departments',
 		'department_shortname' => $term,
@@ -442,8 +474,24 @@ function get_first_term_post($term) {
 
 	if($departments)
 		return $departments[0]->ID;
-			
-	$args['post_type'] = 'programs';
+		
+	return 0;		
+}
+
+/**
+ * Takes either slug of term and returns id of the first program
+ * 
+ * @param string $term	The term which we need a post from
+ * 
+ * @return int 	ID of first post if successful, 0 if not
+ */
+function get_first_program($term) {
+	$args=array(
+		'post_type' => 'programs',
+		'department_shortname' => $term,
+		'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
+		'numberposts' => 50,
+	);
 	$programs = get_posts( $args );
 	
 	if($programs)

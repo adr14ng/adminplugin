@@ -517,6 +517,13 @@
 			else
 				_e( '-', 'your_text_domain' );
 			break;
+		case 'pol_rank' : 
+			$rank = get_field('pol_rank',$post_id);
+			if(is_string( $rank ))
+				echo $rank;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
 		}
 	}
 	add_action( 'manage_posts_custom_column' , 'custom_columns', 10, 2 );
@@ -638,11 +645,157 @@
 	 * @return array	Updated list of columns
 	 */
 	function policy_columns($columns) {
-		$columns['pol_cat'] = 'Category';
-		$columns['pol_tag'] = 'Tags';
+		$columns['pol_cat'] = 'Policy Category';
+		$columns['pol_tag'] = 'Policy Tags';
+		$columns['pol_rank'] = 'Sort Order';
 		return $columns;
 	}
 	add_filter('manage_edit-policies_columns', 'policy_columns');
+	
+	/**
+	 * Adds sortable columns to Policies
+	 * Hooks onto manage_edit-policies_sortable_columns filter
+	 *
+	 * @param array $columns	Default sortable columns
+	 *
+	 * @return array	Updated list of sortable columns
+	 */
+	function sortable_policy_column( $columns ) { 
+		$columns['pol_rank'] = 'pol_rank';
+		
+		return $columns;
+	}
+	add_filter( 'manage_edit-policies_sortable_columns', 'sortable_policy_column' );
+	
+	/**
+	 * Creates logic for sorting by pol_rank
+	 * Hooks onto pre_get_posts filter.
+	 *
+	 * @param WP_QUERY $query	Current database query parameters
+	 */
+	function csun_custom_pol_order( $query ) {
+		if ( $query->is_main_query() && ( $orderby = $query->get( 'orderby' ) ) ) {
+			switch( $orderby ) {
+				case 'pol_rank' :
+					$query->set( 'meta_key', 'pol_rank' );
+					$query->set( 'orderby', 'meta_value_num' );
+					break;
+				/*case 'aca_year' :		//can't sort by tax right now
+					$query->set( 'meta_key', 'aca_year' );
+					$query->set( 'orderby', 'meta_value_num' );
+					break;*/
+			}
+		}
+	}
+	add_action( 'pre_get_posts', 'csun_custom_pol_order', 5 );
+	
+	/**
+	 * Add pol_rank to the quick edit options
+	 * Hooks onto quick_edit_custom_box action.
+	 *
+	 * @param string $column_name	The column we are adding
+	 */
+	function add_pol_rank_quick_edit($column_name)
+	{
+		if($column_name !== 'pol_rank')
+			return;
+		?>
+		<fieldset class="inline-edit-col-left">
+		<div class="inline-edit-col">
+			<span class="title">Policy Order</span>
+			<input type="hidden" name="pol_rank_set_noncename" id="pol_rank_set_noncename" value="" />
+			<input type="number" id="pol_rank_set" name="pol_rank_set" value=""/>
+		</div>
+		</fieldset>
+		<?php
+	}
+	add_action('quick_edit_custom_box', 'add_pol_rank_quick_edit');
+	
+	function save_pol_rank($post_id)
+	{
+		//if autosave, don't do anything
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+			return;
+
+		//only for policies
+		if($_POST['post_type'] !== 'policies')
+			return;
+		
+		//have correct permission
+		if( !current_user_can( 'edit_post', $post_id))
+			return;
+			
+		$post = get_post($post_id);
+		if(isset($_POST['pol_rank_set']) && ($post->post_type !== 'revision'))
+		{
+			$rank = esc_attr($_POST['pol_rank_set']);
+			
+			if($rank)
+			{
+				update_field('pol_rank', $rank, $post_id);
+			}
+		}		
+	}
+	add_action('save_post', 'save_pol_rank');
+	
+	function pol_rank_javascript() {
+		global $current_screen;
+
+		if (($current_screen->id != 'edit-policies') || ($current_screen->post_type != 'policies')) return; 
+		?>
+			<script type="text/javascript">
+			<!--
+			function set_inline_pol_rank(polRank, nonce) {
+				// revert Quick Edit menu so that it refreshes properly
+				inlineEditPost.revert();
+				
+				var polRankInput = document.getElementById('pol_rank_set');
+				var nonceInput = document.getElementById('pol_rank_set_noncename');
+				nonceInput.value = nonce;
+				polRankInput.value = polRank;
+			}
+			//-->
+			</script>
+		<?php
+	}
+	add_action('admin_footer', 'pol_rank_javascript');
+
+	function pol_rank_add_value($actions, $post) {
+		global $current_screen;
+		
+		if (($current_screen->id != 'edit-policies') || ($current_screen->post_type != 'policies')) return $actions; 
+
+		$nonce = wp_create_nonce( 'pol_rank'.$post->ID);
+		$meta_rank = get_field('pol_rank', $post->ID);
+
+		$actions['inline hide-if-no-js'] = '<a href="#" class="editinline" title="';
+		$actions['inline hide-if-no-js'] .= esc_attr( __( 'Edit this item inline' ) ) . '" ';
+		$actions['inline hide-if-no-js'] .= " onclick=\"set_inline_pol_rank('{$meta_rank}', '{$nonce}')\">"; 
+		$actions['inline hide-if-no-js'] .= __( 'Quick&nbsp;Edit' );
+		$actions['inline hide-if-no-js'] .= '</a>';
+		return $actions;    
+	}
+	add_filter('post_row_actions', 'pol_rank_add_value', 10, 2);
+	
+	/**
+	 * Remove extra columns from course list table
+	 * Hooks onto manage_edit-{post_type}_columns filter
+	 *
+	 * @param array $defaults Default course column list
+	 *
+	 * @return array	Reduced course column list
+	 */
+	function reduce_generic_columns($defaults) {
+	  unset($defaults['author']);
+	  unset($defaults['date']);
+	  unset($defaults['tags']);
+	  return $defaults;
+	}
+	add_filter('manage_edit-courses_columns', 'reduce_generic_columns');
+	add_filter('manage_edit-programs_columns', 'reduce_generic_columns');
+	add_filter('manage_edit-faculty_columns', 'reduce_generic_columns');
+	add_filter('manage_edit-departments_columns', 'reduce_generic_columns');
+	add_filter('manage_edit-policies_columns', 'reduce_generic_columns');
 
  /**
   * Custom rewrite rules for url structure

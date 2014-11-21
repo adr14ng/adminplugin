@@ -90,6 +90,8 @@ a.row-title{
 .revisions-buttons, .revisions-checkbox, .revisions-tickmarks, .wp-slider,
 #department_shortnamediv,
 #degree_leveldiv,
+#categorydiv,
+#tagsdiv-post_tag,
 #wp-admin-bar-updates{
 	display: none;
 }

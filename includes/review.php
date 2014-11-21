@@ -58,7 +58,7 @@ function editor_home_page() {
 	<div class="wrap">
 	
 	<h2> Welcome to the 2014-2015 CSUN Catalog </h2>
-	<p><?php echo $message; ?> <a href="http://csuncatalog.com/2014/guide/" target="_blank"> View training guide.</a></p> 
+	<p><?php echo $message; ?> <a href="<?php echo site_url('guide'); ?>" target="_blank"> View training guide.</a></p> 
 	
 <?php
 	
@@ -78,24 +78,17 @@ function editor_home_page() {
 					<span>College Deadline:</span><br /><strong><?php echo $college_due; ?></strong> </th>
 			</tr>
 		</thead>
-	<form name="review_status" action="<?php echo plugins_url().'/department-admin/includes/review.php'; ?>" method="post" id="review_status">
-		<?php wp_nonce_field('update_review_status'); ?>
-		<input type="hidden" id="referredby" name="referredby" value="<?php echo esc_url(wp_get_referer()); ?>" />
-		<input type="hidden" name="return" value="<?php echo admin_url('admin.php?page=review'); ?>" />
-		<input type="hidden" name="action" value="reviewed" />
 	<tbody id="the-list">
 	<?php
 	$alt = false;
 	
 	foreach($userCat as $link) :
-		$term_id = term_exists( $link );
+		$term = get_term_by( 'slug', $link, 'department_shortname' );
 		
 		//Cleaned up term description holding department name
-		$dp_name = term_description( $term_id, 'department_shortname' );
-		$dp_name = strip_tags($dp_name);		//remove p tags
-		$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
+		$dp_name = $term->description;
 		
-		$department_id = get_first_term_post($link)		
+		$department_id = get_department($link)		
 		//Output row ?>
 
 		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
@@ -105,25 +98,27 @@ function editor_home_page() {
 				</a>
 			</td>
 			<td>
-				<input type="submit" name="reviewed-<?php echo $term_id; ?>" <?php 
-					if (get_field( 'dept_reviewed', 'department_shortname_'.$term_id ))
-						echo ' value="Review Complete" class="btn btn-reviewed">';
-					else
-						echo ' value="Submit for Review" class="btn">';
-					?>
+			<?php if(review_submitted($link, 'false')) : ?>
+				<button name="reviewed-<?php echo $term_id; ?>" class="btn btn-reviewed disabled">Review Complete</button>
+			<?php else: ?>
+				<a href="<?php echo site_url('complete/').'?department_shortname='.$link.'&dean=false'; ?>">
+					<button name="reviewed-<?php echo $term_id; ?>" class="btn">Submit for Review</button>
+				</a>
+			<?php endif; ?>
 			</td>
 			<td>
-				<input type="submit" name="college-<?php echo $term_id; ?>" <?php 
-					if (get_field( 'college_reviewed', 'department_shortname_'.$term_id ))
-						echo ' value="Review Complete" class="btn btn-reviewed">';
-					else
-						echo ' value="Submit for Review" class="btn">';
-					?>
+			<?php if (review_submitted($link, 'true')) : ?>
+				<button name="college-<?php echo $term_id; ?>" class="btn btn-reviewed disabled">Review Complete</button>
+			<?php else: ?>
+				<a href="<?php echo site_url('complete/').'?department_shortname='.$link.'&dean=true' ?>">
+					<button name="college-<?php echo $term_id; ?>" class="btn">Submit for Review</button>
+				</a>
+			<?php endif; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 
-	</tbody></form></table></div>
+	</tbody></table></div>
 <?}
 
 /**
@@ -137,12 +132,6 @@ function adminstrator_review_page() {
 	<div class="wrap">
 	
 	<h2> Review Status </h2>
-	<form name="review_status" action="<?php echo plugins_url().'/department-admin/includes/review.php'; ?>" method="post" id="review_status">
-		<?php wp_nonce_field('update_review_status'); ?>
-		<input type="hidden" id="referredby" name="referredby" value="<?php echo esc_url(wp_get_referer()); ?>" />
-		<input type="hidden" name="return" value="<?php echo admin_url('admin.php?page=review'); ?>" />
-		<input type="hidden" name="action" value="admin-review" />
-	<input type="submit" name="clear-all" value="Clear All" class="btn btn-clear">
 	<table class="wp-list-table widefat" cellspacing="0">
 		<thead> 
 			<tr>
@@ -164,202 +153,48 @@ function adminstrator_review_page() {
 				</a>
 			</td>
 			<td>
-				<input type="hidden" name="post-<?php echo $term->term_id; ?>" value="0" />
-				<input type="submit" name="reviewed-<?php echo $term->term_id; ?>" <?php 
-					if (get_field( 'dept_reviewed', 'department_shortname_'.$term->term_id))
-						echo ' value="Review Complete" class="btn btn-reviewed">';
-					else
-						echo ' value="Submit for Review" class="btn">';
-					?>
+				<?php $entry = review_submitted($term->slug, "false");
+				if($entry) : ?>
+				<a href="<?php echo $entry; ?>">
+					<button name="reviewed-<?php echo $term->term_id; ?>" class="btn btn-reviewed">Review Complete</button>
+				</a>
+				<?php else: ?>
+				<button name="reviewed-<?php echo $term->term_id; ?>" class="btn disabled">Not Submitted</button>
+				<?php endif; ?>
 			</td>
 			<td>
-				<input type="hidden" name="post-college-<?php echo $term->term_id; ?>" value="0" />
-				<input type="submit" name="college-<?php echo $term->term_id; ?>" <?php 
-					if (get_field( 'college_reviewed', 'department_shortname_'.$term->term_id))
-						echo ' value="Review Complete" class="btn btn-reviewed">';
-					else
-						echo ' value="Submit for Review" class="btn">';
-					?>
+				<?php $entry = review_submitted($term->slug, "true");
+				if($entry) : ?>
+				<a href="<?php echo $entry; ?>">
+					<button name="college-<?php echo $term->term_id; ?>" class="btn btn-reviewed">Review Complete</button>
+				</a>
+				<? else: ?>
+				<button name="college-<?php echo $term->term_id; ?>" class="btn disabled">Not Submitted</button>
+				<? endif; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 
 	</tbody>
 	</table>
-		<input type="submit" name="clear-all" value="Clear All" class="btn btn-clear">
-	</form>
 	</div>
 <? }
-//error_reporting( E_ALL );
-//ini_set( "display_errors", 1 );
 
-//includes->dpadmin->plugs->wp-content->base
-$base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-
-//Form action for reviewed status
-if(isset($_POST['action']) && $_POST['action'] == "reviewed"){
-
-	unset($_POST['action']);
-
-	require_once($base_url.'/wp-admin/admin.php');
-
-	$field_key = get_option( 'main_dp_settings');	//acf field key for review, may need to change
-	$dept_key = $field_key['review_field_key'];
-	$college_key = $field_key['college_field_key'];
-
-	//Security check
-	check_admin_referer( 'update_review_status');
-
-	//Get all fields starting with reviewed- and their id
-	foreach($_POST as $key => $value){
-		$exp_key = explode('-', $key);
-		if($exp_key[0] == 'reviewed'){
-			 $department_terms[$exp_key[1]] = $value;
-		}
-		else if($exp_key[0] == 'college'){
-			 $college_terms[$exp_key[1]] = $value;
-		}
-	}
+function review_submitted($dept, $dean)
+{
+	$search_criteria["status"] = "active";
+	$search_criteria["field_filters"][] = array("key" => "1", "value" => $dept);
+	$search_criteria["field_filters"][] = array("key" => "3", "value" => $dean);
 	
-	//Update the department values and send email when review is complete
-	if(isset($department_terms)) {
-		foreach($department_terms as $term_id => $value){
-			if( $value === 'Review Complete')  //value based on form value
-				update_field($dept_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
-			else {
-				update_field($dept_key, 1, 'department_shortname_'.$term_id); //toggle to complete
-				
-				email_admin_review($term_id);	//notify admin
-			}
-		}
-	}
+	$entries = GFAPI::get_entries(3, $search_criteria);
 	
-	//Update the college values and send email when review is complete
-	if(isset($college_terms)) {
-		foreach($college_terms as $term_id => $value){
-			if( $value === 'Review Complete')  //value based on form value
-				update_field($college_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
-			else {
-				update_field($college_key, 1, 'department_shortname_'.$term_id); //toggle to complete
-				
-				email_admin_review($term_id);	//notify admin
-			}
-		}
+	if(count($entries) > 0)
+	{
+		$url = admin_url('/admin.php?page=gf_entries&view=entry&id=3').'&lid='.$entries[0]['id'];
+		return $url;
 	}
-
-	//Redirect back to page
-	if(isset($_POST['return']))
-		wp_redirect( $_POST['return'] );
 	else
-		wp_redirect( admin_url() );
-		
-}
-//Form action for admin review (allows clear all)
-else if(isset($_POST['action']) && $_POST['action'] == "admin-review"){
-	unset($_POST['action']);
-
-	require_once($base_url.'/wp-admin/admin.php');
-
-	//acf field key for review, may need to change
-	$field_key = get_option( 'main_dp_settings');	
-	$dept_key = $field_key['review_field_key'];
-	$college_key = $field_key['college_field_key'];
-
-	//Security check
-	check_admin_referer( 'update_review_status');
-
-	//Clear All
-	if(isset($_POST['clear-all'])) {
-		foreach($_POST as $key => $value){
-			$exp_key = explode('-', $key);
-			if($exp_key[0] == 'post'){
-				 $update_terms[$exp_key[1]] = $value;
-			}
-		}
-		
-		//Set all values to 0
-		foreach($update_terms as $term_id => $value){
-			update_field($dept_key, $value, 'department_shortname_'.$term_id); //toggle to uncomplete
-			update_field($college_key, $value, 'department_shortname_'.$term_id); //toggle to uncomplete
-		}
-	}
-	//Toggle 1
-	else{
-		//Get all fields starting with reviewed- and their id
-		foreach($_POST as $key => $value){
-			$exp_key = explode('-', $key);
-			if($exp_key[0] == 'reviewed'){
-				 $department_terms[$exp_key[1]] = $value;
-			}
-			else if($exp_key[0] == 'college'){
-				 $college_terms[$exp_key[1]] = $value;
-			}
-		}
-		
-		
-		//Update the department values and send email when review is complete
-		if(isset($department_terms)){
-			foreach($department_terms as $term_id => $value){
-				if( $value === 'Review Complete')  //value based on form value
-					update_field($dept_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
-				else {
-					update_field($dept_key, 1, 'department_shortname_'.$term_id); //toggle to complete
-					
-					email_admin_review($term_id);	//notify admin
-				}
-			}
-		}
-		
-		//Update the college values and send email when review is complete
-		if(isset($college_terms)){
-			foreach($college_terms as $term_id => $value){
-				if( $value === 'Review Complete')  //value based on form value
-					update_field($college_key, 0, 'department_shortname_'.$term_id); //toggle to uncomplete
-				else {
-					update_field($college_key, 1, 'department_shortname_'.$term_id); //toggle to complete
-					
-					email_admin_review($term_id);	//notify admin
-				}
-			}
-		}
-	}
-	
-	//Redirect back to page
-	if(isset($_POST['return']))
-		wp_redirect( $_POST['return'] );
-	else
-		wp_redirect( admin_url() );
-		
-}
-
-/**
- * Email admin to notify that a review is complete
- *
- * @param int $term_id ID of department term which completed review
- */
-function email_admin_review($term_id) {
-	//Admin email from settings
-	$admin_email = get_bloginfo('admin_email');
-	
-	//Cleaned up term description holding department name
-	$dp_name = term_description( $term_id, 'department_shortname' );
-	$dp_name = strip_tags($dp_name);		//remove p tags
-	$dp_name = trim(preg_replace('/\s\s+/', ' ', $dp_name));	//remove newline character
-	
-	//Date in month, day, year format
-	$time = date('m-d-Y');
-	
-	$subject = $dp_name.' Review Completed';
-	$message = 'Hello Catalog Editor,
-			
-'.$dp_name.' has completed it\'s review of the catalog copy on '.$time.'. 
-
-Please examine and approve any changes.
-			
-Thank you.';
-	
-	//Send the email
-	wp_mail( $admin_email, $subject, $message);
+		return false;
 }
 
 ?>
