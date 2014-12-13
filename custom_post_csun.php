@@ -2,7 +2,7 @@
 /**
 *	Plugin Name: CSUN Custom Post Types
 *	Description: Adds custom post types and taxonomy for catalog
-*	Version: 1.0
+*	Version: 1.2
 *	Author: CSUN Undergraduate Studies
 */
 
@@ -711,6 +711,12 @@
 	}
 	add_action('quick_edit_custom_box', 'add_pol_rank_quick_edit');
 	
+	/**
+	 * Saves policy rank.
+	 * Hooks onto save_post action.
+	 *
+	 *	@param int $post_id		The post id the rank belongs to
+	 */
 	function save_pol_rank($post_id)
 	{
 		//if autosave, don't do anything
@@ -738,6 +744,10 @@
 	}
 	add_action('save_post', 'save_pol_rank');
 	
+	/**
+	 * Populates pol_rank data in quick edit.
+	 * Hooks onto admin_footer action.
+	 */
 	function pol_rank_javascript() {
 		global $current_screen;
 
@@ -760,6 +770,13 @@
 	}
 	add_action('admin_footer', 'pol_rank_javascript');
 
+	/**
+	 * Displays pol_rank in quick edit.
+	 * Hooks onto post_row_actions filter.
+	 *
+	 *	@param	array $actions	Wordpress actions
+	 *	@param	WP_Post $post	The post object
+	 */
 	function pol_rank_add_value($actions, $post) {
 		global $current_screen;
 		
@@ -804,7 +821,7 @@
 function csun_add_rewrite_rules() {
 	global $wp_rewrite;
 	
-	//print_r($wp_rewrite->extra_permastructs);
+	
 	
 	$wp_rewrite->add_rewrite_tag('%programs%', '([^/]+)', 'programs=');
 	$wp_rewrite->add_rewrite_tag('%faculty%', '([^/]+)', 'faculty=');
@@ -829,9 +846,9 @@ function csun_add_rewrite_rules() {
 	//Need to use conditional template
 	add_rewrite_rule('^policies/alphabetical/?','index.php?post_type=policies&order=asc&orderby=title','top');
 	add_rewrite_rule('^policies/appendix/?','index.php?post_type=policies&order=asc&orderby=policy_categories','top');
-	add_rewrite_rule('^policies/tags/([a-z]+)/?', 'index.php?policy_tags=$matches[1]', 'top');
-	add_rewrite_rule('^policies/keywords/([a-z]+)/?', 'index.php?policy_keywords=$matches[1]', 'top');
-	add_rewrite_rule('^policies/categories/([a-z]+)/?', 'index.php?policy_categories=$matches[1]', 'top');
+	add_rewrite_rule('^policies/tags/([a-z-_]+)/?', 'index.php?policy_tags=$matches[1]', 'top');
+	add_rewrite_rule('^policies/keywords/([a-z-_]+)/?', 'index.php?policy_keywords=$matches[1]', 'top');
+	add_rewrite_rule('^policies/categories/([a-z-_]+)/?', 'index.php?policy_categories=$matches[1]', 'top');
 	
 	//Faculty
 	add_rewrite_rule('^emeriti/([a-zA-Z])/?', 'index.php?post_type=faculty&department_shortname=emeriti&directory=$matches[1]', 'top');
@@ -850,14 +867,12 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_permastruct('staract', 'planning/staract/%aca_year%/%staract%', false);
 	$wp_rewrite->add_permastruct('plans', 'planning/plans/%aca_year%/%plans%', false);
 	$wp_rewrite->add_permastruct('aca_year', 'planning/%post_type%/%aca_year%', false);
+	add_rewrite_rule('^planning/([A-Za-z]*)/([A-Za-z]{2,5})/?', 'index.php?post_type=$matches[1]&department_shortname=$matches[2]', 'top');
     
 	//List pages for degree level
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
 	
-	//Tag and category pages for policies
-	//$wp_rewrite->add_permastruct('policy_tags', 'policies/keywords/%policy_tags%', false);
-	//$wp_rewrite->add_permastruct('policy_categories', 'policies/categories/%policy_categories%', false);
-	
+	//print_r($wp_rewrite->extra_permastructs);
 }
 add_action('init', 'csun_add_rewrite_rules');
 
@@ -957,6 +972,7 @@ add_filter('post_type_link', 'csun_permalinks', 10, 3);
 /**
  * Adds the taxonomy first letter to the post without users
  * having to.
+ * Hooks onto save_post action.
  */
  function csun_save_first_letter($post_id) {
 	//if autosave, don't do anything
@@ -979,6 +995,7 @@ add_filter('post_type_link', 'csun_permalinks', 10, 3);
  
  /**
  * Define default terms for custom taxonomies in WordPress 3.0.1
+ * Hooks onto save_post action.
  *
  * @author	Michael Fields	http://wordpress.mfields.org/
  * @props	John P. Bloch	http://www.johnpbloch.com/
