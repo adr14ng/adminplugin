@@ -57,8 +57,7 @@ function editor_home_page() {
 ?>
 	<div class="wrap">
 	
-	<h2> Welcome to the 2014-2015 CSUN Catalog </h2>
-	<p><?php echo $message; ?> <a href="<?php echo site_url('guide'); ?>" target="_blank"> View training guide.</a></p> 
+	<?php echo $message; ?>
 	
 <?php
 	
@@ -180,14 +179,29 @@ function adminstrator_review_page() {
 	</div>
 <? }
 
+/**
+ *	Checks if there is a current review submitted for this particular entry.
+ *
+ *	@param	string	$dept	The department shortcode
+ *	@param	string	$dean	"true" if this is the college, "false" if department
+ *
+ *	@return	bool|string		False if not reviewed, link to form entry otherwise
+ */
 function review_submitted($dept, $dean)
 {
+	//only want active forms
 	$search_criteria["status"] = "active";
+	//field 1 of the review form is the department shortname
 	$search_criteria["field_filters"][] = array("key" => "1", "value" => $dept);
+	//field 3 of the review form is the college/department select
 	$search_criteria["field_filters"][] = array("key" => "3", "value" => $dean);
 	
+	//Gravity forms API get entries
+	//http://www.gravityhelp.com/documentation/page/API_Functions#get_entries
+	//the review form is ID 3
 	$entries = GFAPI::get_entries(3, $search_criteria);
 	
+	//if we have any entries get their url
 	if(count($entries) > 0)
 	{
 		$url = admin_url('/admin.php?page=gf_entries&view=entry&id=3').'&lid='.$entries[0]['id'];

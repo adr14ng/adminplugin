@@ -6,7 +6,6 @@
  *	1. Style
  *	2. Admin Bar
  *	3. List Tables
- *	4. Programs Link 
  *
  * 	CSUN Department of Undergraduate Studies
  * 	2013-2014
@@ -55,37 +54,6 @@ add_action( 'admin_bar_menu', 'remove_admissions_admin_bar_links', 999 );
  *  Editing the list tables
  *
  * * * * * * * * * * * * * * * * * * * * * */
-/**
- * Remove extra collumns from list table
- * Hooks onto manage_${post_type}_posts_columns filter
- *
- * @param array $defaults Default collumn list
- *
- * @return array	Simplified collumn list
- */
-function simplify_admissions_post_columns($defaults) {
-  unset($defaults['comments']);
-  unset($defaults['cb']);
-  unset($defaults['author']);
-  unset($defaults['tags']);
-  unset($defaults['level']);
-  return $defaults;
-}
-add_filter('manage_${post_type}_posts_columns', 'simplify_admissions_post_columns');
-
-/**
- * Remove extra collumns from program list table
- * Hooks onto manage_edit-programs_columns filter
- *
- * @param array $defaults Default program collumn list
- *
- * @return array	Simplified program collumn list
- */
-function simplify_program_columns($defaults) {
-  unset($defaults['cb']);
-  return $defaults;
-}
-add_filter('manage_edit-programs_columns', 'simplify_program_columns');
 
 /**
  * Remove extra collumns from plan and staract list tables
@@ -115,26 +83,3 @@ function remove_quick_edit( $actions ) {
 	return $actions;
 }
 add_filter('post_row_actions','remove_quick_edit',10,1);
-
-/* * * * * * * * * * * * * * * * * * * * * *
- *
- *  Modifying the Program Link
- *
- * * * * * * * * * * * * * * * * * * * * * */
-/**
- * Modifies program link to show only majors
- * Hooks onto admin_menu action.
- */
-function change_program_link() {
-	global $menu;
-	
-	foreach($menu as $key => $link) {
-		//if menu entry name is programs
-		if($link[0] === "Programs"){
-			//change the link to only show majors
-			$menu[$key][2] = $link[2]."&amp;degree_level=major";
-		}
-	}
-	
-}
-add_action('admin_menu', 'change_program_link', 2);

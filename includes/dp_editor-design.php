@@ -199,26 +199,6 @@ add_action('admin_init', 'remove_meta_boxes');
  *  Editing the edit list
  *
  * * * * * * * * * * * * * * * * * * * * * */
- 
-/**
- * Remove extra columns from list table
- * Hooks onto manage_${post_type}_posts_columns filter
- *
- * @param array $defaults Default column list
- *
- * @return array	Simplified column list
- */
-function simplify_post_columns($defaults) {
-  unset($defaults['comments']);
-  unset($defaults['cb']);
-  unset($defaults['author']);
-  unset($defaults['date']);
-  unset($defaults['tags']);
-  unset($defaults['department']);
-  unset($defaults['ge']);
-  return $defaults;
-}
-add_filter('manage_${post_type}_posts_columns', 'simplify_post_columns');
 
 /**
  * Remove extra columns from course list table

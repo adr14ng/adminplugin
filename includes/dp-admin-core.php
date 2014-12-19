@@ -84,12 +84,6 @@ class DP_Admin {
 			'delete_plan' => true,
 			'delete_plans' => true,
 			'delete_others_plans' => true,
-			'edit_program' => true,
-			'edit_programs' => true,
-			'edit_others_programs' => true, 
-			'publish_programs' => true, 
-			'read_program' => true, 
-			'read_private_programs' => true,
 			'assign_terms' => true,
 		));
 			
@@ -525,6 +519,41 @@ class DP_Admin {
 		return 'Powered by the Office of Undergraduate Studies.';	
 	}
 	
+	function acf_modify_prog_name($title, $object)
+	{
+		$degree = get_field('degree_type', $object->ID);
+
+		if ($degree === 'credential' || $degree === 'Credential'){
+			if (strpos($title, 'Credential') === FALSE)
+				$title .= ' Credential';
+		}
+		else if ($degree === 'authorization' || $degree === 'Authorization'){
+			if (strpos($title, 'Authorization') === FALSE)
+				$title .= ' Authorization';
+		}
+		else if ($degree === 'certificate' || $degree === 'Certificate') {
+			if (strpos($title, 'Certificate') === FALSE)
+				$title .= ' Certificate';
+		}
+		else if ($degree === 'minor' || $degree === 'Minor'){
+			$title = $degree.' in '.$title;
+		}
+		else if ($degree === 'honors' || $degree === 'Honors' ){
+			$title = $title;
+		}
+		else {
+			$title = $title.', '.$degree;
+		}
+		
+		$post_option = get_field('option_title', $object->ID);
+		if( isset($post_option) && $post_option !== '')
+		{
+			$title = $title.' - '.$post_option.' Option';
+		}
+
+		
+		return $title;
+	}
 
 	
 } //dp_admin

@@ -133,24 +133,25 @@ class DPAdminSettings
         );
 	
 		add_settings_field(
-            'review_field_key', // ID
-            'ACF Department Review Field Key', // Title 
-            array( $this, 'review_field_key_callback'), // Callback
-            'dp-admin-options', // Page
-            'dp-main-settings' // Section           
-        ); 
-		add_settings_field(
             'college_deadline', // ID
             'College Review Deadline', // Title 
             array( $this, 'college_deadline_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
         );
-	
+		
 		add_settings_field(
-            'college_field_key', // ID
-            'ACF College Review Field Key', // Title 
-            array( $this, 'college_field_key_callback'), // Callback
+            'planning_year', // ID
+            'Planning Year', // Title 
+            array( $this, 'planning_year_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        ); 
+		
+		add_settings_field(
+            'course_semester', // ID
+            'OMAR Course Semester', // Title 
+            array( $this, 'course_semester_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
         ); 
@@ -167,31 +168,51 @@ class DPAdminSettings
     {
         $new_input = array();
         if( isset( $input['welcome_message'] ) )
-            $new_input['welcome_message'] = sanitize_text_field( $input['welcome_message'] );
+			$welcome = $input['welcome_message'];
+			$welcome = wp_check_invalid_utf8( $welcome, true );
+			$welcome = stripslashes($welcome);
+			$welcome = strip_tags($welcome, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$welcome = balanceTags($welcome);
+            $new_input['welcome_message'] = $welcome;
 			
 		if( isset( $input['username_text'] ) )
             $new_input['username_text'] = sanitize_text_field( $input['username_text'] );
 
         if( isset( $input['view_all_message'] ) )
-            $new_input['view_all_message'] = sanitize_text_field( $input['view_all_message'] );
+			$all = $input['view_all_message'];
+			$all = wp_check_invalid_utf8( $all, true );
+			$all = stripslashes($all);
+			$all = strip_tags($all, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$all = balanceTags($all);
+            $new_input['view_all_message'] = $all;
 			
 		if( isset( $input['course_message'] ) )
-            $new_input['course_message'] = sanitize_text_field( $input['course_message'] );
+			$course = $input['course_message'];
+			$course = wp_check_invalid_utf8( $course, true );
+			$course = stripslashes($course);
+			$course = strip_tags($course, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$course = balanceTags($course);
+            $new_input['course_message'] = $course;
 			
 		if( isset( $input['file_message'] ) )
-            $new_input['file_message'] = sanitize_text_field( $input['file_message'] );
+            $file = $input['file_message'];
+			$file = wp_check_invalid_utf8( $file, true );
+			$file = stripslashes($file);
+			$file = strip_tags($file, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$file = balanceTags($file);
+            $new_input['file_message'] = $file;
 			
 		if( isset( $input['review_deadline'] ) )
             $new_input['review_deadline'] = sanitize_text_field( $input['review_deadline'] );
-		
-		if( isset( $input['review_field_key'] ) )
-            $new_input['review_field_key'] = sanitize_key( $input['review_field_key'] );
 			
 		if( isset( $input['college_deadline'] ) )
             $new_input['college_deadline'] = sanitize_text_field( $input['college_deadline'] );
 		
-		if( isset( $input['college_field_key'] ) )
-            $new_input['college_field_key'] = sanitize_key( $input['college_field_key'] );
+		if( isset( $input['planning_year'] ) )
+            $new_input['planning_year'] = sanitize_title( $input['planning_year'] );
+			
+		if( isset( $input['course_semester'] ) )
+            $new_input['course_semester'] = sanitize_title( $input['course_semester'] );
 
         return $new_input;
     }
@@ -273,17 +294,6 @@ class DPAdminSettings
 	/** 
      * Get the settings option array and print each settings current value
      */
-	function review_field_key_callback()
-    {
-        printf(
-            '<input type="text" id="review_field_key" name="main_dp_settings[review_field_key]" value="%s" />',
-            isset( $this->options['review_field_key'] ) ? esc_attr( $this->options['review_field_key']) : ''
-        );
-    }
-	
-	/** 
-     * Get the settings option array and print each settings current value
-     */
 	function college_deadline_callback()
     {
         printf(
@@ -295,11 +305,23 @@ class DPAdminSettings
 	/** 
      * Get the settings option array and print each settings current value
      */
-	function college_field_key_callback()
+	function planning_year_callback()
     {
         printf(
-            '<input type="text" id="college_field_key" name="main_dp_settings[college_field_key]" value="%s" />',
-            isset( $this->options['college_field_key'] ) ? esc_attr( $this->options['college_field_key']) : ''
+            '<input type="text" id="planning_year" name="main_dp_settings[planning_year]" value="%s" />',
+            isset( $this->options['planning_year'] ) ? esc_attr( $this->options['planning_year']) : ''
         );
     }
+	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
+	function course_semester_callback()
+    {
+        printf(
+            '<input type="text" id="course_semester" name="main_dp_settings[course_semester]" value="%s" />',
+            isset( $this->options['course_semester'] ) ? esc_attr( $this->options['course_semester']) : ''
+        );
+    }
+
 }

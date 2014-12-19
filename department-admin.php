@@ -152,4 +152,7 @@ if ( is_admin() ) {
 	
 	//Change update to save
 	add_filter( 'gettext', array( 'DP_Admin', 'change_publish_button'), 10, 2 );
+	
+	//ACF Programs Name Update
+	add_filter('acf/fields/relationship/result/name=degree_planning_guides', array('DP_Admin', 'acf_modify_prog_name'), 10, 2);
 }//is_admin()
