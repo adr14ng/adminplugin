@@ -13,8 +13,8 @@
 
 function new_custom_login_logo() {
     echo '<style type="text/css">
-        h1 a { background-image:url(http://csuncatalog.com/wp-content/uploads/2013/09/logo3.png) !important; height:85px !important; width: 225px !important; background-size: auto auto !important;} 
-		body.login {background-image: url(http://csuncatalog.com/wp-content/uploads/2013/09/bg.png) !important; background-size: 100%; background-repeat:no-repeat;}
+        h1 a { background-image:url(http://www.csun.edu/sites/default/themes/csun/logo.png) !important; height:125px !important; width: 325px !important; background-size: contain !important; background-color: rgba(255, 255, 255, .630);} 
+		body.login {background-image: url(http://upload.wikimedia.org/wikipedia/commons/1/1d/CSUN_Central_Campus.JPG) !important; background-size: cover; background-repeat:no-repeat;}
 		#nav, #backtoblog {display:none}	
 		#loginform {opacity:0.90;}
 		#loginform label {font-weight:bold;color:black}
@@ -102,6 +102,8 @@ add_filter( 'map_meta_cap', array( 'DP_Admin','match_category_user'), 10, 4);
 
 //Change layout for department editors
 add_action('init', array( 'DP_Admin', 'change_layout'));
+
+
 
 //Is this admin pages?
 if ( is_admin() ) {

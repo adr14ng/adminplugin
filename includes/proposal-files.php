@@ -11,7 +11,6 @@
  *
  * * * * * * * * * * * * * * * * * * * * * */
 
-//need to enable url fopen
 //includes->dpadmin->plugs->wp-content->base
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 

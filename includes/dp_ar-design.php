@@ -56,12 +56,12 @@ add_action( 'admin_bar_menu', 'remove_admissions_admin_bar_links', 999 );
  * * * * * * * * * * * * * * * * * * * * * */
 
 /**
- * Remove extra collumns from plan and staract list tables
+ * Remove extra columns from plan and staract list tables
  * Hooks onto manage_edit-courses_columns filter, manage_edit-staract_columns filter
  *
- * @param array $defaults Default plan and staract collumn list
+ * @param array $defaults Default plan and staract column list
  *
- * @return array	Simplified plan and staract collumn list
+ * @return array	Simplified plan and staract column list
  */
 function simplify_plan_columns($defaults) {
   unset($defaults['cb']);

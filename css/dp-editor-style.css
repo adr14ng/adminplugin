@@ -345,7 +345,66 @@ html:lang(he-il) .rtl #csun-bar *  {
 
 /* End no @font-face */
 
+/* CSUN Bar */
+#csun-bar {
+  color: white;
+  background: #0074a2;
+}
+
+#csun-bar .ab-item,
+#csun-bar a.ab-item,
+#csun-bar > #wp-toolbar span.ab-label,
+#csun-bar > #wp-toolbar span.noticon {
+  color: white;
+}
+
+#csun-bar .ab-icon,
+#csun-bar .ab-icon:before,
+#csun-bar .ab-item:before,
+#csun-bar .ab-item:after {
+  color: #f3f1f1;
+}
+
+#csun-bar .ab-second-menu > li:hover > .ab-item,
+#csun-bar .ab-second-menu > li.hover > .ab-item,
+#csun-bar .ab-second-menu > li > .ab-item:focus,
+#csun-bar.nojq .quicklinks .ab-second-menu > li > .ab-item:focus,
+#csun-bar-nojs .ab-second-menu > li.menupop:hover > .ab-item,
+#csun-bar .ab-second-menu > li.menupop.hover > .ab-item {
+  color: #0074a2;
+  background: #333333;
+}
+
+#csun-bar > #csun-toolbar li:hover span.ab-label,
+#csun-bar > #csun-toolbar li.hover span.ab-label,
+#csun-bar > #csun-toolbar a:focus span.ab-label {
+  color: #0074a2;
+}
+
+#csun-bar li:hover .ab-icon:before,
+#csun-bar li:hover .ab-item:before,
+#csun-bar li:hover .ab-item:after,
+#csun-bar li:hover #adminbarsearch:before {
+  color: #0074a2;
+}
+
+#csun-bar .ab-second-menu > li.active > .ab-item,
+#csun-bar > #csun-toolbar li.active span.ab-label,
+#csun-bar > #csun-toolbar li.active .ab-icon:before {
+  color: white;
+  background: #333333;
+}
+
+#overflow-wrap {
+    margin-top: 32px;
+}
+
 /* Small */
+@media screen and ( max-width: 768px ) {
+	#fixbar {
+		top: 92px !important;
+	}
+}
 @media screen and ( max-width: 782px ) {
 	/* Toolbar Touchification*/
 	html #csun-bar {
@@ -417,6 +476,10 @@ html:lang(he-il) .rtl #csun-bar *  {
 	#csun-bar ul#csun-dept-bar > li {
 		margin-right: 0;
 	}
+	
+	#overflow-wrap {
+		margin-top: 46px;
+	}
 }
 
 /* Extra Small */
@@ -451,6 +514,7 @@ html:lang(he-il) .rtl #csun-bar *  {
  * Dash Icons
  *********************************/
 #wp-admin-bar-csun_dashboard_link .ab-icon:before{content: "\f102";}
+#wp-admin-bar-csun_edit_link .ab-icon:before{content: "\f464";}
 #csun-progam-link .ab-icon:before{content: "\f118";}
 #csun-course-link .ab-icon:before{content: "\f327";}
 #csun-file-link .ab-icon:before{content: "\f233";}

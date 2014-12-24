@@ -14,8 +14,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * */
  
-//need to enable url fopen
-//includes->dpadmin->plugs->wp-content->base
+
+//includes->dpadmin->plugs->wp-content->wordpress
 $base_url = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
 /**
@@ -33,26 +33,26 @@ function add_review_menu()
  */
 function review_page() {	
 	global $current_user, $wpdb;
-		$role = $wpdb->prefix . 'capabilities';
-		$current_user->role = array_keys($current_user->$role);
-		$role = $current_user->role[0];
+	$role = $wpdb->prefix . 'capabilities';
+	$current_user->role = array_keys($current_user->$role);
+	$role = $current_user->role[0];
 		
-		if ('dp_editor' == $role || 'dp_college' == $role || 'dp_reviewer' == $role ){
-			editor_home_page();
-		}
-		elseif ('administrator' == $role){
-			adminstrator_review_page();
-		}
-		else{
-			wp_die(__( 'You do not have permission to view this page.' ));
-		}
+	if ('dp_editor' == $role || 'dp_college' == $role || 'dp_reviewer' == $role ){
+		editor_home_page();
+	}
+	elseif ('administrator' == $role){
+		adminstrator_review_page();
+	}
+	else{
+		wp_die(__( 'You do not have permission to view this page.' ));
+	}
 }
 
 /**
  * Creates department editor home page (review page)
  */
 function editor_home_page() {
-	$option = get_option( 'main_dp_settings' );	//get our options (message & due date)
+	$option = get_option( 'main_dp_settings' );	//get our options (message & due dates)
 	$message = $option['welcome_message'];
 ?>
 	<div class="wrap">
@@ -65,7 +65,7 @@ function editor_home_page() {
 	$college_due = $option['college_deadline'];
 	$user_id = get_current_user_id();
 	$userCat = get_user_meta($user_id, 'user_cat');
-	$userCat = $userCat[0];
+	$userCat = $userCat[0];		//the categories associated with the user determine which departments they can edit
 	?>
 	<table class="wp-list-table widefat" cellspacing="0">
 		<thead> 
@@ -84,10 +84,10 @@ function editor_home_page() {
 	foreach($userCat as $link) :
 		$term = get_term_by( 'slug', $link, 'department_shortname' );
 		
-		//Cleaned up term description holding department name
+		//department name
 		$dp_name = $term->description;
-		
-		$department_id = get_department($link)		
+		//the department post associated with department_shortname
+		$department_id = get_department($link)
 		//Output row ?>
 
 		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
@@ -125,7 +125,7 @@ function editor_home_page() {
  * Lists all departments and current review statuses
  */
 function adminstrator_review_page() {
-	$terms = get_terms( 'department_shortname');
+	$terms = get_terms( 'department_shortname', array('exclude_tree' => array(511) ) );	//get terms except the X-Don't use ones
 
 	?>
 	<div class="wrap">

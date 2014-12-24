@@ -31,6 +31,7 @@ function add_dp_editor_style() {
 	wp_enqueue_style('dp-editor-style', $basedir . '/css/dp-editor-style.css');
 }
 add_action('admin_enqueue_scripts', 'add_dp_editor_style');
+add_action('wp_enqueue_scripts', 'add_dp_editor_style');
 
 
 /* * * * * * * * * * * * * * * * * * * * * *
@@ -54,6 +55,35 @@ function add_csun_admin_bar_links( $wp_admin_bar ) {
 			);
 	$wp_admin_bar->add_node( $args );	//add dashboard link
 	
+
+	$cat = get_query_var( 'department_shortname', false );
+	if($cat)
+	{
+		$edit_allowed = true;
+		
+		if(is_singular('departments') || is_singular('programs') || is_singular('courses') ) 
+		{
+			$id = get_the_ID();
+			$type = rtrim(ucwords(get_post_type()), "s");
+		}
+		elseif(is_post_type_archive( 'departments' ))
+		{
+			$id = get_department($cat);
+			$type = 'Department';
+		}
+	
+		if(isset($id) && $edit_allowed)
+		{
+			$args = array(
+				'id' => 'csun_edit_link',
+				'title' => '<span class="ab-icon"></span>
+			<span id="ab-csun-edit" class="ab-label">Edit '.$type.'</span>',
+				'href' => admin_url('post.php?action=edit&post='.$id.'&department_shortname='.$cat),
+				);
+			$wp_admin_bar->add_node( $args );	//add edit link
+		}
+	}
+	
 	//remove all the other links
 	$wp_admin_bar->remove_node( 'comments' );
 	$wp_admin_bar->remove_node( 'new-content' );
@@ -72,6 +102,10 @@ function add_csun_admin_bar() {
 	//if the category is in the url, use it (files&course list)
 	if(isset($_REQUEST['department_shortname'])){
 		$cat = $_REQUEST['department_shortname'];
+	}
+	elseif(get_query_var( 'department_shortname', false ))
+	{
+		$cat = get_query_var( 'department_shortname' );
 	}
 	//otherwise, figure out category from post (courses, programs, departments)
 	elseif(isset($_REQUEST['post'])){
@@ -122,6 +156,9 @@ function add_csun_admin_bar() {
 		else if ($uri AND strpos($uri,'proposals')) {
 			$page = 'file';
 		}
+		else if ($uri AND strpos($uri,'faculty')) {
+			$page = 'faculty';
+		}
 		else{
 			$page = 'unknown';
 		}
@@ -152,7 +189,7 @@ function add_csun_admin_bar() {
 					<span id="ab-csun-courses" class="ab-label">Courses</span>
 				</a>		
 			</li>
-			<li id="csun-faculty-link">
+			<li id="csun-faculty-link" <?php if($page === 'faculty') echo 'class="active"'; ?>>
 				<a class="ab-item" href="<?php echo site_url().'/academics/'.$cat.'/faculty/'; ?>">
 					<span class="ab-icon dashicons dashicons-groups"></span>
 					<span id="ab-csun-files" class="ab-label">Faculty</span>
@@ -171,6 +208,7 @@ function add_csun_admin_bar() {
 	endif; //end isset($cat)
 }
 add_action( 'in_admin_header', 'add_csun_admin_bar');
+add_action( 'wp_after_admin_bar_render', 'add_csun_admin_bar');
 
 /* * * * * * * * * * * * * * * * * * * * * *
  *
@@ -239,8 +277,8 @@ add_filter('post_row_actions','remove_quick_edit',10,1);
  * * * * * * * * * * * * * * * * * * * * * */
 
 /**
- * Adds custom messages where we need to use Javascript
- * Courses page and above default wordpress boxes
+ * Adds custom messages where we need to use JavaScript
+ * Courses page and above default WordPress boxes
  * Hooks onto admin_footer action
  */
 function editor_admin_footer()
@@ -249,7 +287,7 @@ function editor_admin_footer()
 
     $message = NULL;
 
-	//Only edit page they can get to is courses
+	//Only edit page they can get to is courses, so assume edit.php = courses page
     if ($uri AND strpos($uri,'edit.php'))
     {
         $message = get_option( 'main_dp_settings');	//get message option
@@ -266,21 +304,21 @@ function editor_admin_footer()
         </script><?php
     }
 	
-	//They can edit multiple posts though
+	//They can edit multiple posts though, so we have to figure out which one they're on
 	if ($uri AND strpos($uri,'post.php'))
     {
 		$post_id = $_GET['post'];
 		$post_type = get_post_type( $post_id );
 	
-		if($post_type === 'programs')	//if its programs the basic box is overview
+		if($post_type === 'programs')	//if its programs the default box is used for overview
 			$description = '<label for="basic-box">Overview</label>Description of the program.';
-		elseif($post_type === 'departments')	//if its departments the basic box is misc
+		elseif($post_type === 'departments')	//if its departments the default box is used for misc
 			$description = '<label for="basic-box">Misc</label>Department information that fits no where else (e.g. awards and scholarships).';
 		
 		if($description) {
 		?><script>
 			jQuery(function($) {
-				//both are after the high acf fields
+				//both placed are after the high acf fields
 				$('<p class="label">' + '<?php echo $description; ?>' + '</p>').insertAfter('#acf_after_title-sortables')
 			});
 			</script><?php
@@ -296,7 +334,7 @@ add_action('admin_footer', 'editor_admin_footer');
  *
  * * * * * * * * * * * * * * * * * * * * * */
 /**
- * Creates the Department and Program tabs
+ * Creates header on the programs page
  * Hooks onto all_admin_notices action.
  */
  function department_edit_tabs(){
@@ -308,15 +346,15 @@ add_action('admin_footer', 'editor_admin_footer');
 	 $terms = wp_get_post_terms( $curr_post, 'department_shortname' );
 	 
 	 foreach($terms as $term) {
-		if($term->parent != 0 && $term->parent != 511) {	//we only want the child term
+		if($term->parent != 0 && $term->parent != 511) {	//we only want the child terms and X Don't Use terms
 			$post_cat = $term;
 			break;
 		}
 	 }
 	 
-	 if(!isset($post_cat))		//but if there is only a parent term
+	 if(!isset($post_cat))		//but if we don't get anything from that
 		foreach($terms as $term)
-			$post_cat = $term;		//get the parent
+			$post_cat = $term;		//get whatever term we actually do have
 	 
 	 if( isset($post_cat)){
 		$term_id = $post_cat->term_id;
@@ -341,6 +379,7 @@ add_action('admin_footer', 'editor_admin_footer');
 		
 		$message = get_option( 'main_dp_settings');	//get message option
 		$message = $message['view_all_message'];
+		//no edit message + remove the save meta box
 		$noedit = '<h3><div class="dashicons dashicons-lock"></div>This content is read only. No changes will be saved. </h3>
 					<style type="text/css">
 						#postbox-container-1{display: none;}
@@ -354,10 +393,10 @@ add_action('admin_footer', 'editor_admin_footer');
 		$user_ID = get_current_user_id();
 		$user = get_userdata( $user_ID );
 		
-		if((in_array( 'dp_editor', (array) $user->roles ) && get_post_type( $_GET['post'] ) === 'programs') 
-			|| in_array( 'dp_reviewer', (array) $user->roles )){
+		//editors and reviewers can't edit programs
+		if(in_array( 'dp_editor', (array) $user->roles) || in_array( 'dp_reviewer', (array) $user->roles ))
+		{
 			echo $noedit;
-			
 		}
 		
 
@@ -365,7 +404,7 @@ add_action('admin_footer', 'editor_admin_footer');
 		echo '<ul id="edit-tabs" class="nav nav-tabs">';
 		foreach($posts as $post) {
 			$post_ID = $post->ID;
-			$post_type = get_post_type( $post );
+			$post_type = $post->post_type;
 			$post_name = $post->post_title;
 			
 			$post_option=get_field('option_title', $post_ID);
@@ -398,6 +437,9 @@ if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'programs')){
 	add_action( 'all_admin_notices' , 'department_edit_tabs');
 }
 
+/**
+ * Creates the header on the department edit screen
+ */
 function overview_header()
 {
 	/* * * * * * * * * * * * * * * * * * * * * *
@@ -420,10 +462,25 @@ function overview_header()
 		
 	$message = get_option( 'main_dp_settings');	//get message option
 	$message = $message['view_all_message'];
-
+	//no edit message + remove the save meta box
+	$noedit = '<h3><div class="dashicons dashicons-lock"></div>This content is read only. No changes will be saved. </h3>
+				<style type="text/css">
+					#postbox-container-1{display: none;}
+				</style>';
+				
 	echo '<br />';
 	echo '<h1>'.$post_cat->description.'</h1>';	//department name
 	echo '<p>'.$message.'</p>';
+	
+	//if user is a reviewer, they cannot save changes
+	$user_ID = get_current_user_id();
+	$user = get_userdata( $user_ID );
+	
+	//reviewers can't edit departments
+	if(in_array( 'dp_reviewer', (array) $user->roles ))
+	{
+		echo $noedit;
+	}
 }
 //only show on program edit pages
 if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'departments')){
@@ -437,7 +494,7 @@ if( isset($_GET['post']) && ( get_post_type( $_GET['post'] ) === 'departments'))
  * * * * * * * * * * * * * * * * * * * * * */
  
 /**
- * Takes either slug of term and returns id of the first department
+ * Takes slug of term and returns id of the first department
  * 
  * @param string $term	The term which we need a post from
  * 
@@ -448,7 +505,7 @@ function get_department($term) {
 		'post_type' => 'departments',
 		'department_shortname' => $term,
 		'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
-		'numberposts' => 50,
+		'numberposts' => 1,
 	);
 	$departments = get_posts( $args );
 
@@ -470,7 +527,7 @@ function get_first_program($term) {
 		'post_type' => 'programs',
 		'department_shortname' => $term,
 		'post_status' => array( 'publish', 'pending', 'draft', 'future', 'private' ), 
-		'numberposts' => 50,
+		'numberposts' => 1,
 	);
 	$programs = get_posts( $args );
 	
@@ -491,6 +548,11 @@ function get_first_program($term) {
  * @return string	Modified edit link
  */
 function department_edit_link($link, $post_ID, $context) {
+	if(get_query_var( 'department_shortname', false ))
+	{
+		$_REQUEST['department_shortname'] = get_query_var( 'department_shortname' );
+	}
+	
 	if(isset($_REQUEST['department_shortname'])){
 		if ( 'display' == $context )
 			$link = $link.'&amp;department_shortname='.$_REQUEST['department_shortname'];

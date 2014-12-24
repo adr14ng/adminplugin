@@ -32,6 +32,7 @@ class DP_Admin {
 			
 		//Create a department editor role
 		//Restrict access to things not in the category of its name
+		//Restrict editing to Department information
 		add_role( 'dp_editor', 'Department Editor', array(
 			'read' => true,
 			'delete_posts' => false
@@ -39,7 +40,6 @@ class DP_Admin {
 		
 		//Create a college editor role
 		//Restrict access to things not in the category of its name
-		//Restrict editing to Department information
 		add_role( 'dp_college', 'College Editor', array(
 			'read' => true,
 			'delete_posts' => false
@@ -88,7 +88,7 @@ class DP_Admin {
 		));
 			
 		//Create a policy editor role
-		//Restrict access to policies
+		//Restrict access to policies and pages
 		add_role( 'dp_policy', 'Policy Editor', array(
 			'read' => true,
 			'edit_posts' => true,
@@ -151,6 +151,9 @@ class DP_Admin {
 		remove_role( 'dp_ar' );
 		remove_role( 'dp_policy' );
 		remove_role( 'dp_pages' );
+		
+		delete_option( 'main_dp_settings' );
+		unregister_setting( 'dp-admin-group', 'main_dp_settings');
 	}//uninstall
  
  
@@ -354,13 +357,12 @@ class DP_Admin {
 		//1 row tool bar
 		$toolbars['CSUN' ][1] = array('formatselect','styleselect', 'bullist', 'numlist', 'bold', 'italic', 'link', 'unlink', 'table', 'undo', 'redo', 'removeformat');
 	 
-		// return $toolbars - IMPORTANT!
 		return $toolbars;
 	}//my_toolbars
 	
 	/**
-	 * Customize toolbar
-	 * Hooks onto tiny_mce_before_init filter.
+	 * Customize first row of toolbar
+	 * Hooks onto mce_buttons filter.
 	 *
 	 * @param array $buttons	The default wordpress toolbar
 	 *
@@ -376,8 +378,8 @@ class DP_Admin {
 	}
 	
 	/**
-	 * Customize toolbar
-	 * Hooks onto tiny_mce_before_init filter.
+	 * Customize second row of toolbar
+	 * Hooks onto mce_buttons_2 filter.
 	 *
 	 * @param array $buttons	The default wordpress toolbar
 	 *
@@ -391,15 +393,14 @@ class DP_Admin {
 	}
 	
 	/**
-	 * Customize toolbar
+	 * Add custom style formats
 	 * Hooks onto tiny_mce_before_init filter.
 	 *
 	 * @param array $init_array	The default wordpress toolbar
 	 *
 	 * @return array			The updated wordpress toolbar
 	 */
-	function csunFormatTinyMCE( $init_array ) {  
-	//<span class="section-title"><span><h2>CONTENT</h2></span></span>
+	function csunFormatTinyMCE( $init_array ) {
 		$style_formats = array(  
 			// Each array child is a format with it's own settings
 			array(  
@@ -439,6 +440,12 @@ class DP_Admin {
 		return $init_array;
 	} 
 	
+	/**
+	 * Add custom tinyMCE plugins (must have js already)
+	 * Hooks onto mce_external_plugins filter.
+	 *
+	 * @return	array	The added plugins
+	 */
 	function custom_tinyMCE_plugins () {
 		$basedir = dirname(plugin_dir_url(__FILE__));
 	
@@ -519,26 +526,22 @@ class DP_Admin {
 		return 'Powered by the Office of Undergraduate Studies.';	
 	}
 	
+	/**
+	 * Changes the program name in the relationship field for acf.
+	 * Allows differentiation between programs with same base name.
+	 * Hooks onto acf/fields/relationship/result/name=degree_planning_guides filter.
+	 *
+	 * @param	string	$title	The base program title
+	 * @param	WP_Post	$object	The program post object
+	 *
+	 * @return	string			The full program title
+	 */
 	function acf_modify_prog_name($title, $object)
 	{
+		//B.A., B.S., B.M., etc.
 		$degree = get_field('degree_type', $object->ID);
 
-		if ($degree === 'credential' || $degree === 'Credential'){
-			if (strpos($title, 'Credential') === FALSE)
-				$title .= ' Credential';
-		}
-		else if ($degree === 'authorization' || $degree === 'Authorization'){
-			if (strpos($title, 'Authorization') === FALSE)
-				$title .= ' Authorization';
-		}
-		else if ($degree === 'certificate' || $degree === 'Certificate') {
-			if (strpos($title, 'Certificate') === FALSE)
-				$title .= ' Certificate';
-		}
-		else if ($degree === 'minor' || $degree === 'Minor'){
-			$title = $degree.' in '.$title;
-		}
-		else if ($degree === 'honors' || $degree === 'Honors' ){
+		if ($degree === 'honors' || $degree === 'Honors' ){
 			$title = $title;
 		}
 		else {
@@ -550,7 +553,6 @@ class DP_Admin {
 		{
 			$title = $title.' - '.$post_option.' Option';
 		}
-
 		
 		return $title;
 	}
