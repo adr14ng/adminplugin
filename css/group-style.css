@@ -1,0 +1,35 @@
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	Groups Editors Style
+ *	
+ *	1. Editor
+ *	2. Menu
+ *
+ * 	CSUN Department of Undergraduate Studies
+ * 	2013-2014
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+
+/* Editor */
+#minor-publishing-actions,
+#misc-publishing-actions,
+.actions
+{
+	display: none;
+}
+
+/* Menu Links */
+#toplevel_page_review,
+#menu-users,
+#menu-dashboard,
+#menu-posts,
+#menu-posts-courses,
+#menu-posts-departments,
+#menu-posts-policies,
+#toplevel_page_proposals,
+#menu-comments,
+#menu-tools,
+.wp-submenu,
+#wp-admin-bar-new-content {
+	display: none;
+}

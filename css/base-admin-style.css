@@ -103,6 +103,9 @@ button.disabled{cursor: default;}
 /* Polciies: key */
 #menu-posts-policies .wp-menu-image:before{content:"\f112"!important;}
 
+/* Groups: heirarchy */
+#menu-posts-groups .wp-menu-image:before{content: "\f325"!important;}
+
 /* Staract: star */
 #menu-posts-staract .wp-menu-image:before{content:"\f155"!important;}
 

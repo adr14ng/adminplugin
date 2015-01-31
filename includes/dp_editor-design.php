@@ -292,6 +292,7 @@ function editor_admin_footer()
     {
         $message = get_option( 'main_dp_settings');	//get message option
 		$message = $message['course_message'];
+		
 	}
 
     if ($message)
@@ -299,9 +300,10 @@ function editor_admin_footer()
         ?><script>
             jQuery(function($)
             {
-                $('<div id="course_message"><p></p></div><br />').text('<?php echo $message; ?>').insertAfter('#wpbody-content .wrap h2:eq(0)');
+                $('<div id="course_message"></div><br />').text('<?php echo $message.$noedit; ?>').insertAfter('#wpbody-content .wrap h2:eq(0)');
             });
         </script><?php
+		
     }
 	
 	//They can edit multiple posts though, so we have to figure out which one they're on
@@ -323,6 +325,27 @@ function editor_admin_footer()
 			});
 			</script><?php
 		}
+		
+		if($post_type === 'courses') {
+		
+			//if user is not an adean, they cannot save changes on courses
+			$user_ID = get_current_user_id();
+			$user = get_userdata( $user_ID );
+			if(in_array( 'dp_editor', (array) $user->roles) || in_array( 'dp_reviewer', (array) $user->roles )) {
+				$noedit = '<h3><span class="dashicons dashicons-lock"></span>This content is read only. No changes will be saved. </h3>';
+						
+				?><script>
+					jQuery(function($)
+					{
+						$('<?php echo $noedit; ?>').insertAfter('#lost-connection-notice');
+					});
+				</script>
+				<style type="text/css">
+					#postbox-container-1{display: none;}
+				</style><?php
+			}
+		}
+		
 	}
 	
 } 

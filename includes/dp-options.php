@@ -141,6 +141,22 @@ class DPAdminSettings
         );
 		
 		add_settings_field(
+            'tseng_description', // ID
+            'Self Support Description', // Title 
+            array( $this, 'tseng_description_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        ); 
+		
+		add_settings_field(
+            'tseng_both', // ID
+            'Both Supports Description', // Title 
+            array( $this, 'tseng_both_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        ); 
+		
+		add_settings_field(
             'planning_year', // ID
             'Planning Year', // Title 
             array( $this, 'planning_year_callback'), // Callback
@@ -152,6 +168,14 @@ class DPAdminSettings
             'course_semester', // ID
             'OMAR Course Semester', // Title 
             array( $this, 'course_semester_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        );
+		
+		add_settings_field(
+            'course_semester2', // ID
+            'OMAR Additional Course Semester', // Title 
+            array( $this, 'course_semester2_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
         ); 
@@ -168,51 +192,94 @@ class DPAdminSettings
     {
         $new_input = array();
         if( isset( $input['welcome_message'] ) )
+		{
 			$welcome = $input['welcome_message'];
 			$welcome = wp_check_invalid_utf8( $welcome, true );
 			$welcome = stripslashes($welcome);
 			$welcome = strip_tags($welcome, '<a><p><h2><h3><em><strong><ul><li><ol>');
 			$welcome = balanceTags($welcome);
             $new_input['welcome_message'] = $welcome;
+		}
 			
 		if( isset( $input['username_text'] ) )
+		{
             $new_input['username_text'] = sanitize_text_field( $input['username_text'] );
+		}
 
         if( isset( $input['view_all_message'] ) )
+		{
 			$all = $input['view_all_message'];
 			$all = wp_check_invalid_utf8( $all, true );
 			$all = stripslashes($all);
 			$all = strip_tags($all, '<a><p><h2><h3><em><strong><ul><li><ol>');
 			$all = balanceTags($all);
             $new_input['view_all_message'] = $all;
+		}
 			
 		if( isset( $input['course_message'] ) )
+		{
 			$course = $input['course_message'];
 			$course = wp_check_invalid_utf8( $course, true );
 			$course = stripslashes($course);
 			$course = strip_tags($course, '<a><p><h2><h3><em><strong><ul><li><ol>');
 			$course = balanceTags($course);
             $new_input['course_message'] = $course;
+		}
 			
 		if( isset( $input['file_message'] ) )
+		{
             $file = $input['file_message'];
 			$file = wp_check_invalid_utf8( $file, true );
 			$file = stripslashes($file);
 			$file = strip_tags($file, '<a><p><h2><h3><em><strong><ul><li><ol>');
 			$file = balanceTags($file);
             $new_input['file_message'] = $file;
+		}
+		
+		if( isset( $input['tseng_description'] ) )
+		{
+            $file = $input['tseng_description'];
+			$file = wp_check_invalid_utf8( $file, true );
+			$file = stripslashes($file);
+			$file = strip_tags($file, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$file = balanceTags($file);
+            $new_input['tseng_description'] = $file;
+		}
+		
+		if( isset( $input['tseng_both'] ) )
+		{
+            $file = $input['tseng_both'];
+			$file = wp_check_invalid_utf8( $file, true );
+			$file = stripslashes($file);
+			$file = strip_tags($file, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$file = balanceTags($file);
+            $new_input['tseng_both'] = $file;
+		}
 			
 		if( isset( $input['review_deadline'] ) )
+		{
             $new_input['review_deadline'] = sanitize_text_field( $input['review_deadline'] );
+		}
 			
 		if( isset( $input['college_deadline'] ) )
+		{
             $new_input['college_deadline'] = sanitize_text_field( $input['college_deadline'] );
-		
+		}
+			
 		if( isset( $input['planning_year'] ) )
+		{
             $new_input['planning_year'] = sanitize_title( $input['planning_year'] );
+		}
 			
 		if( isset( $input['course_semester'] ) )
+		{
             $new_input['course_semester'] = sanitize_title( $input['course_semester'] );
+		}
+		
+		if( isset( $input['course_semester2'] ) )
+		{
+            $new_input['course_semester2'] = sanitize_title( $input['course_semester2'] );
+		}
 
         return $new_input;
     }
@@ -283,6 +350,28 @@ class DPAdminSettings
 	/** 
      * Get the settings option array and print each settings current value
      */
+    function tseng_description_callback()
+    {
+        printf(
+            '<textarea rows="4" cols="50" id="tseng_description" name="main_dp_settings[tseng_description]" class="large-text code">%s</textarea>',
+            isset( $this->options['tseng_description'] ) ? esc_attr( $this->options['tseng_description']) : ''
+        );
+    }
+	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
+    function tseng_both_callback()
+    {
+        printf(
+            '<textarea rows="4" cols="50" id="tseng_both" name="main_dp_settings[tseng_both]" class="large-text code">%s</textarea>',
+            isset( $this->options['tseng_both'] ) ? esc_attr( $this->options['tseng_both']) : ''
+        );
+    }
+	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
 	function review_deadline_callback()
     {
         printf(
@@ -321,6 +410,17 @@ class DPAdminSettings
         printf(
             '<input type="text" id="course_semester" name="main_dp_settings[course_semester]" value="%s" />',
             isset( $this->options['course_semester'] ) ? esc_attr( $this->options['course_semester']) : ''
+        );
+    }
+	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
+	function course_semester2_callback()
+    {
+        printf(
+            '<input type="text" id="course_semester2" name="main_dp_settings[course_semester2]" value="%s" />',
+            isset( $this->options['course_semester2'] ) ? esc_attr( $this->options['course_semester2']) : ''
         );
     }
 

@@ -206,6 +206,49 @@
 			)
 		);
 		
+		register_post_type( 'groups',
+			array(
+			'labels' 		=> array(
+						'name' 			=> __( 'Groups' ),
+						'singular_name' => __( 'Group' ),
+						'menu_name' => 'Groups',
+						'add_new' => 'Add Group',
+						'add_new_item' => 'Add New Group',
+						'edit' => 'Edit',
+						'edit_item' => 'Edit Group',
+						'new_item' => 'New Group',
+						'view' => 'View Group',
+						'view_item' => 'View Group',
+						'search_items' => 'Search Groups',
+						'not_found' => 'No Groups Found',
+						'not_found_in_trash' => 'No Groups Found in Trash',
+				),
+			'public' 		=> true,
+			'has_archive'	=> true,
+			'menu_position'	=> 5,
+			'supports' 		=> array(
+						'title',
+						'editor',
+						'revisions',
+						'author'
+				),
+			'rewrite' => FALSE,
+			'delete_with_user' => false,
+			'capability_type' => 'group',
+			'capabilities' => array(
+				'read_post' => 'read_group',
+				'publish_posts' => 'publish_groups',
+				'edit_posts' => 'edit_groups',
+				'edit_others_posts' => 'edit_others_groups',
+				'delete_posts' => 'delete_groups',
+				'delete_others_posts' => 'delete_others_groups',
+				'read_private_posts' => 'read_private_groups',
+				'edit_post' => 'edit_group',
+				'delete_post' => 'delete_group',
+			),
+			)
+		);
+		
 		register_post_type( 'policies',
 			array(
 			'labels' 		=> array(
@@ -427,6 +470,22 @@
 				'show_ui' => false 
 			)
 		);
+		
+		//Group types for services, etc
+		register_taxonomy( 'group_type', 'groups', 
+			array(
+				'labels'	=> array(
+							'name' 			=> __( 'Group Types' ),
+							'singular_name'	=> __( 'Group Type' )
+							),
+				'public'			=> true,
+				'show_tagcloud'		=> false,
+				'hierarchical'		=> true,
+				'capabilities' => array(
+					'assign_terms' => 'edit_group'
+				),
+			)
+		);
 	
 	//Assign taxonomies for custom post types
 		register_taxonomy_for_object_type( 'department_shortname', 'courses' );
@@ -447,6 +506,8 @@
 		register_taxonomy_for_object_type( 'post_tag', 'departments' );
 		register_taxonomy_for_object_type( 'post_tag', 'page' );
 		register_taxonomy_for_object_type( 'post_tag', 'policies' );
+		register_taxonomy_for_object_type( 'group_type', 'groups' );
+		register_taxonomy_for_object_type( 'group_type', 'page' );
 	} //csun create post type
 	
 	//Add custom post types
@@ -521,6 +582,14 @@
 			$rank = get_field('pol_rank',$post_id);
 			if(is_string( $rank ))
 				echo $rank;
+			else
+				_e( '-', 'your_text_domain' );
+			break;
+			
+		case 'group_type' :
+			$terms = get_the_term_list( $post_id , 'group_type' , '' , ', ' , '' );
+				if ( is_string( $terms ) )
+				echo $terms;
 			else
 				_e( '-', 'your_text_domain' );
 			break;
@@ -635,6 +704,21 @@
 		return $columns;
 	}
 	add_filter('manage_edit-courses_columns', 'course_columns');
+	
+	/**
+	 * Adds department columns to Faculty and Departments
+	 * Hooks onto manage_edit-faculty_columns filter, manage_edit-departments_columns filter
+	 *
+	 * @param array $columns	Default columns
+	 *
+	 * @return array	Updated list of columns
+	 */
+	function group_columns($columns) {
+		$columns['group_type'] = 'Type';
+		unset($columns['date']);
+		return $columns;
+	}
+	add_filter('manage_edit-groups_columns', 'group_columns');
 	
 	/**
 	 * Adds columns to Policies
@@ -1024,23 +1108,27 @@ add_action( 'save_post', 'mfields_set_default_object_terms', 100, 2 );
 /**
  * Adds custom post capabilities. Only needs to be run once.
  * Hooks onto admin_init action. 
+ */
 function add_event_caps() {
-$role = get_role( 'dp_ar' );
+	$role = get_role( 'dp_group' );
 
-	$role->add_cap( 'edit_policy' ); 
-	$role->add_cap( 'edit_policies' ); 
-	$role->add_cap( 'edit_others_policies' ); 
-	$role->add_cap( 'publish_policies' ); 
-	$role->add_cap( 'read_policy' ); 
-	$role->add_cap( 'read_private_policies' ); 
-	$role->add_cap( 'delete_policy' );
-	
-	$role->remove_cap( 'edit_faculty' ); 
-	$role->remove_cap( 'edit_facultys' ); 
-	$role->remove_cap( 'edit_others_facultys' ); 
-	$role->remove_cap( 'publish_facultys' ); 
-	$role->remove_cap( 'read_faculty' ); 
-	$role->remove_cap( 'read_private_facultys' ); 
-	//$role->add_cap( 'edit_faculty' ); 
+/*
+	$role->add_cap( 'edit_group' ); 
+	$role->add_cap( 'edit_groups' ); 
+	$role->add_cap( 'edit_others_groups' ); 
+	$role->add_cap( 'publish_groups' ); 
+	$role->add_cap( 'read_group' ); 
+	$role->add_cap( 'read_private_groups' ); 
+	$role->add_cap( 'delete_group' );
+	$role->add_cap( 'delete_groups' ); 
+	$role->add_cap( 'delete_others_groups' );
+
+	$role->remove_cap( 'edit_program' ); 
+	$role->remove_cap( 'edit_programs' ); 
+	$role->remove_cap( 'edit_others_programs' ); 
+	$role->remove_cap( 'publish_programs' ); 
+	$role->remove_cap( 'read_program' ); 
+	$role->remove_cap( 'read_private_programs' ); */
+	$role->add_cap( 'edit_group' ); 
 }
-add_action( 'admin_init', 'add_event_caps'); */
+add_action( 'admin_init', 'add_event_caps'); 

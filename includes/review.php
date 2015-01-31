@@ -40,7 +40,7 @@ function review_page() {
 	if ('dp_editor' == $role || 'dp_college' == $role || 'dp_reviewer' == $role ){
 		editor_home_page();
 	}
-	elseif ('administrator' == $role){
+	elseif ('administrator' == $role || 'dp_intern' == $role){
 		adminstrator_review_page();
 	}
 	else{
@@ -147,9 +147,9 @@ function adminstrator_review_page() {
 		//Output row ?>
 		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
 			<td class="col_name column-col_name">
-				<a class="row-title" href="<?php echo admin_url(); ?>admin.php?page=dp_page&department_shortname=<?php echo $link; ?>&action=edit">
+				<span class="row-title">
 					<?php echo $term->description; ?>
-				</a>
+				</span>
 			</td>
 			<td>
 				<?php $entry = review_submitted($term->slug, "false");

@@ -49,6 +49,10 @@ function csun_login($redirect_to){
             // redirect them to the default place
             return admin_url('edit.php?post_type=plans');
         }
+		else if( in_array( "dp_group", $user->roles ) ) {
+            // redirect them to the default place
+            return admin_url('edit.php?post_type=groups');
+        }
 		else if( in_array( "dp_policy", $user->roles ) ) {
             // redirect them to the default place
             return admin_url('edit.php?post_type=policies');
@@ -126,9 +130,6 @@ if ( is_admin() ) {
 	
 	//Add tables plug-in
 	add_filter('mce_external_plugins', array( 'DP_Admin', 'custom_tinyMCE_plugins') );
-	
-	//Add styles to wordpress toolbar
-	add_filter('tiny_mce_before_init', array( 'DP_Admin', 'csunFormatTinyMCE') );
 	
 	//Add menu for proposal files
 	require_once $plug_in_dir . '/includes/proposal-files.php';

@@ -30,6 +30,63 @@ class DP_Admin {
 		if( !current_user_can('activate_plugins') )
 			return;
 			
+		add_role( 'dp_intern', 'Intern', array(
+			'delete_others_pages' => true,
+			'delete_others_posts' => true,
+			'delete_pages' => true,
+			'delete_posts' => true,
+			'delete_private_pages' => true,
+			'delete_private_posts' => true,
+			'delete_published_pages' => true,
+			'delete_published_posts' => true,
+			'edit_others_pages' => true,
+			'edit_others_posts' => true,
+			'edit_pages' => true,
+			'edit_posts' => true,
+			'edit_private_pages' => true,
+			'edit_private_posts' => true,
+			'edit_published_pages' => true,
+			'edit_published_posts' => true,
+			'manage_categories' => true,
+			'manage_links' => true,
+			'moderate_comments' => true,
+			'publish_pages' => true,
+			'publish_posts' => true,
+			'read' => true,
+			'read_private_pages' => true,
+			'read_private_posts' => true,
+			'unfiltered_html' => true,
+			'upload_files' => true,
+			'edit_faculty' => true,
+			'edit_facultys' => true,
+			'edit_others_facultys' => true,
+			'publish_facultys' => true, 
+			'read_faculty' => true, 
+			'read_private_facultys' => true,
+			'delete_faculty' => true,
+			'delete_facultys' => true,
+			'delete_others_facultys' => true,
+			'assign_terms' => true,
+			'edit_plan' => true,
+			'edit_plans' => true,
+			'edit_others_plans' => true,
+			'publish_plans' => true, 
+			'read_plan' => true, 
+			'read_private_plans' => true,
+			'delete_plan' => true,
+			'delete_plans' => true,
+			'delete_others_plans' => true,
+			'edit_policy' => true,
+			'edit_policies' => true,
+			'edit_others_policies' => true,
+			'publish_policies' => true, 
+			'read_policy' => true, 
+			'read_private_policies' => true,
+			'delete_policy' => true,
+			'delete_policies' => true,
+			'delete_others_policies' => true,
+		));
+			
 		//Create a department editor role
 		//Restrict access to things not in the category of its name
 		//Restrict editing to Department information
@@ -85,6 +142,17 @@ class DP_Admin {
 			'delete_plans' => true,
 			'delete_others_plans' => true,
 			'assign_terms' => true,
+		));
+		
+		//Create a special groups role
+		add_role( 'dp_group', 'Special Groups', array(
+			'read' => true,
+			'edit_posts' => true,
+			'edit_group' => true,
+			'edit_groups' => true,
+			'publish_groups' => true, 
+			'read_group' => true, 
+			'read_private_groups' => true
 		));
 			
 		//Create a policy editor role
@@ -151,6 +219,8 @@ class DP_Admin {
 		remove_role( 'dp_ar' );
 		remove_role( 'dp_policy' );
 		remove_role( 'dp_pages' );
+		remove_role( 'dp_intern' );
+		remove_role( 'dp_group' );
 		
 		delete_option( 'main_dp_settings' );
 		unregister_setting( 'dp-admin-group', 'main_dp_settings');
@@ -338,7 +408,9 @@ class DP_Admin {
 		elseif( in_array( 'dp_policy', (array) $user->roles ))
 			wp_enqueue_style('policy-style', $basedir . '/css/policy-style.css');
 		elseif( in_array( 'dp_pages', (array) $user->roles ))
-			wp_enqueue_style('faculty-style', $basedir . '/css/page-style.css');
+			wp_enqueue_style('pages-style', $basedir . '/css/page-style.css');
+		elseif( in_array( 'dp_group', (array) $user->roles ))
+			wp_enqueue_style('group-style', $basedir . '/css/group-style.css');
 	}//change layout
 	
 	
@@ -391,54 +463,6 @@ class DP_Admin {
 		
 		return $buttons;
 	}
-	
-	/**
-	 * Add custom style formats
-	 * Hooks onto tiny_mce_before_init filter.
-	 *
-	 * @param array $init_array	The default wordpress toolbar
-	 *
-	 * @return array			The updated wordpress toolbar
-	 */
-	function csunFormatTinyMCE( $init_array ) {
-		$style_formats = array(  
-			// Each array child is a format with it's own settings
-			array(  
-				'title' => 'Section Title',  
-				'block' => 'h2',  
-				'classes' => 'section-header',
-			),
-			array(  
-				'title' => 'Link Grid',  
-				'block' => 'div',  
-				'classes' => 'plan-grid',
-				//'wrapper' => true,
-			),
-			array(  
-				'title' => 'Basic Table',  
-				'selector' => 'table',  
-				'classes' => 'csun-table',
-				//'wrapper' => true,
-			),
-			array(  
-				'title' => 'Table Header/Footer',  
-				'selector' => 'tr',  
-				'classes' => 'header-footer',
-				//'wrapper' => true,
-			),
-			array(  
-				'title' => 'TOC Collumn',  
-				'block' => 'div',  
-				'classes' => 'col-xs-12 col-sm-6 col-md-6 col-lg-6',
-				'wrapper' => true,
-			),
-		);
-		
-		// Insert the array, JSON ENCODED, into 'style_formats'
-		$init_array['style_formats'] = json_encode( $style_formats );  
-		
-		return $init_array;
-	} 
 	
 	/**
 	 * Add custom tinyMCE plugins (must have js already)
