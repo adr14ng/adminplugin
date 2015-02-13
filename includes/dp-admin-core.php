@@ -196,13 +196,6 @@ class DP_Admin {
 			'edit_pages' => true,
 			'edit_private_pages' => true,
 			'edit_published_pages' => true,
-			'edit_others_pages' => true,
-			'publish_pages' => true, 
-			'delete_page' => true,
-			'delete_pages' => true,
-			'delete_others_pages' => true,
-			'delete_published_pages' => true,
-			'assign_terms' => true,
 		));
 
 	}//activate()

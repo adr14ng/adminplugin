@@ -936,9 +936,8 @@ function csun_add_rewrite_rules() {
 	
 	//Faculty
 	add_rewrite_rule('^emeriti/([a-zA-Z])/?', 'index.php?post_type=faculty&department_shortname=emeriti&directory=$matches[1]', 'top');
-	add_rewrite_rule('^emeriti/?', 'index.php?post_type=faculty&department_shortname=emeriti', 'top');
+	add_rewrite_rule('^emeriti/?', 'index.php?post_type=faculty&department_shortname=emeriti&directory=a', 'top');
 	add_rewrite_rule('^faculty/([a-zA-Z])/?', 'index.php?post_type=faculty&directory=$matches[1]', 'top');
-	add_rewrite_rule('^faculty/?', 'index.php?post_type=faculty', 'top');
 	
 	//Core Pages (Department, Program, Courses and Faculty)
 	$wp_rewrite->add_permastruct('programs', 'academics/%dpt_name%/programs/%programs%/%option_name%', false);
@@ -1110,7 +1109,7 @@ add_action( 'save_post', 'mfields_set_default_object_terms', 100, 2 );
  * Hooks onto admin_init action. 
  */
 function add_event_caps() {
-	$role = get_role( 'dp_group' );
+	$role = get_role( 'dp_pages' );
 
 /*
 	$role->add_cap( 'edit_group' ); 
@@ -1122,13 +1121,15 @@ function add_event_caps() {
 	$role->add_cap( 'delete_group' );
 	$role->add_cap( 'delete_groups' ); 
 	$role->add_cap( 'delete_others_groups' );
-
-	$role->remove_cap( 'edit_program' ); 
-	$role->remove_cap( 'edit_programs' ); 
-	$role->remove_cap( 'edit_others_programs' ); 
-	$role->remove_cap( 'publish_programs' ); 
-	$role->remove_cap( 'read_program' ); 
-	$role->remove_cap( 'read_private_programs' ); */
-	$role->add_cap( 'edit_group' ); 
+	$role->add_cap( 'level_1' );
+	
+	$role->remove_cap( 'edit_others_pages' ); 
+	$role->remove_cap( 'publish_pages' ); 
+	$role->remove_cap( 'delete_page' ); 
+	$role->remove_cap( 'delete_pages' ); 
+	$role->remove_cap( 'delete_others_pages' ); 
+	$role->remove_cap( 'delete_published_pages' );
+*/
+	
 }
 add_action( 'admin_init', 'add_event_caps'); 
