@@ -125,7 +125,14 @@ function editor_home_page() {
  * Lists all departments and current review statuses
  */
 function adminstrator_review_page() {
-	$terms = get_terms( 'department_shortname', array('exclude_tree' => array(511) ) );	//get terms except the X-Don't use ones
+	$terms = get_terms( 'department_shortname', array('exclude' => array(511, 512, 20, 46, 99), 'parent' => 0) );
+	
+	foreach($terms as $term)
+	{
+		$depts[] = $term;
+		$children = get_terms( 'department_shortname', array('parent' => ((int)$term->term_id) ) );
+		$depts = array_merge($depts, $children);
+	}
 
 	?>
 	<div class="wrap">
@@ -135,6 +142,7 @@ function adminstrator_review_page() {
 		<thead> 
 			<tr>
 				<th scope="col" id="col_name" class="manage-column column-col_name" style=""> <span>Academic Org</span> </th>
+				<th scope="col" id="col_status" class="manage-column column-col_status" style=""> <span>Page Status</span> </th>
 				<th scope="col" id="col_department" class="manage-column column-col_status" style=""><span>Department</span></th>
 				<th scope="col" id="col_college" class="manage-column column-col_status" style=""><span>College</span></th>
 			</tr>
@@ -142,14 +150,17 @@ function adminstrator_review_page() {
 	<tbody id="the-list">
 	<?php
 	$alt = false;
-	foreach($terms as $term) :
+	foreach($depts as $term) :
 
 		//Output row ?>
 		<tr <?php if($alt) echo 'class="alternate"'; $alt = !$alt; ?>>
 			<td class="col_name column-col_name">
 				<span class="row-title">
-					<?php echo $term->description; ?>
+					<?php if($term->parent != 0) echo ' -- '; ?><?php echo $term->description; ?>
 				</span>
+			</td>
+			<td>
+				<?php echo page_statuses($term); ?>
 			</td>
 			<td>
 				<?php $entry = review_submitted($term->slug, "false");
@@ -209,6 +220,40 @@ function review_submitted($dept, $dean)
 	}
 	else
 		return false;
+}
+
+function page_statuses($term)
+{
+	$status = '';
+	$posts = get_posts(array('post_status' => 'pending', 'post_type' => 'departments', 'department_shortname' => $term->slug));
+	if(count($posts) > 0)
+	{
+		$status .= '<span style="color:red; font-weight:bold;">Pending department - '.count($posts).'</span><br />';
+	}
+	else
+	{
+		$status .= '<span style="color:green">No pending departments</span><br />';
+	}
+	$posts = get_posts(array('post_status' => 'pending', 'post_type' => 'programs', 'department_shortname' => $term->slug));
+	if(count($posts) > 0)
+	{
+		$status .= '<span style="color:red; font-weight:bold;">Pending program - '.count($posts).'</span><br />';
+	}
+	else
+	{
+		$status .= '<span style="color:green">No pending programs</span><br />';
+	}
+	$posts = get_posts(array('post_status' => 'pending', 'post_type' => 'courses', 'department_shortname' => $term->slug));
+	if(count($posts) > 0)
+	{
+		$status .= '<span style="color:red; font-weight:bold;">Pending course - '.count($posts).'</span>';
+	}
+	else
+	{
+		$status .= '<span style="color:green">No pending courses.</span>';
+	}
+	
+	return $status;
 }
 
 ?>

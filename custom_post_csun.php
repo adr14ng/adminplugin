@@ -295,7 +295,7 @@
 			array(  
 			//'label' => 'Star-act',
 			'labels' => array (
-			    'name' => 'Star-Acts',
+			    'name' => 'STAR Act Planning Guides',
 			    'singular_name' => 'Star-Act',
 			    'menu_name' => 'Star-Act',
 			    'add_new' => 'Add Star-Act',
@@ -328,7 +328,7 @@
 			array(	
 				//'label' => 'Plans',
 				'labels' => array (
-					'name' => 'Plans',
+					'name' => 'Degree Planning Guides',
 					'singular_name' => 'Plan',
 					'menu_name' => 'Plans',
 					'add_new' => 'Add Plan',
@@ -954,6 +954,11 @@ function csun_add_rewrite_rules() {
     
 	//List pages for degree level
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
+	
+	//JSON
+	add_rewrite_rule('^json/department/([a-z-_]+)/([a-z-_]+)/?','index.php?p=32859&department=$matches[1]&field=$matches[2]','top');
+	add_rewrite_rule('^json/program/([a-z-_]+)/([a-z-_]+)/([0-9]{4})/?','index.php?p=32859&program=$matches[1]&field=$matches[2]&ayear=$matches[3]','top');
+	add_rewrite_rule('^json/program/([a-z-_]+)/([a-z-_]+)/?','index.php?p=32859&program=$matches[1]&field=$matches[2]','top');
 	
 	//print_r($wp_rewrite->extra_permastructs);
 }
