@@ -956,14 +956,25 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);
 	
 	//JSON
-	add_rewrite_rule('^json/department/([a-z-_]+)/([a-z-_]+)/?','index.php?p=32859&department=$matches[1]&field=$matches[2]','top');
-	add_rewrite_rule('^json/program/([a-z-_]+)/([a-z-_]+)/([0-9]{4})/?','index.php?p=32859&program=$matches[1]&field=$matches[2]&ayear=$matches[3]','top');
-	add_rewrite_rule('^json/program/([a-z-_]+)/([a-z-_]+)/?','index.php?p=32859&program=$matches[1]&field=$matches[2]','top');
+	add_rewrite_rule('^api/department/([a-z-_]+)/([a-z-_]+)/?','index.php?api=dept&department=$matches[1]&field=$matches[2]','top');
+	add_rewrite_rule('^api/department/([a-z-_]+)/?','index.php?api=dept&department=$matches[1]','top');
+	add_rewrite_rule('^api/program/([a-z-_]+)/([a-z-_]+)/([0-9]{4})/?','index.php?api=prog&program=$matches[1]&field=$matches[2]&ayear=$matches[3]','top');
+	add_rewrite_rule('^api/program/([a-z-_]+)/([a-z-_]+)/?','index.php?api=prog&program=$matches[1]&field=$matches[2]','top');
+	add_rewrite_rule('^api/program/([a-z-_]+)/?','index.php?api=prog&program=$matches[1]','top');
 	
 	//print_r($wp_rewrite->extra_permastructs);
 }
 add_action('init', 'csun_add_rewrite_rules');
 
+function add_query_vars($qvars) {
+	$qvars[] = 'api';
+	$qvars[] = 'department';
+	$qvars[] = 'field';
+	$qvars[] = 'program';
+	$qvars[] = 'ayear';
+	return $qvars;
+}
+add_filter('query_vars','add_query_vars');
 
 /**
  * Replace placeholders in rewrite rules
@@ -1108,15 +1119,124 @@ function mfields_set_default_object_terms( $post_id, $post ) {
 	}
 }
 add_action( 'save_post', 'mfields_set_default_object_terms', 100, 2 );
- 
+
+/**
+ * Defines rules for creating post slugs for our post types
+ * Hooks onto wp_insert_post_data
+ *
+ */
+function custom_post_slugs($data, $postarr)
+{
+	$post = get_post($post_ID);
+	$expect_name = sanitize_title(strtolower($data['post_title']));
+	if(!empty($data['post_name']) && (empty($post->post_name) || 
+		$data['post_name'] == $expect_name || $data['post_name'] != $post->post_name ) )
+	{
+		if($data['post_type'] === 'courses')
+		{
+			$name = explode('.', $data['post_title']);
+			$slug = sanitize_title(strtolower($name[0]));
+			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
+			$data['post_name'] = $slug;
+		}
+		
+		if($data['post_type'] === 'departments')
+		{
+			$slug = sanitize_title(strtolower($data['post_title']));
+			$slug = $slug.'-overview';
+			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
+			$data['post_name'] = $slug;
+		}
+		
+		if($data['post_type'] === 'programs')
+		{
+			$slug = sanitize_title(strtolower($data['post_title']));
+			$degree_type = $postarr['fields']['field_52a20d3fecd1c'];
+			$degree_type = strtolower(str_replace(array('.', ' '), '', $degree_type));
+			if(strpos($slug, $degree_type) === false)
+			{
+				$slug = $degree_type.'-'.$slug;
+			}
+			$slug = program_option_slug($slug, $postarr['fields']['field_52a20d1decd1b']);
+			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
+			$data['post_name'] = $slug;
+		}
+			
+		if($data['post_type'] === 'plans')
+		{
+			$slug = sanitize_title(strtolower($data['post_title']));
+			//add year
+			$year = $postarr['tax_input']['aca_year'];
+			print_r($year);
+			if(isset($year[1]))
+			{
+				$year_term = get_term($year[1], 'aca_year');
+				$slug = $slug.'-'.$year_term->slug;
+			}
+			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
+			$data['post_name'] = $slug;
+		}
+		
+		if($data['post_type'] === 'staract')
+		{
+			$slug = sanitize_title(strtolower($data['post_title']));
+			//add year
+			$year = $postarr['tax_input']['aca_year'];
+			if(isset($year[1]))
+			{
+				$year_term = get_term($year[1], 'aca_year');
+				$slug = $slug.'-'.$year_term->slug;
+			}
+			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
+			$data['post_name'] = $slug;
+		}
+	}
+
+	return $data;
+}
+add_filter('wp_insert_post_data', 'custom_post_slugs', 10, 2);
+
+
+function program_option_slug($slug, $option)
+{
+	$numerals = array('-i', '-ii', '-iii', '-iv', '-v', '-vi', '-vii', '-viii', '-ix', '-x', '-xi', '-xii');
+	$largest = 0;
+	global $wpdb;
+	$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_name LIKE %s AND post_type = %s";
+	$programs = $wpdb->get_results( $wpdb->prepare( $check_sql, $slug.'%', 'programs') );
+	if($wpdb->num_rows > 0)
+	{
+		foreach($programs as $program)
+		{
+			foreach($numerals as $k=>$num)
+			{
+				if(strpos($program->post_name, $num) !== false)
+				{
+					if($k > $largest)
+					{
+						$largest = $k;
+					}
+				}
+			}
+		}
+			
+		$slug.=$numerals[$largest+1];
+	}
+	elseif(!empty($option))
+	{
+		$slug.=$numerals[0];
+	}
+	
+	return $slug;
+}
+
 /**
  * Adds custom post capabilities. Only needs to be run once.
  * Hooks onto admin_init action. 
  */
 function add_event_caps() {
-	$role = get_role( 'dp_pages' );
+	$role = get_role( 'administrator' );
 
-/*
 	$role->add_cap( 'edit_group' ); 
 	$role->add_cap( 'edit_groups' ); 
 	$role->add_cap( 'edit_others_groups' ); 
@@ -1133,8 +1253,28 @@ function add_event_caps() {
 	$role->remove_cap( 'delete_page' ); 
 	$role->remove_cap( 'delete_pages' ); 
 	$role->remove_cap( 'delete_others_pages' ); 
-	$role->remove_cap( 'delete_published_pages' );
-*/
-	
+	$role->remove_cap( 'delete_published_pages' );	
 }
-add_action( 'admin_init', 'add_event_caps'); 
+//add_action( 'admin_init', 'add_event_caps');
+
+/**
+ * Use this function to mass update post records
+ * - Disable our custom post_name creation
+ * - Disable Relevanssi and re-index afterward
+ */
+function modify_course_slugs() {
+	$user = wp_get_current_user();
+
+	if($user->ID == 2)		//candace
+	{
+		$posts = get_posts(array('posts_per_page' => 500, 'post_type' => 'courses', 'offset' => 4500, 'orderby' => 'ID', 'order' => 'ASC'));
+
+		foreach($posts as $post) {
+			$name = explode('.', $post->post_title);
+			$slug = sanitize_title(strtolower($name[0]));
+			
+			wp_update_post(array('ID' => $post->ID, 'post_name' => $slug));
+		}
+	}
+}
+//add_action( 'admin_init', 'modify_course_slugs');
