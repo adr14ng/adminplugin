@@ -950,7 +950,7 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_permastruct('staract', 'planning/staract/%aca_year%/%staract%', false);
 	$wp_rewrite->add_permastruct('plans', 'planning/plans/%aca_year%/%plans%', false);
 	$wp_rewrite->add_permastruct('aca_year', 'planning/%post_type%/%aca_year%', false);
-	add_rewrite_rule('^planning/([A-Za-z]*)/([A-Za-z]{2,5})/?', 'index.php?post_type=$matches[1]&department_shortname=$matches[2]', 'top');
+	add_rewrite_rule('^planning/([A-Za-z]*)/([A-Za-z]{2,10})/?', 'index.php?post_type=$matches[1]&department_shortname=$matches[2]', 'top');
     
 	//List pages for degree level
 	$wp_rewrite->add_permastruct('degree_level', 'programs/%degree_level%', false);

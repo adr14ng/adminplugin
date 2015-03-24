@@ -138,6 +138,10 @@ if ( is_admin() ) {
 	//Add settings page
 	require_once $plug_in_dir . '/includes/dp-options.php';
 	$dp_settings_page = new DPAdminSettings();
+	
+	//Add planning tool page
+	require_once $plug_in_dir . '/includes/dp-plans.php';
+	$dp_settings_page = new PlansTool();
 
 	//Add menu for review page
 	require_once $plug_in_dir . '/includes/review.php';

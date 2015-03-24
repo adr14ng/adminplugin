@@ -7,6 +7,7 @@
  *		-Buttons
  *		-Tabs
  *	3. Dashicons
+ *  4. Forms
  *
  * CSUN Department of Undergraduate Studies
  * 2013-2014
@@ -117,3 +118,64 @@ button.disabled{cursor: default;}
 
 /* View All: Briefcase */
 #toplevel_page_dp_page .wp-menu-image:before{content:"\f322"!important;}
+
+/* * * * * * * * * * * * * * * * * * * * * *
+ *
+ *	4. Forms
+ *
+ * * * * * * * * * * * * * * * * * * * * * */
+.plan-management fieldset
+{
+	display: block;
+}
+
+.plan-management fieldset div
+{
+	padding-left: 120px;
+	margin-top: -1.2em;
+	display: inline-block;
+}
+
+.plan-management legend
+{
+	display: inline-block;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.plan-management label
+{
+	display: block;
+}
+
+.plan-management>label,
+.plan-management>fieldset
+{
+	margin: 5px;
+}
+
+.plan-management label span
+{
+	display: inline-block;
+	min-width: 110px;
+	margin-right: 5px;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.plan-management fieldset label span
+{
+	font-size: 1.1em;
+}
+
+.plan-management input
+{
+	display: inline-block;
+}
+
+.plan-management select
+{
+	display: inline-block;
+	min-width: 75px;
+	
+}
