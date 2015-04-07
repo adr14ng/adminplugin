@@ -22,6 +22,31 @@ else
 	wp_die("Invalid Action.");
 }
 
+function import_plans()
+{
+	// Display verbose errors
+	define( 'IMPORT_DEBUG', false );
+	
+	// Load Importer API
+	require_once ABSPATH . 'wp-admin/includes/import.php';
+	
+	if ( ! class_exists( 'WP_Importer' ) ) {
+		$class_wp_importer = ABSPATH . 'wp-admin/includes/class-wp-importer.php';
+		if ( file_exists( $class_wp_importer ) )
+			require $class_wp_importer;
+	}
+	
+	//check_admin_referer( 'import-plans' );
+	
+	$importer = new Plan_Import();
+	$importer->import();
+
+	if(isset($_POST['return']))
+		wp_safe_redirect( $_POST['return'] );
+	else
+		wp_redirect( admin_url() );
+}
+
 function export_plans()
 {
 	check_admin_referer('export_plans');
@@ -147,34 +172,9 @@ function export_plans()
 	exit();
 }
 
-function import_plans()
-{
-	/** Display verbose errors */
-	define( 'IMPORT_DEBUG', false );
-
-	// Load Importer API
-	require_once ABSPATH . 'wp-admin/includes/import.php';
-
-	if ( ! class_exists( 'WP_Importer' ) ) {
-		$class_wp_importer = ABSPATH . 'wp-admin/includes/class-wp-importer.php';
-		if ( file_exists( $class_wp_importer ) )
-			require $class_wp_importer;
-	}
-	
-	check_admin_referer( 'import-plans' );
-	
-	$importer = new Plan_Import();
-	$importer->import();
-	
-	if(isset($_POST['return']))
-		wp_safe_redirect( $_POST['return'] );
-	else
-		wp_redirect( admin_url() );
-}
-
 class Plan_Import {
 	function WP_Import() { /* nothing */ }
-
+	
 	/**
 	 * The main controller for the actual import stage.
 	 *
@@ -183,13 +183,13 @@ class Plan_Import {
 	function import() {
 		set_time_limit(0);
 		add_filter( 'http_request_timeout', array( &$this, 'bump_request_timeout' ) );
-
+		
 		$this->handle_upload();
 		$this->process_posts();
 		wp_import_cleanup( $this->id );
 		wp_cache_flush();
 	}
-
+	
 	/**
 	 * Handles the WXR upload and initial parsing of the file to prepare for
 	 * displaying author import options
@@ -198,7 +198,7 @@ class Plan_Import {
 	 */
 	function handle_upload() {
 		$file = wp_import_handle_upload();
-
+		
 		if ( isset( $file['error'] ) ) {
 			echo '<p><strong>Sorry, there has been an error.</strong><br />';
 			echo esc_html( $file['error'] ) . '</p>';
@@ -209,10 +209,10 @@ class Plan_Import {
 			echo '</p>';
 			return false;
 		}
-
+		
 		$this->id = (int) $file['id'];
 		$parser = new Plan_Parser_XML();
-		$import_data $parser->parse( $file );
+		$import_data = $parser->parse( $file['file'] );
 		
 		if ( is_wp_error( $import_data ) ) {
 			echo '<p><strong>Sorry, there has been an error.</strong><br />';
@@ -223,7 +223,7 @@ class Plan_Import {
 		$this->posts = $import_data;
 		return true;
 	}
-
+	
 	/**
 	 * Create new posts based on import information
 	 *
@@ -233,9 +233,12 @@ class Plan_Import {
 	 * Note that new/updated terms, comments and meta are imported for the last of the above.
 	 */
 	function process_posts() {
-		print_r($this->posts);
+		foreach($this->posts as $post)
+		{
+			wp_update_post($post);
+		}
 	}
-
+	
 	/**
 	 * Added to http_request_timeout filter to force timeout at 60 seconds during import
 	 * @return int 60
@@ -266,7 +269,7 @@ class Plan_Parser_XML {
 		}
 		xml_parser_free( $xml );
 		
-		return $this->posts
+		return $this->posts;
 	}
 
 	function tag_open( $parse, $tag, $attr ) {
@@ -274,7 +277,7 @@ class Plan_Parser_XML {
 			case 'item': $this->in_post = true;
 			case 'title': $this->in_tag = 'post_title'; break;
 			case 'content:encoded': $this->in_tag = 'post_content'; break;
-			case 'wp:post_id': $this->in_tag = 'post_id'; break;
+			case 'wp:post_id': $this->in_tag = 'ID'; break;
 		}
 	}
 

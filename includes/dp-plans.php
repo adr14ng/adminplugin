@@ -113,7 +113,7 @@ class PlansTool
 			<div id="import">
 				<h3>Import Plans</h3>
 				<p>Select the file exported from another site to update existing Plans and STAR Acts.</p>
-				<form name="import_plans" action="<?php echo $form_action; ?>" method="post" class="plan-management">
+				<form name="import_plans" action="<?php echo $form_action; ?>" method="post" class="plan-management" enctype="multipart/form-data">
 					<?php wp_nonce_field('import_plans'); ?>
 					<input type="hidden" id="referredby" name="referredby" value="<?php echo esc_url(wp_get_referer()); ?>" />
 					<input type="hidden" name="return" value="<?php echo $page.'&subpage=import'; ?>" />

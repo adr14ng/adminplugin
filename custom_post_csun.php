@@ -1020,13 +1020,17 @@ function csun_permalinks($permalink, $post, $leavename) {
 	if($post_type == 'programs'){
 		$option = get_field( 'option_title', $post_id);
 				
-		if(!$option)
-			$option = $option_df;
+		if(empty($option))
+		{
+			$permalink = str_replace('/%option_name%', '', $permalink);	//no double slash
+		}
+		else
+		{
+			$option = sanitize_title($option);
+			$permalink = str_replace('%option_name%', $option, $permalink);
+		}
 			
-		$option = sanitize_title($option);
-
 		
-		$permalink = str_replace('%option_name%', $option, $permalink);
 	}
 	
 	//get the category
