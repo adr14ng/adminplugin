@@ -30,6 +30,7 @@
 #menu-comments,
 #menu-tools,
 .wp-submenu,
-#wp-admin-bar-new-content {
+#wp-admin-bar-new-content,
+#group_typediv {
 	display: none;
 }
