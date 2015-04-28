@@ -31,8 +31,11 @@
 	
 	/**
 	 * Function to add custom post types and taxonomies
-	 * Post Types: courses, programs, departments, faculty, policies, staract, plans
-	 * Taxonomies: department_shortname, general_education, degree_level, aca_year, policy_categories, policy_keywords, directory
+	 * Post Types: courses, programs, departments, faculty, policies, staract, 
+	 *             plans, groups
+	 * Taxonomies: department_shortname, general_education, degree_level, 
+	 *             aca_year, policy_categories, policy_keywords, directory, 
+	 *             group_type
 	 * Hooks onto init action.
 	 */
 	function csun_create_post_type() {
@@ -516,6 +519,7 @@
 	
 	/**
 	 * Populate Custom Columns
+	 * On the edit screen we added collumns, this tells them what to say
 	 * Hooks onto manage_posts_custom_column action
 	 *
 	 * @param string $column	Column trying to populate
@@ -598,7 +602,7 @@
 	add_action( 'manage_posts_custom_column' , 'custom_columns', 10, 2 );
 	
 	/**
-	 * Adds columns to Plans and Staract
+	 * Adds custom columns to Plans and Staract
 	 * Hooks onto manage_edit-plans_columns filter, manage_edit-staract_columns filter
 	 *
 	 * @param array $columns	Default columns
@@ -675,7 +679,7 @@
 	add_filter('manage_edit-departments_columns', 'dept_columns');
 	
 	/**
-	 * Adds columns to Programs
+	 * Adds custom columns to Programs
 	 * Hooks onto manage_edit-programs_columns filter
 	 *
 	 * @param array $columns	Default columns
@@ -879,12 +883,12 @@
 	add_filter('post_row_actions', 'pol_rank_add_value', 10, 2);
 	
 	/**
-	 * Remove extra columns from course list table
+	 * Remove extra columns from list tables
 	 * Hooks onto manage_edit-{post_type}_columns filter
 	 *
-	 * @param array $defaults Default course column list
+	 * @param array $defaults Default column list
 	 *
-	 * @return array	Reduced course column list
+	 * @return array	Reduced column list
 	 */
 	function reduce_generic_columns($defaults) {
 	  unset($defaults['author']);
@@ -966,6 +970,10 @@ function csun_add_rewrite_rules() {
 }
 add_action('init', 'csun_add_rewrite_rules');
 
+/**
+ * Custom query variables to make json api work
+ * Hooks onto query_vars filter.
+ */
 function add_query_vars($qvars) {
 	$qvars[] = 'api';
 	$qvars[] = 'department';
@@ -1073,8 +1081,7 @@ function csun_permalinks($permalink, $post, $leavename) {
 add_filter('post_type_link', 'csun_permalinks', 10, 3);
 
 /**
- * Adds the taxonomy first letter to the post without users
- * having to.
+ * Automatically adds the first letter of faculty to directory tax
  * Hooks onto save_post action.
  */
  function csun_save_first_letter($post_id) {
@@ -1136,7 +1143,7 @@ function custom_post_slugs($data, $postarr)
 	if(!empty($data['post_name']) && (empty($post->post_name) || 
 		$data['post_name'] == $expect_name || $data['post_name'] != $post->post_name ) )
 	{
-		if($data['post_type'] === 'courses')
+		if($data['post_type'] === 'courses')  //AAA 101. Generic Class (3) -> aaa-101
 		{
 			$name = explode('.', $data['post_title']);
 			$slug = sanitize_title(strtolower($name[0]));
@@ -1144,7 +1151,7 @@ function custom_post_slugs($data, $postarr)
 			$data['post_name'] = $slug;
 		}
 		
-		if($data['post_type'] === 'departments')
+		if($data['post_type'] === 'departments')  //Generic Department -> generic-department-overview
 		{
 			$slug = sanitize_title(strtolower($data['post_title']));
 			$slug = $slug.'-overview';
@@ -1152,7 +1159,7 @@ function custom_post_slugs($data, $postarr)
 			$data['post_name'] = $slug;
 		}
 		
-		if($data['post_type'] === 'programs')
+		if($data['post_type'] === 'programs')  //ba-africana-studies-ii
 		{
 			$slug = sanitize_title(strtolower($data['post_title']));
 			$degree_type = $postarr['fields']['field_52a20d3fecd1c'];
@@ -1166,12 +1173,11 @@ function custom_post_slugs($data, $postarr)
 			$data['post_name'] = $slug;
 		}
 			
-		if($data['post_type'] === 'plans')
+		if($data['post_type'] === 'plans')  //generic-plan-2015
 		{
 			$slug = sanitize_title(strtolower($data['post_title']));
 			//add year
 			$year = $postarr['tax_input']['aca_year'];
-			print_r($year);
 			if(isset($year[1]))
 			{
 				$year_term = get_term($year[1], 'aca_year');
@@ -1181,7 +1187,7 @@ function custom_post_slugs($data, $postarr)
 			$data['post_name'] = $slug;
 		}
 		
-		if($data['post_type'] === 'staract')
+		if($data['post_type'] === 'staract')  //generic-staract-2015
 		{
 			$slug = sanitize_title(strtolower($data['post_title']));
 			//add year
@@ -1239,25 +1245,25 @@ function program_option_slug($slug, $option)
  * Hooks onto admin_init action. 
  */
 function add_event_caps() {
-	$role = get_role( 'administrator' );
+	$role = get_role( 'dp_policy' );
 
 	$role->add_cap( 'edit_group' ); 
 	$role->add_cap( 'edit_groups' ); 
-	$role->add_cap( 'edit_others_groups' ); 
+	//$role->add_cap( 'edit_others_groups' ); 
 	$role->add_cap( 'publish_groups' ); 
 	$role->add_cap( 'read_group' ); 
 	$role->add_cap( 'read_private_groups' ); 
-	$role->add_cap( 'delete_group' );
-	$role->add_cap( 'delete_groups' ); 
-	$role->add_cap( 'delete_others_groups' );
+	//$role->add_cap( 'delete_group' );
+	//$role->add_cap( 'delete_groups' ); 
+	//$role->add_cap( 'delete_others_groups' );
 	$role->add_cap( 'level_1' );
 	
-	$role->remove_cap( 'edit_others_pages' ); 
-	$role->remove_cap( 'publish_pages' ); 
-	$role->remove_cap( 'delete_page' ); 
-	$role->remove_cap( 'delete_pages' ); 
-	$role->remove_cap( 'delete_others_pages' ); 
-	$role->remove_cap( 'delete_published_pages' );	
+	//$role->remove_cap( 'edit_others_pages' ); 
+	//$role->remove_cap( 'publish_pages' ); 
+	//$role->remove_cap( 'delete_page' ); 
+	//$role->remove_cap( 'delete_pages' ); 
+	//$role->remove_cap( 'delete_others_pages' ); 
+	//$role->remove_cap( 'delete_published_pages' );	
 }
 //add_action( 'admin_init', 'add_event_caps');
 

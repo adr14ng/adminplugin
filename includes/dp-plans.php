@@ -15,6 +15,9 @@ class PlansTool
 	public function __construct()
 	{
 		add_action( 'admin_menu', array( $this, 'add_tool_page' ) );
+		add_action( 'add_meta_boxes_plans', array( $this, 'add_plan_meta_box' ) );
+		add_action( 'add_meta_boxes_staract', array( $this, 'add_plan_meta_box' ) );
+		add_filter( 'wp_insert_post_data', array( $this, 'meta_box_link_plan' ) );
 	}
 	
 	/**
@@ -29,6 +32,20 @@ class PlansTool
 			'manage_options',
 			'plan-management',
 			array($this, 'planning_page')
+		);
+	}
+	
+	/**
+	 *
+	 */
+	public function add_plan_meta_box()
+	{
+		add_meta_box(
+			'courselinks_div',
+			'Link Courses',
+			array($this, 'planning_meta_box'),
+			null,
+			'side'
 		);
 	}
 	
@@ -298,6 +315,42 @@ class PlansTool
 		}
 	}
 	
+	public function planning_meta_box($post)
+	{
+		wp_nonce_field('link_plan', 'link_plan_nonce');
+		?>
+		<input type="checkbox" name="link_plans" value="yes">
+		<label for="link_plans">Link Plan Courses</label>
+		<?
+		
+	}
+	
+	public function meta_box_link_plan($data)
+	{
+		if( !isset( $_POST['link_plans']))
+			return $data;
+
+		if( !isset( $_POST['link_plan_nonce']))
+			return $data;
+
+		if( ! wp_verify_nonce( $_POST['link_plan_nonce'], 'link_plan'))
+			return $data;
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			return $data;
+
+		$content = wp_unslash($data['post_content']);
+		$content = $this->find_course_links($content);
+		if($content)
+		{
+			$data['post_content'] = wp_slash($content);
+			echo "<br />\nPost-Content: <br />\n";
+			print_r($data['post_content']);
+		}
+		
+		return $data;
+	}
+	
 	public function link_plans()
 	{
 		check_admin_referer('link_plans');
@@ -320,7 +373,7 @@ class PlansTool
 		{
 			//$post = get_post(46053);
 			//echo '<h2>'.$post->post_title."</h2>\n";
-			$content = $this->find_course_links($post->post_content, $post->ID);
+			$content = $this->find_course_links($post->post_content);
 			if($content)
 			{
 				wp_update_post(array('ID' => $post->ID, 'post_content' => $content));
@@ -328,16 +381,16 @@ class PlansTool
 		}
 	}
 	
-	public function find_course_links($content, $id=false)
+	public function find_course_links($content)
 	{
-		//echo '<div id="debug-'.$id.'">';
+		//nonbreaking spaces break the regex, remove them
 		$content = htmlentities($content, null, 'utf-8');
 		$content = str_replace("&nbsp;", " ", $content);
-		$content = html_entity_decode($content, null, 'utf-8');
-		//print_r($content); echo "<br />\n";
+		$content = html_entity_decode($content, null, 'utf-8');	//undoes htmlentitites
+
 		$regex = "/([A-Z]{2,4}) ".			//prefix is 2-4 uppercase letters then a space
 				 "([0-9]{3})".				//course number is 3 numbers
-				 "([A-Z-]*)\/*([A-Z]*)/";			//suffix with optional slash
+				 "([A-Z-]*)\/*([A-Z]*)/";	//suffix with optional slash
 				 
 		$dom = new DOMDocument();
 		$dom->loadHtml(mb_convert_encoding($content, 'HTML-ENTITIES', "UTF-8"));
@@ -345,11 +398,8 @@ class PlansTool
 		$xpath = new DOMXPath($dom);
 		$updated = false;
 		
-		
-		foreach($xpath->query('//text()[not(ancestor::a)]') as $node)
+		foreach($xpath->query('//text()[not(ancestor::a)]') as $node)	//don't link already linked items
 		{
-			$node_update = false;
-			//echo "Orginal Node: "; print_r($node->wholeText); echo "<br />\n";
 			$replaced = preg_replace_callback( 
 				   $regex,
 				   function ($matches) {
@@ -361,11 +411,9 @@ class PlansTool
 								  'post_type' => 'courses', 
 								  'post_status' => 'publish',
 								));
-						
 						if($course)
 						{
 							$link = '<a href="'.get_permalink( $course[0]->ID ).'" title="'.$course[0]->post_title.'">'.$matches[0].'</a>';
-							$node_update = true;
 							return $link;
 						}
 						else
@@ -375,8 +423,8 @@ class PlansTool
 				   },
 				   $node->wholeText
 				);
-			//echo "Updated Node: "; print_r($replaced); echo "<br />\n";
-			if($node_update)
+
+			if($node->wholeText !== $replaced)
 			{
 				$updated = true;
 				$newNode  = $dom->createDocumentFragment();
@@ -384,12 +432,17 @@ class PlansTool
 				$node->parentNode->replaceChild($newNode, $node);
 			}
 		}
-		//print_r(mb_substr($dom->saveXML($xpath->query('//body')->item(0)), 6, -7, "UTF-8"));
-		//echo '</div>';
-		// get only the body tag with its contents, then trim the body tag itself to get only the original content
+
 		if($updated)
 		{
-			return mb_substr($dom->saveXML($xpath->query('//body')->item(0)), 6, -7, "UTF-8");
+			// get only the body tag with its contents, then trim the body tag itself to get only the original content
+			$content = mb_substr($dom->saveXML($xpath->query('//body')->item(0)), 6, -7, "UTF-8");
+			$content = str_replace("&#13;", "", $content);
+			$content = htmlentities($content, null, 'utf-8');
+			$content = str_replace("&nbsp;", " ", $content);
+			$content = html_entity_decode($content, null, 'utf-8');	//undoes htmlentitites
+			
+			return $content;
 		}
 		else
 		{

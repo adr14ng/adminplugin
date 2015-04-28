@@ -14,7 +14,14 @@
 /* Editor */
 #wp-admin-bar-new-content,
 #minor-publishing-actions,
-#misc-publishing-actions
+#misc-publishing-actions,
+#tagsdiv-post_tag,
+#group_typediv,
+#pageparentdiv,
+#acf-related_pols,
+#acf-implementation_semester,
+#acf-approval_body,
+#normal-sortables
 {
 	display: none;
 }
