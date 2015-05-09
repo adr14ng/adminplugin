@@ -91,7 +91,7 @@ class PlansTool
 			<h2 class="nav-tab-wrapper">
 				<a href="<?php echo $page; ?>" class="nav-tab">Copy Plans</a>
 				<a href="<?php echo $page.'&subpage=import'; ?>" class="nav-tab nav-tab-active">Import/Export Plans</a>
-				<a href="<?php echo $form_action.'&subpage=link'; ?>" class="nav-tab">Link Plan Courses</a>
+				<a href="<?php echo $page.'&subpage=link'; ?>" class="nav-tab">Link Plan Courses</a>
 			</h2>
 			<div id="export">
 				<h3>Export Plans</h3>
@@ -413,7 +413,9 @@ class PlansTool
 								));
 						if($course)
 						{
-							$link = '<a href="'.get_permalink( $course[0]->ID ).'" title="'.$course[0]->post_title.'">'.$matches[0].'</a>';
+							$link = '<a target="_blank" class="pop-up course"'
+								.' href="'.site_url( '/popup/' ).$course[0]->post_name
+								.'" title="'.$course[0]->post_title.'">'.$matches[0].'</a>';
 							return $link;
 						}
 						else

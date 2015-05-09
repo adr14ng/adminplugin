@@ -10,10 +10,9 @@
 * Change the login page. 
 * Hooks onto login_head action.
 */
-
 function new_custom_login_logo() {
     echo '<style type="text/css">
-        h1 a { background-image:url(http://www.csun.edu/sites/default/themes/csun/logo.png) !important; height:125px !important; width: 325px !important; background-size: contain !important; background-color: rgba(255, 255, 255, .630);} 
+        h1 a { background-image:url(http://www.csun.edu/sites/default/themes/csun/logo.png) !important; height:55px !important; width: 325px !important; background-size: contain !important; background-color: rgba(255, 255, 255, .630);} 
 		body.login {background-image: url(http://upload.wikimedia.org/wikipedia/commons/1/1d/CSUN_Central_Campus.JPG) !important; background-size: cover; background-repeat:no-repeat;}
 		#nav, #backtoblog {display:none}	
 		#loginform {opacity:0.90;}
@@ -36,32 +35,38 @@ function csun_login($redirect_to){
 	//is there a user to check?
     global $user;
     if( isset( $user->roles ) && is_array( $user->roles ) ) {
-        //check for admins
+        //check for department editing
         if( in_array( "dp_editor", $user->roles ) || in_array( "dp_college", $user->roles )|| in_array( "dp_reviewer", $user->roles )) {
-            // redirect them to the default place
+            // redirect them to the department editor home page
             return admin_url('admin.php?page=review');
         } 
+		//check for faculty editor
 		else if( in_array( "dp_faculty", $user->roles ) ) {
-            // redirect them to the default place
+            // redirect them to the list of faculty
             return admin_url('edit.php?post_type=faculty');
         }
+		//check for admissions and records
 		else if( in_array( "dp_ar", $user->roles ) ) {
-            // redirect them to the default place
+            // redirect them to the list of plans
             return admin_url('edit.php?post_type=plans');
         }
+		//check for special programs and services editors
 		else if( in_array( "dp_group", $user->roles ) ) {
-            // redirect them to the default place
+            // redirect them to the list of groups
             return admin_url('edit.php?post_type=groups');
         }
+		//check for policy editor
 		else if( in_array( "dp_policy", $user->roles ) ) {
-            // redirect them to the default place
+            // redirect them to the list of policies
             return admin_url('edit.php?post_type=policies');
         }
+		//check for page editor
 		else if( in_array( "dp_pages", $user->roles ) ) {
-            // redirect them to the default place
+            // redirect them to the list of pages
             return admin_url('edit.php?post_type=page');
         }
 		else {
+			//go to the default
 			return admin_url('index.php');
 		}
 	}
@@ -72,7 +77,7 @@ function csun_login($redirect_to){
 add_filter( 'login_redirect', 'csun_login');
 
 /**
-* Change the Howdy,
+* Change the Howdy, in the admin toolbar
 * Hooks onto gettext filter.
 *
 * @param string $translation	Translated text.

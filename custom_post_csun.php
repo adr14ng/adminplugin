@@ -212,19 +212,19 @@
 		register_post_type( 'groups',
 			array(
 			'labels' 		=> array(
-						'name' 			=> __( 'Groups' ),
-						'singular_name' => __( 'Group' ),
-						'menu_name' => 'Groups',
-						'add_new' => 'Add Group',
-						'add_new_item' => 'Add New Group',
+						'name' 			=> __( 'Services and Programs' ),
+						'singular_name' => __( 'Service/Program' ),
+						'menu_name' => 'Services and Programs',
+						'add_new' => 'Add Service/Program',
+						'add_new_item' => 'Add New Service/Program',
 						'edit' => 'Edit',
-						'edit_item' => 'Edit Group',
-						'new_item' => 'New Group',
-						'view' => 'View Group',
-						'view_item' => 'View Group',
-						'search_items' => 'Search Groups',
-						'not_found' => 'No Groups Found',
-						'not_found_in_trash' => 'No Groups Found in Trash',
+						'edit_item' => 'Edit Service/Program',
+						'new_item' => 'New Service/Program',
+						'view' => 'View Service/Program',
+						'view_item' => 'View Service/Program',
+						'search_items' => 'Search Services and Programs',
+						'not_found' => 'No Services or Programs Found',
+						'not_found_in_trash' => 'No Services or Programs Found in Trash',
 				),
 			'public' 		=> true,
 			'has_archive'	=> true,
@@ -255,9 +255,9 @@
 		register_post_type( 'policies',
 			array(
 			'labels' 		=> array(
-						'name' 			=> __( 'Policies' ),
+						'name' 			=> __( 'Policies and Procedures' ),
 						'singular_name' => __( 'Policy' ),
-						'menu_name' => 'Policies',
+						'menu_name' => 'Policies and Procedures',
 						'add_new' => 'Add Policy',
 						'add_new_item' => 'Add New Policy',
 						'edit' => 'Edit',
@@ -768,10 +768,6 @@
 					$query->set( 'meta_key', 'pol_rank' );
 					$query->set( 'orderby', 'meta_value_num' );
 					break;
-				/*case 'aca_year' :		//can't sort by tax right now
-					$query->set( 'meta_key', 'aca_year' );
-					$query->set( 'orderby', 'meta_value_num' );
-					break;*/
 			}
 		}
 	}
@@ -909,8 +905,6 @@
 function csun_add_rewrite_rules() {
 	global $wp_rewrite;
 	
-	
-	
 	$wp_rewrite->add_rewrite_tag('%programs%', '([^/]+)', 'programs=');
 	$wp_rewrite->add_rewrite_tag('%faculty%', '([^/]+)', 'faculty=');
 	$wp_rewrite->add_rewrite_tag('%courses%', '([^/]+)', 'courses=');
@@ -950,6 +944,8 @@ function csun_add_rewrite_rules() {
 	$wp_rewrite->add_permastruct('departments', 'department/%dpt_name%/%departments%', false);
 	$wp_rewrite->add_permastruct('department_shortname', 'academics/%dpt_name%/%post_type%', false);
 	
+	add_rewrite_rule('^popup/([A-Za-z0-9-]*)/?', 'index.php?courses=$matches[1]&popup=true', 'top');
+	
 	//4 Year Plans Star Act
 	$wp_rewrite->add_permastruct('staract', 'planning/staract/%aca_year%/%staract%', false);
 	$wp_rewrite->add_permastruct('plans', 'planning/plans/%aca_year%/%plans%', false);
@@ -980,6 +976,7 @@ function add_query_vars($qvars) {
 	$qvars[] = 'field';
 	$qvars[] = 'program';
 	$qvars[] = 'ayear';
+	$qvars[] = 'popup';
 	return $qvars;
 }
 add_filter('query_vars','add_query_vars');
@@ -1005,6 +1002,7 @@ function csun_permalinks($permalink, $post, $leavename) {
 	
 	$permalink = str_replace('%post_type%', $post_type, $permalink);
 	
+	//if not one our special post types or it doesn't need a permalink yet, just return the default
 	if(($post_type != 'programs' && $post_type != 'faculty' && $post_type != 'departments' && $post_type != 'courses'
 		&& $post_type != 'staract' && $post_type != 'plans') || 
 		empty($permalink) || in_array($post->post_status, array('draft', 'pending', 'auto-draft')))
@@ -1037,8 +1035,6 @@ function csun_permalinks($permalink, $post, $leavename) {
 			$option = sanitize_title($option);
 			$permalink = str_replace('%option_name%', $option, $permalink);
 		}
-			
-		
 	}
 	
 	//get the category
@@ -1058,7 +1054,7 @@ function csun_permalinks($permalink, $post, $leavename) {
 			}
 		}
 		
-		if(!isset($dpt)){		//if it only has a top level
+		if(!isset($dpt)){		//if it only has a top level term
 			foreach($terms as $term){
 				if($term->slug !== 'ge') {
 					//save the slug of the category that works
@@ -1141,7 +1137,7 @@ function custom_post_slugs($data, $postarr)
 	$post = get_post($post_ID);
 	$expect_name = sanitize_title(strtolower($data['post_title']));
 	if(!empty($data['post_name']) && (empty($post->post_name) || 
-		$data['post_name'] == $expect_name || $data['post_name'] != $post->post_name ) )
+		$data['post_name'] == $expect_name ) )
 	{
 		if($data['post_type'] === 'courses')  //AAA 101. Generic Class (3) -> aaa-101
 		{
@@ -1272,19 +1268,24 @@ function add_event_caps() {
  * - Disable our custom post_name creation
  * - Disable Relevanssi and re-index afterward
  */
-function modify_course_slugs() {
+function modify_plan_slugs() {
 	$user = wp_get_current_user();
 
 	if($user->ID == 2)		//candace
 	{
-		$posts = get_posts(array('posts_per_page' => 500, 'post_type' => 'courses', 'offset' => 4500, 'orderby' => 'ID', 'order' => 'ASC'));
+		$posts = get_posts(array('posts_per_page' => 250, 'post_type' => 'plans', 'offset' => 1250, 'orderby' => 'ID', 'order' => 'ASC'));
 
+		echo "<div>";
 		foreach($posts as $post) {
-			$name = explode('.', $post->post_title);
-			$slug = sanitize_title(strtolower($name[0]));
-			
-			wp_update_post(array('ID' => $post->ID, 'post_name' => $slug));
+			$slug = sanitize_title(strtolower($post->post_title));
+			//add year
+			$year = wp_get_post_terms($post->ID, 'aca_year');
+			if(isset($year[0]))
+			{
+				$slug = $slug.'-'.$year[0]->slug;
+				wp_update_post(array('ID' => $post->ID, 'post_name' => $slug));
+			}
 		}
 	}
 }
-//add_action( 'admin_init', 'modify_course_slugs');
+//add_action( 'admin_init', 'modify_plan_slugs');
