@@ -165,6 +165,22 @@ class DPAdminSettings
         ); 
 		
 		add_settings_field(
+            'old_planning_year', // ID
+            'Unmaintained Planning Year', // Title 
+            array( $this, 'old_planning_year_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        );
+		
+		add_settings_field(
+            'old_plan_message', // ID
+            'Unmaintained Plan Message', // Title 
+            array( $this, 'old_plan_message_callback'), // Callback
+            'dp-admin-options', // Page
+            'dp-main-settings' // Section           
+        );
+		
+		add_settings_field(
             'course_semester', // ID
             'OMAR Course Semester', // Title 
             array( $this, 'course_semester_callback'), // Callback
@@ -269,6 +285,21 @@ class DPAdminSettings
 		if( isset( $input['planning_year'] ) )
 		{
             $new_input['planning_year'] = sanitize_title( $input['planning_year'] );
+		}
+		
+		if( isset( $input['old_planning_year'] ) )
+		{
+            $new_input['old_planning_year'] = sanitize_title( $input['old_planning_year'] );
+		}
+		
+		if( isset( $input['old_plan_message'] ) )
+		{
+			$course = $input['old_plan_message'];
+			$course = wp_check_invalid_utf8( $course, true );
+			$course = stripslashes($course);
+			$course = strip_tags($course, '<a><p><h2><h3><em><strong><ul><li><ol>');
+			$course = balanceTags($course);
+            $new_input['old_plan_message'] = $course;
 		}
 			
 		if( isset( $input['course_semester'] ) )
@@ -399,6 +430,28 @@ class DPAdminSettings
         printf(
             '<input type="text" id="planning_year" name="main_dp_settings[planning_year]" value="%s" />',
             isset( $this->options['planning_year'] ) ? esc_attr( $this->options['planning_year']) : ''
+        );
+    }
+	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
+	function old_planning_year_callback()
+    {
+        printf(
+            '<input type="text" id="old_planning_year" name="main_dp_settings[old_planning_year]" value="%s" />',
+            isset( $this->options['old_planning_year'] ) ? esc_attr( $this->options['old_planning_year']) : ''
+        );
+    }
+	
+	/** 
+     * Get the settings option array and print each settings current value
+     */
+    function old_plan_message_callback()
+    {
+        printf(
+            '<textarea rows="4" cols="50" id="old_plan_message" name="main_dp_settings[old_plan_message]" class="large-text code">%s</textarea>',
+            isset( $this->options['old_plan_message'] ) ? esc_attr( $this->options['old_plan_message']) : ''
         );
     }
 	

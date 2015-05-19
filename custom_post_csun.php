@@ -1191,7 +1191,7 @@ function custom_post_slugs($data, $postarr)
 			if(isset($year[1]))
 			{
 				$year_term = get_term($year[1], 'aca_year');
-				$slug = $slug.'-'.$year_term->slug;
+				$slug = 'star-act-'.$slug.'-'.$year_term->slug;
 			}
 			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
 			$data['post_name'] = $slug;
@@ -1273,16 +1273,15 @@ function modify_plan_slugs() {
 
 	if($user->ID == 2)		//candace
 	{
-		$posts = get_posts(array('posts_per_page' => 250, 'post_type' => 'plans', 'offset' => 1250, 'orderby' => 'ID', 'order' => 'ASC'));
+		$posts = get_posts(array('posts_per_page' => 250, 'post_type' => 'staract', 'offset' => 0, 'orderby' => 'ID', 'order' => 'ASC'));
 
-		echo "<div>";
 		foreach($posts as $post) {
 			$slug = sanitize_title(strtolower($post->post_title));
 			//add year
 			$year = wp_get_post_terms($post->ID, 'aca_year');
 			if(isset($year[0]))
 			{
-				$slug = $slug.'-'.$year[0]->slug;
+				$slug = 'star-act-'.$slug.'-'.$year[0]->slug;
 				wp_update_post(array('ID' => $post->ID, 'post_name' => $slug));
 			}
 		}
