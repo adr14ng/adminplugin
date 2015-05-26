@@ -1236,6 +1236,12 @@ function program_option_slug($slug, $option)
 	return $slug;
 }
 
+function my_myme_types($mime_types){
+	$mime_types['epub'] = 'application/epub+zip'; 
+	return $mime_types;
+}
+add_filter('upload_mimes', 'my_myme_types', 1, 1);
+
 /**
  * Adds custom post capabilities. Only needs to be run once.
  * Hooks onto admin_init action. 
