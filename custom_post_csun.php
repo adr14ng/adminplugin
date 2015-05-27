@@ -85,7 +85,7 @@
 		register_post_type( 'programs',
 			array(
 			'labels' 		=> array(
-						'name' 			=> __( 'Programs' ),
+						'name' 			=> __( 'Academic Programs' ),
 						'singular_name' => __( 'Program' ),
 						'menu_name' => 'Programs',
 						'add_new' => 'Add Program',
