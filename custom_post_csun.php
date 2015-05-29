@@ -1142,7 +1142,8 @@ function custom_post_slugs($data, $postarr)
 		if($data['post_type'] === 'courses')  //AAA 101. Generic Class (3) -> aaa-101
 		{
 			$name = explode('.', $data['post_title']);
-			$slug = sanitize_title(strtolower($name[0]));
+			$slug = str_replace('-', '', $name[0]);
+			$slug = sanitize_title(strtolower($slug));
 			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
 			$data['post_name'] = $slug;
 		}
@@ -1279,15 +1280,16 @@ function modify_plan_slugs() {
 
 	if($user->ID == 2)		//candace
 	{
-		$posts = get_posts(array('posts_per_page' => 250, 'post_type' => 'staract', 'offset' => 0, 'orderby' => 'ID', 'order' => 'ASC'));
+		$posts = get_posts(array('posts_per_page' => 500, 'post_type' => 'courses', 'offset' => 4250, 'orderby' => 'ID', 'order' => 'ASC'));
 
 		foreach($posts as $post) {
-			$slug = sanitize_title(strtolower($post->post_title));
-			//add year
-			$year = wp_get_post_terms($post->ID, 'aca_year');
-			if(isset($year[0]))
+			$name = explode('.', $post->post_title);
+			$slug = str_replace('-', '', $name[0]);
+			$slug = sanitize_title(strtolower($slug));
+			$slug = wp_unique_post_slug($slug, $data['ID'], $data['post_status'], $data['post_type'], $data['post_parent']);
+
+			if($post->$post_name !== $slug)
 			{
-				$slug = 'star-act-'.$slug.'-'.$year[0]->slug;
 				wp_update_post(array('ID' => $post->ID, 'post_name' => $slug));
 			}
 		}

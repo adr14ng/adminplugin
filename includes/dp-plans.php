@@ -290,7 +290,6 @@ class PlansTool
 			$plan_info['tax_input']['department_shortname'] = wp_get_post_terms( $plan->ID, 'department_shortname', array('fields' => 'ids') );
 			$plan_info['fields']['field_548f81952e786'] = get_field( 'field_548f81952e786', $plan->ID, false );
 			$plan_info['post_content'] = "";
-			print_r($plan_info);
 			
 			$plan_info['post_content'] = $plan->post_content;
 			
@@ -344,8 +343,6 @@ class PlansTool
 		if($content)
 		{
 			$data['post_content'] = wp_slash($content);
-			echo "<br />\nPost-Content: <br />\n";
-			print_r($data['post_content']);
 		}
 		
 		return $data;
@@ -371,8 +368,6 @@ class PlansTool
 		$posts = get_posts($args);
 		foreach($posts as $post)
 		{
-			//$post = get_post(46053);
-			//echo '<h2>'.$post->post_title."</h2>\n";
 			$content = $this->find_course_links($post->post_content);
 			if($content)
 			{
@@ -400,6 +395,7 @@ class PlansTool
 		
 		foreach($xpath->query('//text()[not(ancestor::a)]') as $node)	//don't link already linked items
 		{
+			$entites = htmlentities($node->wholeText, null, 'utf-8');
 			$replaced = preg_replace_callback( 
 				   $regex,
 				   function ($matches) {
@@ -416,6 +412,7 @@ class PlansTool
 							$link = '<a target="_blank" class="pop-up course"'
 								.' href="'.site_url( '/popup/' ).$course[0]->post_name
 								.'" title="'.$course[0]->post_title.'">'.$matches[0].'</a>';
+							
 							return $link;
 						}
 						else
@@ -423,7 +420,7 @@ class PlansTool
 							return $matches[0];
 						}
 				   },
-				   $node->wholeText
+				   $entites
 				);
 
 			if($node->wholeText !== $replaced)

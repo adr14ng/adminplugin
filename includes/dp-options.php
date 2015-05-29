@@ -166,7 +166,7 @@ class DPAdminSettings
 		
 		add_settings_field(
             'old_planning_year', // ID
-            'Unmaintained Planning Year', // Title 
+            'Plan Message End Year', // Title 
             array( $this, 'old_planning_year_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
@@ -174,7 +174,7 @@ class DPAdminSettings
 		
 		add_settings_field(
             'old_plan_message', // ID
-            'Unmaintained Plan Message', // Title 
+            'Plan Message', // Title 
             array( $this, 'old_plan_message_callback'), // Callback
             'dp-admin-options', // Page
             'dp-main-settings' // Section           
